@@ -5,7 +5,7 @@
 <meta name="theme-color" content="#b3dbec"><meta name="description" content="A little storybook memory adventure with Pip. Look, flip, match and grow.">
 <title>Pip's Garden · Flip & Grow</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='55' r='35' fill='%23f4a08e'/%3E%3Cpath d='M50 25Q25 0 70 8Z' fill='%2381c7bd'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="style.css?v=storybook1">
+<link rel="stylesheet" href="style.css?v=english-ui2">
 </head>
 <body>
 <div id="world" class="world"></div>
@@ -27,18 +27,18 @@
 <header class="play-hud"><button id="back" class="round" aria-label="Save and leave level"></button><div class="level-sign"><span id="level-label"></span><div id="pair-progress" class="pair-progress" aria-label="Pairs matched"></div></div><div class="turn-counter" aria-label="Turns"><span id="turn-icon"></span><b id="turns">0</b></div></header>
 <div id="pair-intro" class="pair-intro" hidden></div>
 <div id="cards" class="cards" aria-label="Memory cards"></div>
-<div class="coach"><button id="coach" class="coach-pip" aria-label="Repeat Hindi instruction"></button><p id="hint" lang="hi" role="status"></p><button id="ready" class="round primary" aria-label="Ready to match"></button><button id="peek" class="round" aria-label="Peek at cards" hidden></button></div>
+<div class="coach"><button id="coach" class="coach-pip" aria-label="Repeat Hindi instruction"></button><p id="hint" lang="en" role="status"></p><button id="ready" class="round primary" aria-label="Ready to match"></button><button id="peek" class="round" aria-label="Peek at cards" hidden></button></div>
 </section>
 <section id="result" class="screen result-screen" hidden>
-<div class="reward-sheet"><h1 id="result-title" lang="hi">शाबाश!</h1><div id="stars" class="stars"></div><div id="reward-art" class="reward-art"></div><div id="score" class="score"></div><p id="result-turns" class="result-turns"></p><div class="reward-actions"><button id="retry" class="round" aria-label="Replay this level"></button><button id="next" class="big-button" aria-label="Next level"></button></div><details><summary>For grown-ups</summary><p id="score-details"></p></details></div>
+<div class="reward-sheet"><h1 id="result-title" lang="en">Well done!</h1><div id="stars" class="stars"></div><div id="reward-art" class="reward-art"></div><div id="score" class="score"></div><p id="result-turns" class="result-turns"></p><div class="reward-actions"><button id="retry" class="round" aria-label="Replay this level"></button><button id="next" class="big-button" aria-label="Next level"></button></div><details><summary>For grown-ups</summary><p id="score-details"></p></details></div>
 </section>
 <section id="finish" class="screen finish-screen" hidden>
-<h1 class="wood-title" lang="hi">मेरा बगीचा!</h1><div id="collected" class="collected"></div><div id="finish-pip" class="finish-pip"></div><p id="total-score" class="score"></p><button id="finish-map" class="big-button" aria-label="Return to garden"></button>
+<h1 class="wood-title" lang="en">My garden!</h1><div id="collected" class="collected"></div><div id="finish-pip" class="finish-pip"></div><p id="total-score" class="score"></p><button id="finish-map" class="big-button" aria-label="Return to garden"></button>
 </section>
 <div id="particles" class="particles" aria-hidden="true"></div>
 </main>
 <dialog id="dialog"><div id="dialog-body"></div></dialog>
 <p id="save-notice" class="save-notice" hidden>Progress cannot be saved on this device.</p>
-<script type="module" src="script.js?v=storybook1"></script>
+<script type="module" src="script.js?v=english-ui2"></script>
 </body>
 </html>

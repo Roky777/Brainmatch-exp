@@ -10,7 +10,7 @@ The child taps Play, completes a mandatory guided match, then travels through si
 
 - Original vector storybook world, expressive Pip character and illustrated cards; no emoji placeholders or copied reference art.
 - Visual hand-pointer tutorial with disabled off-target cards.
-- Short Hindi prompts and replayable narration. Speech is synthesized by an installed Hindi **device/browser voice**, at a gentle rate and slightly raised pitch. Voice availability and quality vary; this is **not a custom recorded or cloned character voice**. A device without Hindi speech still has complete visual guidance.
+- Short **English on-screen captions**, with separate replayable **Hindi speech**. The player supports approved Hindi recordings through `VOICE_CLIPS` in `narration.js`; none are bundled yet. Until recordings are provided, it uses an installed Hindi **device/browser voice** at natural pitch. Voice availability and quality vary; this is **not a custom recorded or cloned character voice**. A device without Hindi speech still has complete visual guidance. See `VOICE_DIRECTION.md` for the production brief and integration requirements.
 - Soft original synthesized chimes, mute, pause, keyboard controls and reduced-motion support.
 - One free preview per attempt. After two wrong matches, Pip points to the matching partner when a card is chosen.
 - Sequential unlocks, a collected-friends garden, per-level replay and best-result scoring.
@@ -41,7 +41,8 @@ The single source of reward truth is `game-data.js`. Storage key: `brainmatch-ex
 - `game-data.js`: chapters, reward calculation, save validation.
 - `script.js`: tutorial, game states, input, progression and UI.
 - `clock.js`: pause/resume/cancel-safe feedback timer.
-- `voice.js`: Hindi device narration.
+- `narration.js`: English/Hindi cue separation and approved-clip mapping.
+- `voice.js`: recorded-clip playback with Hindi device-speech fallback.
 - `tests/`: `npm test` verifies reward boundaries, full campaigns, replay accounting, shuffled decks, save validation and timer safety.
 
 Baloo 2 is included under the SIL Open Font License in `assets/OFL.txt`. All other visuals and chimes are original code-native assets. Rupee coins are stylized learning illustrations, not banknote scans.

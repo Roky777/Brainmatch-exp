@@ -9,4 +9,5 @@
 @media(max-width:600px){.cards[data-pairs="4"]{grid-template-columns:repeat(6,minmax(0,1fr));max-width:360px;gap:14px}.cards[data-pairs="4"]>.memory-card{grid-column:span 2}.cards[data-pairs="4"]>.memory-card:nth-child(7){grid-column:2 / span 2}.cards[data-pairs="4"]>.memory-card:nth-child(8){grid-column:4 / span 2}}
 @media(max-width:600px) and (max-height:720px){.cards[data-pairs="4"]{max-width:315px;gap:12px}}
 @media(max-width:600px) and (max-height:620px){.cards[data-pairs="5"],.cards[data-pairs="6"]{max-width:clamp(210px,calc((100svh - 260px)*.75),300px)}.cards[data-pairs="5"] .card-number,.cards[data-pairs="6"] .card-number{font-size:23px}.cards[data-pairs="5"] .rupee-coin{font-size:14px}.coach>p{max-width:160px}}
+.coach>p,.tutorial-coach>h1,.reward-sheet>h1{font-family:Garden,'Trebuchet MS',sans-serif}.tutorial-coach>h1{line-height:1.15}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.particles{display:none}}

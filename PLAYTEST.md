@@ -1,5 +1,9 @@
 # Playtest — storybook release
 
+## English UI / narration update
+
+17 automated tests pass, including English caption separation, Hindi device fallback, recorded-clip priority, mute, playback errors and stale-audio cancellation. Browser-checked the English tutorial, pair introduction, matching feedback, pause and reward screens. The longest tutorial caption fits at 320×568. No recorded Hindi clips are bundled; production-quality narration remains pending.
+
 ## Automated
 
 `npm test`: 10 passing tests. Covered all chapter reward boundaries, 200/160/120 campaign totals, replay improvement-only accounting, malformed saves, sequential unlocks, shuffle integrity and pause/cancel timer safety.

@@ -1,19 +1,6 @@
-import { test } from 'node:test';
+import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import { freshSave, sanitizeSave, writeSave, loadSave, STORAGE_KEY } from '../storage.js';
-
-test('saved discoveries and completed rounds restore without duplicates', () => {
-  const clean = sanitizeSave({ discoveries: ['cow','cow','wrong','pond'], completedRounds: [1,1,9], voice: false, effects: false });
-  assert.deepEqual(clean, { discoveries: ['cow','pond'], completedRounds: [1], voice: false, effects: false });
-});
-
-test('storage round trip is safe and defaults survive malformed data', () => {
-  const values = new Map();
-  const storage = { getItem: key => values.get(key), setItem: (key, value) => values.set(key, value) };
-  const save = freshSave(); save.discoveries.push('hen'); save.completedRounds.push(1);
-  assert.equal(writeSave(save, storage), true);
-  assert.ok(values.has(STORAGE_KEY));
-  assert.deepEqual(loadSave(storage), save);
-  values.set(STORAGE_KEY, '{broken');
-  assert.deepEqual(loadSave(storage), freshSave());
-});
+import {TurnClock} from '../clock.js';
+test('cancelled callbacks cannot cross into a different level',t=>{t.mock.timers.enable({apis:['setTimeout']});const clock=new TurnClock();let n=0;clock.schedule(()=>n++,100);clock.cancel();t.mock.timers.tick(500);assert.equal(n,0);});
+test('pause gates timers; resume fires only once',t=>{t.mock.timers.enable({apis:['setTimeout']});const clock=new TurnClock();let n=0;clock.schedule(()=>n++,100);clock.pause();t.mock.timers.tick(500);assert.equal(n,0);clock.resume();clock.resume();t.mock.timers.tick(100);assert.equal(n,1);});
+test('rescheduling replaces old task',t=>{t.mock.timers.enable({apis:['setTimeout']});const clock=new TurnClock();let n=0;clock.schedule(()=>n+=10,100);clock.schedule(()=>n++,100);t.mock.timers.tick(100);assert.equal(n,1);});

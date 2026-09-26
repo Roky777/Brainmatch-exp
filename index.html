@@ -1,44 +1,70 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#b3dbec"><meta name="description" content="A little storybook memory adventure with Pip. Look, flip, match and grow.">
-<title>Pip's Garden · Flip & Grow</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='55' r='35' fill='%23f4a08e'/%3E%3Cpath d='M50 25Q25 0 70 8Z' fill='%2381c7bd'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="style.css?v=english-ui2">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#b8dbe1">
+  <meta name="description" content="Little Lantern Barn — a cooperative memory matching adventure for children.">
+  <title>Little Lantern Barn</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div id="world" class="world"></div>
-<main id="game" class="game">
-<nav class="corner-tools" aria-label="Game controls"><button id="sound" class="round small" aria-label="Mute sound"></button><button id="settings" class="round small" aria-label="Pause and settings"></button></nav>
-<section id="home" class="screen home-screen">
-<h1 class="game-logo"><span>Pip's</span>Garden<b>FLIP & GROW</b></h1>
-<div class="home-friends" aria-hidden="true"><span id="friend-left"></span><span id="home-pip"></span><span id="friend-right"></span></div>
-<button id="play" class="big-button play-button" aria-label="Play"></button>
-<button id="garden" class="round garden-button" aria-label="Choose a level"></button>
-</section>
-<section id="map" class="screen map-screen" hidden>
-<h1 class="wood-title">My garden</h1>
-<div id="level-path" class="level-path" aria-label="Choose a level"></div>
-<button id="map-home" class="round" aria-label="Back to title"></button>
-</section>
-<section id="lesson" class="screen lesson-screen" hidden aria-label="Learn to match"></section>
-<section id="playfield" class="screen play-screen" hidden>
-<header class="play-hud"><button id="back" class="round" aria-label="Save and leave level"></button><div class="level-sign"><span id="level-label"></span><div id="pair-progress" class="pair-progress" aria-label="Pairs matched"></div></div><div class="turn-counter" aria-label="Turns"><span id="turn-icon"></span><b id="turns">0</b></div></header>
-<div id="pair-intro" class="pair-intro" hidden></div>
-<div id="cards" class="cards" aria-label="Memory cards"></div>
-<div class="coach"><button id="coach" class="coach-pip" aria-label="Repeat Hindi instruction"></button><p id="hint" lang="en" role="status"></p><button id="ready" class="round primary" aria-label="Ready to match"></button><button id="peek" class="round" aria-label="Peek at cards" hidden></button></div>
-</section>
-<section id="result" class="screen result-screen" hidden>
-<div class="reward-sheet"><h1 id="result-title" lang="en">Well done!</h1><div id="stars" class="stars"></div><div id="reward-art" class="reward-art"></div><div id="score" class="score"></div><p id="result-turns" class="result-turns"></p><div class="reward-actions"><button id="retry" class="round" aria-label="Replay this level"></button><button id="next" class="big-button" aria-label="Next level"></button></div><details><summary>For grown-ups</summary><p id="score-details"></p></details></div>
-</section>
-<section id="finish" class="screen finish-screen" hidden>
-<h1 class="wood-title" lang="en">My garden!</h1><div id="collected" class="collected"></div><div id="finish-pip" class="finish-pip"></div><p id="total-score" class="score"></p><button id="finish-map" class="big-button" aria-label="Return to garden"></button>
-</section>
-<div id="particles" class="particles" aria-hidden="true"></div>
-</main>
-<dialog id="dialog"><div id="dialog-body"></div></dialog>
-<p id="save-notice" class="save-notice" hidden>Progress cannot be saved on this device.</p>
-<script type="module" src="script.js?v=english-ui2"></script>
+  <main id="game" class="game" data-mode="home">
+    <section id="barnyard" class="barnyard" aria-label="Your discovery barnyard">
+      <div id="backdrop"></div>
+      <div class="nest" aria-label="Nest"><span class="chick" aria-hidden="true"></span></div>
+    </section>
+
+    <nav class="sound-tools" aria-label="Sound controls">
+      <button id="voice-toggle" class="icon-button" type="button" aria-label="Turn voice off"></button>
+      <button id="effects-toggle" class="icon-button" type="button" aria-label="Turn music and effects off"></button>
+    </nav>
+
+    <section id="home-screen" class="home-screen screen-card" aria-labelledby="title">
+      <div class="logo-mark" aria-hidden="true"><span></span></div>
+      <p class="eyebrow">Tilly’s little meadow</p>
+      <h1 id="title">Little Lantern<br><em>Barn</em></h1>
+      <p class="welcome">Flip cards with Tilly and fill the barnyard with friends.</p>
+      <button id="start-button" class="primary-button" type="button"><span>Play together</span></button>
+      <button id="explore-button" class="secondary-button" type="button" hidden>Explore my barnyard</button>
+      <p class="prototype-note">Prototype voice uses your device’s built-in speech.</p>
+    </section>
+
+    <section id="match-screen" class="match-screen" hidden aria-label="Memory matching board">
+      <header class="game-hud">
+        <button id="home-button" class="icon-button paper" type="button" aria-label="Return home"></button>
+        <div class="round-label"><small id="round-number">Round 1</small><strong id="round-title">Morning in the Meadow</strong></div>
+        <div class="progress" aria-live="polite"><strong id="progress-count">0 of 8</strong><small>found</small></div>
+      </header>
+      <div id="turn-banner" class="turn-banner child"><span></span><strong>Your turn</strong></div>
+      <div id="cards" class="cards" role="group" aria-label="Eight memory cards"></div>
+      <button id="hint-button" class="hint-button" type="button">Help me remember</button>
+    </section>
+
+    <section id="round-complete" class="round-complete screen-card" hidden aria-live="polite">
+      <p class="eyebrow">Look what we found!</p>
+      <h2 id="complete-title">The barnyard is waking up.</h2>
+      <p id="complete-copy">Tap your new friends, or try dragging something they might like.</p>
+      <button id="next-button" class="primary-button" type="button">Next round</button>
+      <button id="replay-button" class="secondary-button" type="button">Replay this round</button>
+    </section>
+
+    <section id="explore-panel" class="explore-panel" hidden>
+      <div><p class="eyebrow">Explore mode</p><h2>Our lively barnyard</h2></div>
+      <div class="explore-actions">
+        <button id="round-one-button" class="small-button" type="button">Replay Round 1</button>
+        <button id="round-two-button" class="small-button" type="button">Replay Round 2</button>
+        <button id="explore-home" class="icon-button paper" type="button" aria-label="Return home"></button>
+      </div>
+    </section>
+
+    <aside id="guide" class="guide" aria-label="Tilly the guide">
+      <div id="guide-art" class="guide-picture" aria-hidden="true"></div>
+      <div class="speech-bubble"><p id="caption" role="status" aria-live="polite">Hi! I’m Tilly. Let’s look for barnyard pairs.</p></div>
+      <span id="guide-pointer" class="guide-pointer" aria-hidden="true"></span>
+    </aside>
+    <div id="announcement" class="sr-only" aria-live="assertive"></div>
+  </main>
+  <script type="module" src="script.js"></script>
 </body>
 </html>

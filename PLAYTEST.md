@@ -1,5 +1,13 @@
 # Playtest — storybook release
 
+## Barnyard Together — 2026-09-26
+
+- Original home, six-level campaign, narration, scoring, and save path remain intact.
+- Completed both new rounds through the rendered card UI; the child starts and turns alternate after every attempt.
+- Confirmed 4 discoveries after Round 1 and 8 unique discoveries after Round 2.
+- Confirmed Cow and Flowers tap reactions and the Hay → Cow pointer drag.
+- Confirmed persistent Explore entry, separate voice/effects settings, zero browser exceptions, and no horizontal overflow at 390 × 844.
+
 ## English UI / narration update
 
 17 automated tests pass, including English caption separation, Hindi device fallback, recorded-clip priority, mute, playback errors and stale-audio cancellation. Browser-checked the English tutorial, pair introduction, matching feedback, pause and reward screens. The longest tutorial caption fits at 320×568. No recorded Hindi clips are bundled; production-quality narration remains pending.

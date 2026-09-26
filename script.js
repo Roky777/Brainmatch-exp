@@ -3,6 +3,7 @@ import {icon,cardArt,pip,world} from './art.js';
 import {TurnClock} from './clock.js';
 import {HindiVoice} from './voice.js?v=english-ui2';
 import {CUES} from './narration.js';
+import {setupBarnyard} from './barnyard-mode.js';
 
 const $=id=>document.getElementById(id),clock=new TurnClock(),voice=new HindiVoice();
 let save=emptySave(),board=null,view='home',selected=[],busy=false,preview=false,intro=0,lastLevel=0,afterLesson=null,lessonStep=0,audio;
@@ -126,4 +127,5 @@ $('retry').onclick=()=>begin(lastLevel,true);$('next').onclick=()=>lastLevel===L
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('dialog').open){e.preventDefault();pause();}});
 document.addEventListener('visibilitychange',()=>{if(document.hidden){saveBoard();voice.stop();if(view==='playfield'||view==='lesson')pause();}});
 window.addEventListener('pagehide',()=>{saveBoard();clock.cancel();voice.stop();});
+setupBarnyard({show,goHome:home});
 home();

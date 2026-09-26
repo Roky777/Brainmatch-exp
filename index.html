@@ -16,6 +16,7 @@
 <div class="home-friends" aria-hidden="true"><span id="friend-left"></span><span id="home-pip"></span><span id="friend-right"></span></div>
 <button id="play" class="big-button play-button" aria-label="Play"></button>
 <button id="garden" class="round garden-button" aria-label="Choose a level"></button>
+<button id="barnyard" class="barnyard-entry" aria-label="Play Barnyard Together"><span id="barnyard-icon"></span><b>Barnyard<br>Together</b></button>
 </section>
 <section id="map" class="screen map-screen" hidden>
 <h1 class="wood-title">My garden</h1>
@@ -34,6 +35,18 @@
 </section>
 <section id="finish" class="screen finish-screen" hidden>
 <h1 class="wood-title" lang="en">My garden!</h1><div id="collected" class="collected"></div><div id="finish-pip" class="finish-pip"></div><p id="total-score" class="score"></p><button id="finish-map" class="big-button" aria-label="Return to garden"></button>
+</section>
+<section id="barn-match" class="screen barn-match-screen" hidden>
+<div class="barn-world" aria-hidden="true"></div><div id="barn-discoveries" class="barn-discoveries" aria-label="Discovery barnyard"></div><div class="barn-nest" aria-label="Nest"><i></i></div>
+<header class="barn-hud"><button id="barn-home" class="round" aria-label="Return to Pip's Garden"></button><div class="level-sign barn-level-sign"><span id="barn-round">ROUND 1</span><b id="barn-title">Barn Morning</b></div><div id="barn-progress" class="barn-progress">0 of 8<br><small>FOUND</small></div><button id="barn-voice" class="round small" aria-label="Mute voice"></button><button id="barn-effects" class="round small" aria-label="Mute music and effects"></button></header>
+<div id="barn-turn" class="barn-turn">Your turn</div><div id="barn-cards" class="cards barn-cards" aria-label="Barnyard memory cards"></div>
+<div class="coach barn-coach"><button id="barn-pip" class="coach-pip" aria-label="Repeat Pip's message"></button><p id="barn-caption" role="status">You go first. Flip any two cards!</p><button id="barn-hint" class="text-button barn-hint">Help me remember</button><span id="barn-pointer" class="barn-pointer" aria-hidden="true"></span></div>
+</section>
+<section id="barn-explore" class="screen barn-explore-screen" hidden>
+<div class="barn-world" aria-hidden="true"></div><div id="barn-explore-discoveries" class="barn-discoveries interactive" aria-label="Interactive discovery barnyard"></div><div class="barn-nest" aria-label="Nest"><i></i></div>
+<header class="barn-explore-hud"><div><small>EXPLORE MODE</small><h1 id="barn-explore-title">Our barnyard!</h1></div><div><button id="barn-replay-one" class="text-button">Replay Round 1</button><button id="barn-replay-two" class="text-button">Replay Round 2</button><button id="barn-explore-home" class="round" aria-label="Return home"></button></div></header>
+<div class="barn-explore-coach"><span id="barn-explore-pip"></span><p id="barn-explore-caption" role="status">Tap a friend, or drag something to a place it belongs.</p></div>
+<div id="barn-round-actions" class="reward-sheet barn-round-actions" hidden><h2 id="barn-complete-title">Look what we found!</h2><p>Play with your discoveries, then continue when you’re ready.</p><button id="barn-next" class="big-button" aria-label="Next round"></button></div>
 </section>
 <div id="particles" class="particles" aria-hidden="true"></div>
 </main>

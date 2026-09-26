@@ -2,6 +2,10 @@
 
 A complete, standalone storybook memory game in **Brainmatch-exp only**. This is not a shared dependency of the ten production games. No production analytics, progress bridges, storage or repositories are changed.
 
+The original six-level **Flip & Grow** experience remains intact. The home screen also includes **Barnyard Together**, an additive two-round cooperative mode where the child and Pip alternate turns, discover Cow/Hen/Hay/Egg and Duck/Sheep/Pond/Flowers, and then play with those discoveries in a persistent barnyard. Its fair guide memory, save data, controls, and rules are isolated from the original campaign.
+
+Barnyard Together keeps every spoken line captioned and uses the browser/OS English speech voice as its clearly identified prototype fallback. Voice and music/effects have separate controls, and missing speech never blocks play.
+
 ## Play
 
 Serve the repository with `npm start`, then open http://127.0.0.1:4178. Node 20+ is recommended. No dependencies or build step are required. The root `index.html` and relative module/asset URLs work on GitHub Pages, including a repository subpath.

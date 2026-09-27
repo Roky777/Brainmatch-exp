@@ -91,6 +91,16 @@ for (const [width,height] of [[390,844],[320,568],[844,390],[667,375],[1024,768]
       return r.right<=board.left || r.left>=board.right || r.bottom<=board.top || r.top>=board.bottom;
     });
   })()`), `Controls must not overlap the board at ${width}x${height}`);
+  assert(await evaluate(`(() => {
+    const hint=document.querySelector('#hint'), r=hint.getBoundingClientRect();
+    return document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)?.closest('#hint')===hint;
+  })()`), `Hint must not be hidden by the discovery drawer at ${width}x${height}`);
+  assert(await evaluate(`(() => {
+    const board=document.querySelector('.board-wrap').getBoundingClientRect();
+    const cards=document.querySelector('#cards').getBoundingClientRect();
+    const tray=document.querySelector('#discovery-strip').getBoundingClientRect();
+    return cards.left>=board.left && cards.right<=board.right && cards.top>=board.top && cards.bottom<=board.bottom && Math.abs(tray.top-board.bottom)<2;
+  })()`), `Cards and attached tray must stay within one tabletop at ${width}x${height}`);
   await noOverflow(); await screenshot(`landscape-check-${width}x${height}`);
 }
 await viewport(390,844);

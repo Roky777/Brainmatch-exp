@@ -1,5 +1,9 @@
 # Art provenance
 
+## Board-first composition follow-up
+
+No new raster artwork was generated for the tabletop pass: the built-in image tool returned a usage-limit error. The implemented inset board uses native layout/material styling and reuses `assets/star-tile.webp` as nine-slice painted wood edging. The existing courtyard, tile art and sprite atlases are unchanged. The board, rim indicators and discovery drawer share one layout parent. Match connections are runtime SVG feedback, not baked illustrations.
+
 ## Current playful courtyard and real sprite strips
 
 The previous jungle/ruins scene and static composite mascot were rejected. Current production assets were generated with the built-in image-generation tool and normalized with the sprite-pipeline skill scripts.

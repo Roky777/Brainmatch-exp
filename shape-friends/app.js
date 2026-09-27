@@ -9,6 +9,9 @@ import { LivingGarden } from './garden.js';
 import { Picnic } from './picnic.js';
 
 const $ = id => document.getElementById(id);
+// Board, rim controls and collection drawer form one responsive play object.
+document.querySelector('.match-area').append($('discovery-strip'));
+$('discovery-strip').append($('hint'));
 const save = readSave(), audio = new GameAudio(save), timeline = new Timeline();
 const sparky = new Sparky($('sparky'));
 document.querySelector('.mini-sparky').innerHTML = sparkyArt('picnic-sparky');
@@ -39,6 +42,7 @@ function clearPointer() {
 }
 function clearEffects() {
   clearPointer(); $('effects-layer').replaceChildren(); $('pair-celebration').hidden = true;
+  document.querySelector('.pair-thread')?.remove();
   $('cards').querySelectorAll('.hinted').forEach(node => node.classList.remove('hinted'));
 }
 function unlocked(id) {
@@ -124,7 +128,7 @@ async function resolveTurn(ticket) {
     sparky.set('happy', 2200); audio.effect('match');
     say(result.actor === 'child' ? 'You found shape friends! Hooray!' : 'Shape friends for our picnic!');
     $('pair-celebration').textContent = SHAPES[result.pairId].name;
-    $('pair-celebration').hidden = false; renderTray(); flyDiscoveries(result.indices);
+    $('pair-celebration').hidden = false; renderTray(); connectPair(result.indices); flyDiscoveries(result.indices);
   } else {
     sparky.set('thinking');
     say(result.actor === 'child' ? 'Not quite! Let’s remember them.' : 'Oops! Your turn to look.');
@@ -176,6 +180,20 @@ function flyDiscoveries(indices) {
       Object.assign(img.style, { left: `${destination.left + offset * 45}px`, top: `${destination.top}px`, width: '42px', height: '42px' });
     }));
   }
+}
+function connectPair(indices) {
+  if (reduced.matches) return;
+  const wrap = document.querySelector('.board-wrap'), base = wrap.getBoundingClientRect();
+  const centers = indices.map(index => {
+    const r = $('cards').children[index].getBoundingClientRect();
+    return [r.left + r.width / 2 - base.left, r.top + r.height / 2 - base.top];
+  });
+  const [a,b] = centers, ns = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(ns,'svg'), path = document.createElementNS(ns,'path');
+  svg.classList.add('pair-thread'); svg.setAttribute('aria-hidden','true');
+  svg.setAttribute('viewBox',`0 0 ${base.width} ${base.height}`);
+  path.setAttribute('d',`M${a[0]} ${a[1]} Q${(a[0]+b[0])/2} ${Math.min(a[1],b[1])-35} ${b[0]} ${b[1]}`);
+  path.setAttribute('pathLength','1');svg.append(path);wrap.append(svg);
 }
 function confetti() {
   if (reduced.matches) return;

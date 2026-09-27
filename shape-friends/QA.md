@@ -1,5 +1,12 @@
 # Verification — September 27, 2026
 
+## Board-first tabletop follow-up
+
+- 32 unit tests and all four browser-played rounds passed, including discoveries, saved progress, mouse/touch interaction and reduced motion.
+- Desktop and phone screenshots reviewed: enlarged inset board, rim progress and attached discovery drawer; Sparky remains outside the card hit areas.
+- Added regression checks for card containment, zero gap between board and drawer, and the actual hint-button hit target at six screen sizes.
+- No new generated tabletop asset: image-generation usage was exhausted; existing painted edging was reused.
+
 ## Playful courtyard / sprite animation follow-up
 
 - 32 unit tests passed, including atlas frame selection, multi-frame clips, shared bottom alignment and reduced-motion stills.

@@ -10,6 +10,8 @@ Run `npm start` from the repository root and open **http://127.0.0.1:4178/shape-
 
 ## The experience
 
+The matching scene is board-first: all eight tiles sit inside one inset tabletop, with turn/progress on its rim and a collection drawer attached directly below. Sparky stands beside this shared play object. A successful match briefly links the two cards before their objects travel into the collection drawer. The courtyard is a subdued backdrop, not the play surface. `tabletop.css` owns this composition; it reuses the existing painted tile edging rather than adding new generated art.
+
 Landscape is the primary presentation: a fitted 16:9 stage keeps the painted world undistorted, with Sparky beside the tiles. Portrait remains playable and offers a dismissible rotation suggestion; there is no orientation lock. Rotating does not reset the board. The suggestion dismissal lasts for the browser session when session storage is available.
 
 Flip a card immediately. Find **different objects with the same overall shape**, rather than duplicate images. You and Sparky alternate one two-card turn each, including after a match. Sparky visibly thinks and points, uses only previously revealed observations, and contributes to the same picnic. No timer, penalties, XP, winner or loser.

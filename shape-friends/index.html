@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#8ad7e9">
   <meta name="description" content="Pick two cards and find shape friends with Sparky! A playful Grade 1 memory game.">
   <title>Shape Friends · Play with Sparky</title>
-  <link rel="stylesheet" href="playful.css">
+  <link rel="stylesheet" href="tabletop.css">
   <link rel="preload" href="../assets/garden.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='%23ffbd45'/%3E%3Ccircle cx='38' cy='45' r='5'/%3E%3Ccircle cx='62' cy='45' r='5'/%3E%3Cpath d='M35 60Q50 75 65 60' fill='none' stroke='%23634329' stroke-width='5'/%3E%3C/svg%3E">
 </head>
@@ -25,8 +25,8 @@
     </aside>
     <div class="chapter-header sr-only"><span id="chapter-number">01</span><span id="chapter-kicker">A picnic with Sparky</span><h2 id="chapter-title">Hello, shape friends!</h2></div>
     <section id="play-layout" class="play-layout" aria-label="Play a round">
-      <div class="turn-banner"><div id="turn-chip" class="turn-chip"><span class="turn-light" aria-hidden="true"></span><strong>Your turn!</strong></div><div id="pair-progress" class="pair-progress" aria-label="0 of 4 pairs found"></div></div>
       <div class="match-area">
+        <div class="turn-banner"><div id="turn-chip" class="turn-chip"><span class="turn-light" aria-hidden="true"></span><strong>Your turn!</strong></div><div id="pair-progress" class="pair-progress" aria-label="0 of 4 pairs found"></div></div>
         <div class="board-wrap"><div id="cards" class="memory-board" role="group" aria-label="Eight memory cards. Match things with the same shape."></div><div id="pair-celebration" class="pair-celebration" hidden aria-hidden="true"></div></div>
         <button id="hint" class="hint-button toy-button" type="button" aria-label="Help me remember"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M17 32c0-5-8-8-8-16a15 15 0 0 1 30 0c0 8-8 11-8 16Z" fill="#ffd45b"/><path d="M17 33h14v6H17Zm3 7h8v4h-8Z" fill="#89b6c2"/><path d="m21 14 5 5-4 6m2-19V2M4 11l-3-1m43 1 3-1" fill="none"/></svg></button>
       </div>
@@ -36,6 +36,7 @@
       </aside>
     </section>
     <section id="discovery-strip" class="discovery-basket" aria-label="Our picnic discoveries">
+      <span class="tray-label" aria-hidden="true">Our discoveries</span>
       <p id="discovery-count" class="sr-only">Let’s fill our picnic!</p>
       <button id="picnic-basket" class="basket-button" type="button" aria-label="Play with our picnic discoveries">
         <svg viewBox="0 0 220 180" aria-hidden="true"><defs><linearGradient id="wicker" x2="0" y2="1"><stop stop-color="#f9c371"/><stop offset="1" stop-color="#da9246"/></linearGradient></defs><ellipse cx="110" cy="166" rx="89" ry="11" fill="#487b4d" opacity=".19"/><path d="M51 69C50 1 170 1 169 69" fill="none" stroke="#76552f" stroke-width="18"/><path d="M51 68C51 6 169 6 169 68" fill="none" stroke="#e6a556" stroke-width="10"/><path d="m24 75 14 74q3 13 18 14h108q15-1 18-14l14-74Z" fill="url(#wicker)" stroke="#76552f" stroke-width="5"/><path d="M36 100h147M40 124h139M45 146h130M65 82l5 77m40-77v77m45-77-5 77" fill="none" stroke="#be7c3d" stroke-width="5"/><path d="M24 70h172v20H24Z" fill="#f6c671" stroke="#76552f" stroke-width="5" stroke-linejoin="round"/><path d="m42 64 33 5 16 34-22-7-12 20-9-30Z" fill="#f47876" stroke="#ac5a45" stroke-width="3"/><path d="m52 72 11 26m0-23 11 15" fill="none" stroke="#ffe2bb" stroke-width="4"/><ellipse cx="124" cy="116" rx="17" ry="15" fill="#ffdf85" stroke="#ae783b" stroke-width="3"/><path d="m116 116 6 5 9-11" fill="none" stroke="#bd873e" stroke-width="4"/></svg>

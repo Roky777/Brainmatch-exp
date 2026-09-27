@@ -10,6 +10,8 @@ Run `npm start` from the repository root and open **http://127.0.0.1:4178/shape-
 
 ## The experience
 
+Landscape is the primary presentation: a fitted 16:9 stage keeps the painted world undistorted, with Sparky beside the tiles. Portrait remains playable and offers a dismissible rotation suggestion; there is no orientation lock. Rotating does not reset the board. The suggestion dismissal lasts for the browser session when session storage is available.
+
 Flip a card immediately. Find **different objects with the same overall shape**, rather than duplicate images. You and Sparky alternate one two-card turn each, including after a match. Sparky visibly thinks and points, uses only previously revealed observations, and contributes to the same picnic. No timer, penalties, XP, winner or loser.
 
 | Round | Round | Box-like | Cone-like | Tall and round |

@@ -244,4 +244,10 @@ document.addEventListener('visibilitychange', () => { if (document.hidden) picni
 window.addEventListener('resize', () => { renderTray(); clearPointer(); });
 document.addEventListener('pointerdown', activateAudio, { once: true });
 document.addEventListener('keydown', activateAudio, { once: true });
+// A suggestion only: never lock orientation or interrupt an unfinished turn.
+try { $('rotate-tip').hidden = sessionStorage.getItem('shape-friends:rotation-dismissed') === 'yes'; } catch {}
+$('dismiss-rotate').addEventListener('click', () => {
+  $('rotate-tip').hidden = true;
+  try { sessionStorage.setItem('shape-friends:rotation-dismissed', 'yes'); } catch {}
+});
 settingsUI(); startRound(save.activeRound);

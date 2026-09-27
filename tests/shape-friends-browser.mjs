@@ -80,10 +80,34 @@ for (const [width, height] of [[390, 844], [320, 568], [844, 390]]) {
 }
 await viewport(1440, 1000);
 // Actual keyboard activation, not a direct call to game internals.
+// Include the unlocked basket control: it used to drift into the portrait board.
+for (const [width,height] of [[390,844],[320,568],[844,390],[667,375],[1024,768],[1920,1080]]) {
+  await viewport(width,height);
+  await evaluate('document.querySelector("#visit-picnic").hidden=false');
+  assert(await evaluate(`(() => {
+    const board=document.querySelector('#cards').getBoundingClientRect();
+    return [...document.querySelectorAll('.scene-controls > *, #hint, .speech-bubble')].every(e=>{
+      const r=e.getBoundingClientRect();
+      return r.right<=board.left || r.left>=board.right || r.bottom<=board.top || r.top>=board.bottom;
+    });
+  })()`), `Controls must not overlap the board at ${width}x${height}`);
+  await noOverflow(); await screenshot(`landscape-check-${width}x${height}`);
+}
+await viewport(390,844);
+assert(await evaluate('getComputedStyle(document.querySelector("#rotate-tip")).display !== "none"'));
+await click('#dismiss-rotate');
+assert(await evaluate('document.querySelector("#rotate-tip").hidden'));
+await evaluate('document.querySelector("#visit-picnic").hidden=true');
+await viewport(1440,1000);
 await evaluate('document.querySelector(".memory-card").focus()');
 await send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13, text: '\r', unmodifiedText: '\r' });
 await send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13 });
 await until('document.querySelectorAll(".is-open").length === 1');
+const revealedBeforeRotation = await evaluate('document.querySelector(".is-open").getAttribute("aria-label")');
+await viewport(390,844); await viewport(844,390);
+assert.equal(await evaluate('document.querySelectorAll(".is-open").length'),1);
+assert.equal(await evaluate('document.querySelector(".is-open").getAttribute("aria-label")'),revealedBeforeRotation);
+await viewport(1440,1000);
 await click('#settings-open');
 await click('#voice-toggle'); await click('#effects-toggle');
 assert.equal(await evaluate('document.querySelector("#voice-toggle").getAttribute("aria-pressed")'), 'false');

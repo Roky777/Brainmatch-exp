@@ -1,6 +1,26 @@
 # Art provenance
 
-## Current approved adventure scene
+## Current playful courtyard and real sprite strips
+
+The previous jungle/ruins scene and static composite mascot were rejected. Current production assets were generated with the built-in image-generation tool and normalized with the sprite-pipeline skill scripts.
+
+| Runtime asset | Generated source |
+| --- | --- |
+| `assets/play-courtyard.webp` | `exec-e96b21b6-97f3-46d2-990b-d7006e76b792.png` |
+| `assets/star-tile.webp` | `exec-42a51d6a-455c-43b3-8985-1341ed971d9f.png` |
+| `assets/animation/wave.webp` | `exec-620e5bff-b528-41cc-a69e-7b88042d1279.png` |
+| `assets/animation/think.webp` | `exec-25a98aa8-571e-4eca-842a-18cc51589e50.png` |
+| `assets/animation/cheer.webp` | `exec-10303f30-2a96-495d-a341-f2888bc839ea.png` |
+
+Final background prompt: landscape 16:9, fine expressive ink contours and softly translucent painted colors based on the user's supplied Goldman art reference; open sunny seaside toy-makers' courtyard, warm cottages at the edges, turquoise sea, light bunting and a few potted flowers. Broad quiet cream terrace for live gameplay. No dense canopy, vines, ruins, jungle, stone slabs or baked-in interface. Final tile prompt: single rounded wooden tile, dusty turquoise enamel face, warm cream border, honey wood edge, small friendly golden star; hand-inked paint variation, transparent surroundings, no stone or moss.
+
+Sprite prompts shared these invariants: same flame silhouette, yellow/orange/red palette, huge black eyes with white highlights, no nose, same explorer outfit and proportions, facing front, true transparency, exactly four equal slots in one horizontal strip, no scenery or labels. Each entire strip was generated in one request from the same in-game reference canvas, not independently generated frames. Actions: wave = neutral → blink → raised glove → waving glove; think = neutral → glove at chin → realization → point toward board; cheer = crouch anticipation → hands raised/laugh → arms wide → settle.
+
+`assets/animation/seed.png` preserves the former in-game identity/costume reference. Generated expression frames retain that character design but are not pixel-identical copies of the original face. `pack-sparky.py` runs the installed shared-scale/bottom-center normalization and preview-sheet scripts; its output is three 1536×384 transparent WebP atlases and bounds metadata in `atlas.json`. Reproduce with `python3 shape-friends/pack-sparky.py GENERATED_SESSION shape-friends/assets/animation/seed.png GAME_STUDIO_PACKAGE_ROOT`.
+
+Animation playback is actual atlas frame selection, not CSS rotation of a static cutout. Settings/visibility pause playback. Reduced motion uses one semantic still per state. The miniature discovery-scene mascot uses the neutral atlas frame. Earlier artwork below is retained only as source history/studies.
+
+## Earlier adventure scene (superseded)
 
 Built-in image generation was used, not the API/CLI fallback. The user approved concept `exec-10f61a00-a693-4d53-aa3c-12af32f0ac49.png`, then requested 99% the same art with a slight cute touch. The supplied Goldman screenshot was an art-direction reference, not a shipped game asset. All three outputs below are shipped locally in `assets/` as optimized WebP files.
 

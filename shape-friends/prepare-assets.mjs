@@ -62,3 +62,5 @@ const adventure = {
   'explorer-costume': ['exec-f373ccfa-7875-4e11-942e-997cf59539d3.png', 640],
 };
 for (const [name, [filename, width]] of Object.entries(adventure)) convert(resolve(generated, filename), `${name}.webp`, width, 90);
+convert(resolve(generated, 'exec-e96b21b6-97f3-46d2-990b-d7006e76b792.png'), 'play-courtyard.webp', 1920, 88);
+convert(resolve(generated, 'exec-42a51d6a-455c-43b3-8985-1341ed971d9f.png'), 'star-tile.webp', 384, 90);

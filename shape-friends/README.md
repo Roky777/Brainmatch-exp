@@ -1,6 +1,6 @@
-# Shape Friends — Sparky's garden adventure
+# Shape Friends — Sparky's play courtyard
 
-**Current build: playable approved adventure-art direction.** Four Grade 1 matching rounds on a painted stone terrace, eight live leaf tiles, and Sparky wearing an explorer outfit. His original supplied face is composited unchanged above the new costume; head and body animate separately with nods, thinking leans and celebration hops. The garden has the approved detailed ink-and-painted treatment with a slightly rounder bird and flowers. The discovery scene shows one activity and at most six toys at once. Flower-watering progress is saved; roll/bounce and music play remain available through small illustrated controls.
+**Current build: playable hand-inked toy courtyard with sprite-sheet animation.** Four Grade 1 matching rounds, eight turquoise wooden star tiles, and Sparky in an explorer outfit. Three normalized four-frame atlases provide blink/wave, thinking/pointing and celebration drawings. These preserve the supplied flame-character design but redraw expressions for animation; the old static face/costume collage is no longer used. Tap Sparky to wave. The setting is an open seaside toy courtyard, replacing the dense jungle/ruins direction. The discovery scene shows one activity and at most six toys at once. Watering progress is saved; roll/bounce and music play remain available.
 
 This is not yet a playtested 30-minute adventure or a finished custom-voice production. More authored activities and child playtesting are needed to establish sustained engagement. There are no streaks, retention-pressure systems or forced session lengths.
 
@@ -29,7 +29,7 @@ The picnic is available from the small basket during your turn, including after 
 
 1. Duplicate the `shape-friends` folder for another topic. Keep URLs relative.
 2. Edit `content.js`: pack metadata, four rounds of four pairs, object names, asset keys and interaction types. Keep two cards per pair and unique item IDs within each round.
-3. Add transparent object WebPs to `assets/items/`. A 384 px image is sufficient for cards and toys. Current scene art is `assets/adventure-garden.webp`, `stone-leaf.webp` and `explorer-costume.webp`.
+3. Add transparent object WebPs to `assets/items/`. A 384 px image is sufficient for cards and toys. Current scene art is `assets/play-courtyard.webp`, `star-tile.webp` and `assets/animation/{wave,think,cheer}.webp`.
 4. Give the new pack its own storage key in `save.js`. Never reuse another game's key.
 5. Adjust `SHAPES` and matching language in `app.js`, then update page metadata and labels in `index.html`. The current template is specifically a **shape** matcher, not a generic automatically localized engine.
 6. Add reviewed voice recordings to the manifest in `audio.js`, then run the rule tests and browser playtest with the new content.
@@ -44,9 +44,9 @@ The presentation uses a four-column board and is tuned for eight cards per round
 - `save.js`: isolated, validated discovery/completion/settings storage.
 - `timeline.js`: pause/resume/cancel-safe waits.
 - `app.js`: round lifecycle, visible card rendering, input gates, transitions and captions.
-- `sparky.js`: original raster face and painted explorer costume, with independent head and body motion. No face redraw or artificial mouth animation.
+- `sparky.js`: timed atlas-frame playback, game-state reactions, pause and reduced-motion handling. No artificial lip-sync. `pack-sparky.py` normalizes/assembles the generated strips with the sprite-pipeline scripts.
 - `garden.js`: scene flowers and paper butterflies; receives discovery progress, never hidden card identities.
-- `adventure.css`: approved adventure presentation over shared interaction styles in `book.css` and `style.css`.
+- `playful.css`: current open-courtyard presentation; `adventure.css` supplies landscape layout and shared interaction styles inherit from `book.css` and `style.css`.
 - `picnic.js`: discovered-object interactions, drag cancellation and keyboard equivalents.
 - `audio.js`: separate speech/effect settings, approved-clip lookup, non-blocking device fallback.
 

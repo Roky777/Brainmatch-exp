@@ -1,5 +1,12 @@
 # Verification — September 27, 2026
 
+## Playful courtyard / sprite animation follow-up
+
+- 32 unit tests passed, including atlas frame selection, multi-frame clips, shared bottom alignment and reduced-motion stills.
+- Additional browser checks observed at least three distinct greeting frames after tapping Sparky, unchanged frames while paused, and a stable frame under reduced motion.
+- Screenshot-reviewed the new courtyard and tiles at desktop and small landscape sizes. The sprite hit area is placed beside, not over, the matching board.
+- Full foreground browser campaign passed all four rounds, 18 discoveries, mouse/touch drag, cancellation, keyboard alternatives, persistence and reduced motion with no exceptions or missing assets. An earlier parallel run timed out after another QA tab hid it; the single-foreground rerun passed.
+
 - `npm test`: 30 passed, including original games and the new shape rules.
 - Full Chromium campaign: all four rounds, 18 discoveries, strict turns, saved progress, pause/restart cancellation and reduced motion passed.
 - Native browser mouse, keyboard and emulated touch: tile reveal, toy dragging, invalid drops and touch cancellation passed.

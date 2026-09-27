@@ -29,6 +29,7 @@ function say(text, destination = 'caption') {
 }
 function updatePause() {
   const paused = document.hidden || $('settings-dialog').open || mode === 'explore';
+  sparky.pause(paused);
   if (paused) { timeline.pause(); audio.stop(); } else timeline.resume();
 }
 async function wait(ms, ticket = run) { return await timeline.wait(ms) && ticket === run; }
@@ -58,7 +59,7 @@ function startRound(id) {
   $('explore-view').hidden = true; $('chapter-number').textContent = id.padStart(2, '0');
   $('chapter-title').textContent = round.title;
   $('cards').innerHTML = Array.from({ length: board.size }, (_, index) => `<button class="memory-card" type="button" data-index="${index}" aria-label="Hidden card ${index + 1}"><span class="card-inner"><span class="card-face card-back" aria-hidden="true"><span class="card-emblem"><svg viewBox="0 0 60 60"><path d="M30 9c4 11 12 15 20 17-10 4-17 10-20 24-4-12-10-20-20-24 11-3 17-9 20-17Z"/><circle cx="46" cy="10" r="3"/><circle cx="11" cy="46" r="2"/></svg></span></span><span class="card-face card-front" aria-hidden="true"></span></span><span class="match-check" hidden aria-hidden="true">✓</span></button>`).join('');
-  renderPath(); renderBoard(); renderTray(); updatePause(); sparky.set('present-right', 1900);
+  renderPath(); renderBoard(); renderTray(); updatePause(); sparky.set('greeting', 1400);
   say(id === '1' ? 'Let’s find shape friends! Pick two.' : 'More shape friends! You go first.');
 }
 function renderBoard() {
@@ -227,6 +228,10 @@ function settingsUI() {
 
 $('cards').addEventListener('click', event => { const card = event.target.closest('[data-index]'); if (card) childFlip(Number(card.dataset.index)); });
 $('hint').addEventListener('click', hint);
+$('sparky').addEventListener('click', () => {
+  if (busy || mode !== 'match' || $('settings-dialog').open) return;
+  sparky.set('greeting', 1400); say('Hi, friend! Let’s find a pair.');
+});
 $('repeat').addEventListener('click', () => { activateAudio(); audio.say($('caption').textContent); });
 $('chapter-path').addEventListener('click', event => { const target = event.target.closest('[data-round]'); if (target && unlocked(target.dataset.round)) { $('settings-dialog').close(); startRound(target.dataset.round); } });
 $('visit-picnic').addEventListener('click', showPicnic);

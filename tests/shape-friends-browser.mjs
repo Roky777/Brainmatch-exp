@@ -128,6 +128,21 @@ await click('#restart-round');
 await delay(1700); assert.equal(await evaluate('document.querySelectorAll(".is-open").length'), 0);
 assert.equal(await evaluate('document.querySelector("#turn-chip").dataset.actor'), 'child');
 console.log('Smoke: desktop, 3 small layouts, keyboard, input lock, pause and restart passed.');
+await click('#sparky');
+const spriteFrames=new Set();
+for(let i=0;i<10;i++) { spriteFrames.add(await evaluate('document.querySelector("#sparky").dataset.frame')); await delay(100); }
+assert(spriteFrames.size>=3,'Sparky greeting must play multiple drawn atlas frames');
+await click('#settings-open');
+const pausedSprite=await evaluate('document.querySelector("#sparky").dataset.frame');
+await delay(350);
+assert.equal(await evaluate('document.querySelector("#sparky").dataset.frame'),pausedSprite);
+await click('[data-close]');
+await send('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'reduce'}]});
+await click('#sparky'); await delay(100);
+const stillSprite=await evaluate('document.querySelector("#sparky").dataset.frame');
+await delay(350);assert.equal(await evaluate('document.querySelector("#sparky").dataset.frame'),stillSprite);
+await send('Emulation.setEmulatedMedia',{features:[]});
+console.log('Sprite animation: multiple drawn frames, paused playback and reduced motion passed.');
 
 if (process.argv.includes('--full')) {
   for (const round of PACK.rounds) {

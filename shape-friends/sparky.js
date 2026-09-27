@@ -1,17 +1,48 @@
-// The face is the original supplied artwork, never a generated replacement.
-// The generated image contributes only the explorer costume below the neck.
-export function sparkyArt(prefix='sparky') {
-  return `<svg class="sparky-puppet" viewBox="0 0 260 360" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><clipPath id="${prefix}-costume"><path d="M0 216H260V360H0Z"/></clipPath></defs><g class="puppet-body"><image href="assets/explorer-costume.webp" x="0" y="-26" width="260" height="390" clip-path="url(#${prefix}-costume)"/><g class="puppet-head"><svg x="31" y="7" width="204" height="219" viewBox="20 30 145 155" overflow="hidden"><image href="assets/sparky/idle.webp" width="724" height="543"/></svg></g></g></svg>`;
+// Frame-by-frame atlas playback. No CSS puppet transforms or face/costume collage.
+export const SPARKY_CLIPS = Object.freeze({
+  idle: { sheet:'wave', frames:[0,1,0], times:[3100,130,700], loop:true },
+  greeting: { sheet:'wave', frames:[0,2,3,2,3,0], times:[160,210,210,210,210,300], loop:false },
+  thinking: { sheet:'think', frames:[0,1], times:[180,600], loop:false },
+  'present-right': { sheet:'think', frames:[0,2,3], times:[100,160,600], loop:false },
+  happy: { sheet:'cheer', frames:[0,1,2,3], times:[180,260,300,230], loop:true },
+  'thumbs-up': { sheet:'cheer', frames:[0,1,2,3], times:[180,260,300,230], loop:false },
+});
+export function spriteFrame(pose, elapsed, reduced=false) {
+  const clip=SPARKY_CLIPS[pose] || SPARKY_CLIPS.idle;
+  if(reduced) return {sheet:clip.sheet, frame:pose==='idle'?0:clip.frames.at(-1)};
+  const total=clip.times.reduce((a,b)=>a+b,0);
+  let remaining=clip.loop ? Math.max(0,elapsed)%total : Math.min(Math.max(0,elapsed),total-1);
+  for(let i=0;i<clip.frames.length;i++) { if(remaining<clip.times[i])return {sheet:clip.sheet,frame:clip.frames[i]}; remaining-=clip.times[i]; }
+  return {sheet:clip.sheet,frame:clip.frames.at(-1)};
 }
+export function sparkyArt(){return '<span class="sparky-mini-frame" aria-hidden="true"></span>';}
 export class Sparky {
   constructor(element) {
-    this.element=element; this.until=0; element.innerHTML=sparkyArt(); element.style.backgroundImage='none'; this.set('idle');
-    this.interval=setInterval(()=>{if(document.hidden)return;if(this.until&&performance.now()>=this.until)this.set('idle');if(performance.now()>=this.talkingUntil)element.classList.remove('talking');},100);
+    this.element=element;this.reduced=matchMedia('(prefers-reduced-motion: reduce)');
+    this.elapsed=0;this.duration=0;this.paused=false;this.last=performance.now();
+    this.images=['wave','think','cheer'].map(sheet=>{const i=new Image();i.src=`assets/animation/${sheet}.webp`;return i;});
+    element.replaceChildren();this.set('idle');
+    this.timer=setInterval(()=>this.tick(performance.now()),40);
+  }
+  tick(now) {
+    const delta=Math.min(100,now-this.last);this.last=now;
+    if(this.paused||document.hidden)return;
+    this.elapsed+=delta;
+    if(this.duration&&this.elapsed>=this.duration)this.set('idle');
+    this.paint();
+  }
+  paint() {
+    const {sheet,frame}=spriteFrame(this.pose,this.elapsed,this.reduced.matches);
+    this.element.style.setProperty('--sprite-sheet',`url('assets/animation/${sheet}.webp')`);
+    this.element.style.backgroundPosition=`${frame/3*100}% 100%`;
+    this.element.dataset.sheet=sheet;this.element.dataset.frame=String(frame);
   }
   set(pose,duration=0) {
-    this.pose=pose;this.until=duration?performance.now()+duration:0;this.element.dataset.pose=pose;
-    this.element.setAttribute('aria-label',pose==='thinking'?'Sparky thinks about the cards':pose==='happy'?'Sparky celebrates with you':'Sparky, your little explorer friend');
+    this.pose=SPARKY_CLIPS[pose]?pose:'idle';this.elapsed=0;this.duration=duration;
+    this.element.dataset.pose=this.pose;this.paint();
   }
-  speak(text){this.talkingUntil=performance.now()+Math.min(2300,text.length*45);this.element.classList.add('talking');}
-  look(x){this.element.style.setProperty('--head-look',`${Math.max(-3,Math.min(3,x))}deg`);}
+  pause(value){this.paused=value;this.last=performance.now();}
+  speak(){/* Gestures follow game state; do not pretend to lip-sync device speech. */}
+  look(){/* The pointing strip includes a drawn eye glance toward the board. */}
+  destroy(){clearInterval(this.timer);}
 }

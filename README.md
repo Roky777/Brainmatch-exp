@@ -6,6 +6,8 @@ The original six-level **Flip & Grow** experience remains intact. The home scree
 
 Barnyard Together keeps every spoken line captioned and uses the browser/OS English speech voice as its clearly identified prototype fallback. Voice and music/effects have separate controls, and missing speech never blocks play.
 
+**New: [Shape Friends](shape-friends/README.md)** is the first reusable Grade 1 GDD template, available at `/shape-friends/` and through a small home-screen link. Match objects by shape with the supplied Sparky mascot, discover 18 picnic objects across four rounds, and play together in a persistent picnic. Its source, new generated garden/object illustrations, supplied art and save data are isolated from the original games. See its [art provenance](shape-friends/ASSETS.md) and template guide for reuse. This game currently uses device-speech fallback, not custom character recordings.
+
 ## Play
 
 Serve the repository with `npm start`, then open http://127.0.0.1:4178. Node 20+ is recommended. No dependencies or build step are required. The root `index.html` and relative module/asset URLs work on GitHub Pages, including a repository subpath.
@@ -49,7 +51,7 @@ The single source of reward truth is `game-data.js`. Storage key: `brainmatch-ex
 - `voice.js`: recorded-clip playback with Hindi device-speech fallback.
 - `tests/`: `npm test` verifies reward boundaries, full campaigns, replay accounting, shuffled decks, save validation and timer safety.
 
-Baloo 2 is included under the SIL Open Font License in `assets/OFL.txt`. All other visuals and chimes are original code-native assets. Rupee coins are stylized learning illustrations, not banknote scans.
+Baloo 2 is included under the SIL Open Font License in `assets/OFL.txt`. Pip's Garden visuals and chimes are original code-native assets. Shape Friends additionally uses user-supplied and newly generated illustrations, documented separately. Rupee coins are stylized learning illustrations, not banknote scans.
 
 ## Hosting
 

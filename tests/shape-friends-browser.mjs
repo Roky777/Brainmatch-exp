@@ -1,0 +1,190 @@
+// Browser integration QA. Start npm start and an isolated Chrome with
+// --headless=new --remote-debugging-port=9223. No browser library dependency.
+// node tests/shape-friends-browser.mjs [--full]
+import assert from 'node:assert/strict';
+import { writeFile } from 'node:fs/promises';
+import { PACK, ITEMS } from '../shape-friends/content.js';
+const endpoint = process.env.CHROME_DEBUG_URL || 'http://127.0.0.1:9223';
+const origin = process.env.GAME_URL || 'http://127.0.0.1:4178';
+const tab = await (await fetch(`${endpoint}/json/new?about:blank`, { method: 'PUT' })).json();
+const ws = new WebSocket(tab.webSocketDebuggerUrl);
+await new Promise(resolve => ws.addEventListener('open', resolve, { once: true }));
+let serial = 0; const pending = new Map(), errors = [], badResponses = [];
+ws.addEventListener('message', ({ data }) => {
+  const message = JSON.parse(data);
+  if (message.id) { const promise = pending.get(message.id); pending.delete(message.id); message.error ? promise.reject(Error(JSON.stringify(message.error))) : promise.resolve(message.result); }
+  if (message.method === 'Runtime.exceptionThrown') errors.push(message.params.exceptionDetails.text + ': ' + message.params.exceptionDetails.exception?.description);
+  if (message.method === 'Network.responseReceived' && message.params.response.status >= 400 && !message.params.response.url.endsWith('favicon.ico')) badResponses.push(message.params.response.url);
+});
+function send(method, params = {}) { return new Promise((resolve, reject) => { const id = ++serial; pending.set(id, { resolve, reject }); ws.send(JSON.stringify({ id, method, params })); }); }
+async function evaluate(expression) {
+  const response = await send('Runtime.evaluate', { expression, returnByValue: true, awaitPromise: true, userGesture: true });
+  if (response.exceptionDetails) throw Error(response.exceptionDetails.exception?.description || response.exceptionDetails.text);
+  return response.result.value;
+}
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+async function until(expression, timeout = 10000) {
+  const deadline = Date.now() + timeout;
+  while (Date.now() < deadline) { if (await evaluate(expression)) return; await delay(100); }
+  throw Error(`Timed out: ${expression}`);
+}
+async function click(selector) {
+  const rect = await evaluate(`(() => { const e=document.querySelector(${JSON.stringify(selector)}); e.scrollIntoView({block:'nearest'}); const r=e.getBoundingClientRect(); return {x:r.x+r.width/2,y:r.y+r.height/2}; })()`);
+  await send('Input.dispatchMouseEvent', { type: 'mousePressed', ...rect, button: 'left', clickCount: 1 });
+  await send('Input.dispatchMouseEvent', { type: 'mouseReleased', ...rect, button: 'left', clickCount: 1 });
+  await delay(90); // Allow native click/close events and the next rendered frame.
+}
+async function screenshot(name) {
+  const result = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });
+  await writeFile(`/tmp/brainmatch-shape-friends-${name}.png`, Buffer.from(result.data, 'base64'));
+}
+async function viewport(width, height) { await send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1, mobile: width < 700 }); await delay(200); }
+async function noOverflow() { assert(await evaluate('document.documentElement.scrollWidth <= innerWidth'), 'horizontal overflow'); }
+async function showToy(id) {
+  for (let page = 0; page < 4; page++) {
+    if (await evaluate(`!document.querySelector('[data-toy="${id}"]').hidden`)) return;
+    await click('[data-more-toys]');
+  }
+  throw Error(`Cannot find discovery ${id}`);
+}
+async function drag(source, destination, touch = false, cancel = false) {
+  const points = await evaluate(`(() => { const get=s=>{const r=document.querySelector(s).getBoundingClientRect();return{x:r.x+r.width/2,y:r.y+r.height/2}}; return [get(${JSON.stringify(source)}),get(${JSON.stringify(destination)})]; })()`);
+  const [start, end] = points;
+  const point = position => ({ ...position, id: 1, radiusX: 6, radiusY: 6, force: 1 });
+  if (touch) await send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [point(start)] });
+  else await send('Input.dispatchMouseEvent', { type: 'mousePressed', ...start, button: 'left', buttons: 1, clickCount: 1 });
+  for (let step = 1; step <= 8; step++) {
+    const position = { x: start.x + (end.x - start.x) * step / 8, y: start.y + (end.y - start.y) * step / 8 };
+    if (touch) await send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [point(position)] });
+    else await send('Input.dispatchMouseEvent', { type: 'mouseMoved', ...position, button: 'left', buttons: 1 });
+    await delay(30);
+  }
+  if (touch) await send('Input.dispatchTouchEvent', { type: cancel ? 'touchCancel' : 'touchEnd', touchPoints: [] });
+  else await send('Input.dispatchMouseEvent', { type: 'mouseReleased', ...end, button: 'left', buttons: 0, clickCount: 1 });
+  await delay(100);
+}
+await send('Runtime.enable'); await send('Page.enable'); await send('Network.enable');
+await viewport(1440, 1000);
+await send('Page.navigate', { url: `${origin}/shape-friends/` });
+await send('Page.bringToFront');
+await until('document.querySelectorAll(".memory-card").length === 8');
+await evaluate('localStorage.removeItem("brainmatch:shape-friends:v1"); location.reload()');
+await delay(600); await until('document.querySelectorAll(".memory-card").length === 8');
+await evaluate('document.fonts.ready'); await delay(300);
+assert.equal(await evaluate('document.querySelectorAll(".card-front img").length'), 0);
+await noOverflow(); await screenshot('desktop');
+for (const [width, height] of [[390, 844], [320, 568], [844, 390]]) {
+  await viewport(width, height); await noOverflow(); await screenshot(`${width}x${height}`);
+  assert(await evaluate('document.querySelector("#cards").getBoundingClientRect().top > document.querySelector(".turn-banner").getBoundingClientRect().bottom'), 'Turn banner must not cover the cards');
+  assert(await evaluate('document.querySelector("#cards").getBoundingClientRect().bottom <= innerHeight'), 'All eight cards should fit on screen');
+}
+await viewport(1440, 1000);
+// Actual keyboard activation, not a direct call to game internals.
+await evaluate('document.querySelector(".memory-card").focus()');
+await send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13, text: '\r', unmodifiedText: '\r' });
+await send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13 });
+await until('document.querySelectorAll(".is-open").length === 1');
+await click('#settings-open');
+await click('#voice-toggle'); await click('#effects-toggle');
+assert.equal(await evaluate('document.querySelector("#voice-toggle").getAttribute("aria-pressed")'), 'false');
+await click('[data-close]');
+await click('.memory-card:not(:disabled)');
+assert.equal(await evaluate('document.querySelectorAll(".memory-card:not(:disabled)").length'), 0);
+await delay(350); await screenshot('two-cards');
+await click('#settings-open');
+const before = await evaluate('document.querySelector("#pair-progress").getAttribute("aria-label")');
+await delay(1200); assert.equal(await evaluate('document.querySelector("#pair-progress").getAttribute("aria-label")'), before);
+await click('[data-close]');
+await until('document.querySelector("#turn-chip").dataset.actor === "sparky"');
+await screenshot('sparky-turn');
+// Switching rounds cancels a pending guide turn, not just its visuals.
+await click('#settings-open');
+await click('#settings-dialog summary');
+await click('#restart-round');
+await delay(1700); assert.equal(await evaluate('document.querySelectorAll(".is-open").length'), 0);
+assert.equal(await evaluate('document.querySelector("#turn-chip").dataset.actor'), 'child');
+console.log('Smoke: desktop, 3 small layouts, keyboard, input lock, pause and restart passed.');
+
+if (process.argv.includes('--full')) {
+  for (const round of PACK.rounds) {
+    const shapeForName = new Map(round.pairs.flatMap(([pair, a, b]) => [[ITEMS[a].name, pair], [ITEMS[b].name, pair]]));
+    const observations = new Map(); let moves = 0, lastProgress = '';
+    const deadline = Date.now() + 160000;
+    while (Date.now() < deadline) {
+      const state = await evaluate(`({mode:document.querySelector('#app').dataset.mode,actor:document.querySelector('#turn-chip').dataset.actor,progress:document.querySelector('#pair-progress').getAttribute('aria-label'),cards:[...document.querySelectorAll('.memory-card')].map(e=>({index:+e.dataset.index,label:e.getAttribute('aria-label'),open:e.classList.contains('is-open'),matched:e.classList.contains('is-matched'),enabled:!e.disabled}))})`);
+      for (const card of state.cards.filter(card => card.open)) {
+        const name = card.label.split(/, matched|, face up/)[0];
+        observations.set(card.index, shapeForName.get(name));
+        assert(shapeForName.has(name), `Unknown visible object: ${name}`);
+      }
+      if (state.progress !== lastProgress) { lastProgress = state.progress; console.log(`Round ${round.id}: ${lastProgress}`); }
+      if (state.mode === 'explore') break;
+      const choices = state.cards.filter(card => card.enabled), selected = state.cards.find(card => card.open && !card.matched);
+      if (state.actor === 'child' && choices.length) {
+        let choice;
+        if (selected) choice = choices.find(card => observations.get(card.index) && observations.get(card.index) === observations.get(selected.index));
+        else choice = choices.find(card => observations.has(card.index) && choices.some(other => other.index !== card.index && observations.get(other.index) === observations.get(card.index)));
+        choice ||= choices.find(card => !observations.has(card.index)) || choices[0];
+        await click(`[data-index="${choice.index}"]`); moves++;
+      }
+      await delay(120);
+    }
+    assert.equal(await evaluate('document.querySelector("#app").dataset.mode'), 'explore', `Round ${round.id} did not complete`);
+    const discoveries = await evaluate('JSON.parse(localStorage.getItem("brainmatch:shape-friends:v1")).discoveries');
+    assert(round.pairs.every(([, a, b]) => discoveries.includes(a) && discoveries.includes(b)));
+    assert.equal(await evaluate('document.querySelectorAll(".picnic-toy").length'), discoveries.length);
+    await screenshot(`round-${round.id}-picnic`);
+    assert(await evaluate('document.querySelectorAll(".picnic-toy:not([hidden])").length <= 6'), 'Keep the discovery scene quiet');
+    const drink = discoveries.find(id => ITEMS[id].action === 'pour');
+    await click('[data-activity="water"]'); await showToy(drink); await click(`[data-toy="${drink}"]`); await click('[data-zone="water"]');
+    assert.match(await evaluate('document.querySelector("#picnic-caption").textContent'), /flower/);
+    assert(await evaluate('JSON.parse(localStorage.getItem("brainmatch:shape-friends:v1")).gardenWater > 0'));
+    await click('[data-activity="chime"]'); await click('.picnic-toy:not([hidden])'); await click('[data-zone="chime"]');
+    assert.match(await evaluate('document.querySelector("#picnic-caption").textContent'), /tune/);
+    console.log(`Round ${round.id} complete; ${moves} child flips; ${discoveries.length} discoveries.`);
+    if (round.id !== '4') await click('#next-round');
+  }
+  const save = await evaluate('JSON.parse(localStorage.getItem("brainmatch:shape-friends:v1"))');
+  assert.equal(save.discoveries.length, 18); assert.equal(save.completed.length, 4);
+  await viewport(390, 844); await noOverflow(); await screenshot('completed-phone');
+  // Persistence and replay do not duplicate rewards. Rehydration never auto-completes a deck.
+  await send('Page.reload'); await delay(600); await until('document.querySelectorAll(".memory-card").length === 8');
+  assert.equal(await evaluate('document.querySelectorAll(".is-matched").length'), 0);
+  assert.equal(await evaluate('JSON.parse(localStorage.getItem("brainmatch:shape-friends:v1")).discoveries.length'), 18);
+  await click('#visit-picnic'); assert.equal(await evaluate('document.querySelectorAll(".picnic-toy").length'), 18);
+  await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
+  await click('.picnic-toy:not([hidden])');
+  assert.equal(await evaluate('getComputedStyle(document.querySelector(".picnic-toy:not([hidden])")).animationName'), 'none');
+  await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'no-preference' }] });
+  await viewport(320, 568);
+  await noOverflow(); await screenshot('picnic-small-phone');
+  await send('Emulation.setTouchEmulationEnabled', { enabled: true, maxTouchPoints: 1 });
+  await click('[data-activity="bounce"]'); await showToy('football');
+  await drag('[data-toy="football"]', '[data-zone="bounce"]', true);
+  assert.match(await evaluate('document.querySelector("#picnic-caption").textContent'), /Boing/);
+  assert.equal(await evaluate('document.querySelectorAll("[data-zone=bounce] .zone-discovery").length'), 1);
+  await showToy('book'); await drag('[data-toy="book"]', '[data-zone="bounce"]', true);
+  assert.match(await evaluate('document.querySelector("#picnic-caption").textContent'), /Try a round/);
+  await click('[data-activity="chime"]'); await showToy('orange'); await drag('[data-toy="orange"]', '[data-zone="chime"]', true, true);
+  assert.equal(await evaluate('document.querySelectorAll(".dragging").length'), 0);
+  await send('Emulation.setTouchEmulationEnabled', { enabled: false });
+  await viewport(1440, 1000);
+  await click('[data-activity="bounce"]'); await showToy('football');
+  await drag('[data-toy="football"]', '[data-zone="bounce"]');
+  assert.match(await evaluate('document.querySelector("#picnic-caption").textContent'), /Boing/);
+  await delay(400);
+  await click('[data-activity="chime"]'); await showToy('book');
+  for (const selector of ['[data-toy="book"]', '[data-zone="chime"]']) {
+    await evaluate(`document.querySelector(${JSON.stringify(selector)}).focus()`);
+    await send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13, text: '\r' });
+    await send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13 });
+    await delay(100);
+  }
+  assert.match(await evaluate('document.querySelector("#picnic-caption").textContent'), /tune/);
+  assert.equal(await evaluate('JSON.parse(localStorage.getItem("brainmatch:shape-friends:v1")).discoveries.length'), 18);
+  console.log('Picnic: mouse drag, real touch drag, invalid drop, touch cancellation and keyboard equivalents passed.');
+  console.log('Campaign: all 4 rounds, 18 discoveries, picnic interaction, persistence and reduced motion passed.');
+}
+assert.deepEqual(errors, []); assert.deepEqual(badResponses, []);
+console.log('No browser exceptions or missing game assets.');
+ws.close();

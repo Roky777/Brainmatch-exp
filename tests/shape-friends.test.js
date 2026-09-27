@@ -1,0 +1,118 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { access, stat } from 'node:fs/promises';
+import { PACK, ITEMS, cardsFor, assetURL } from '../shape-friends/content.js';
+import { MatchBoard, shuffle } from '../shape-friends/engine.js';
+import { CompanionMemory } from '../shape-friends/companion.js';
+import { emptySave, sanitizeSave, discover, readSave, writeSave } from '../shape-friends/save.js';
+import { Timeline } from '../shape-friends/timeline.js';
+import { GameAudio } from '../shape-friends/audio.js';
+
+test('Grade 1 GDD: four rounds, four non-identical shape pairs in each', () => {
+  assert.equal(PACK.rounds.length, 4);
+  for (const round of PACK.rounds) {
+    const cards = cardsFor(round);
+    assert.equal(cards.length, 8); assert.equal(new Set(cards.map(card => card.id)).size, 8);
+    assert.equal(new Set(cards.map(card => card.item)).size, 8);
+    assert.deepEqual(round.pairs.map(pair => pair[0]), ['round', 'box', 'cone', 'cylinder']);
+    assert(round.pairs.every(([, a, b]) => a !== b && ITEMS[a] && ITEMS[b]));
+  }
+  assert.deepEqual(PACK.rounds[2].pairs, [['round', 'watermelon', 'ball'], ['box', 'shoebox', 'book'], ['cone', 'icecream', 'birthdaycap'], ['cylinder', 'tumbler', 'waterbottle']]);
+});
+
+test('All 18 object IDs resolve to shipped, compact WebP art', async () => {
+  assert.equal(Object.keys(ITEMS).length, 18);
+  for (const id of Object.keys(ITEMS)) {
+    const url = new URL(assetURL(id)); await access(url);
+    assert((await stat(url)).size < 90000, `${id} exceeds the card budget`);
+  }
+});
+
+test('Every legal two-card choice in every round resolves by shape, not identical pictures', () => {
+  for (const round of PACK.rounds) for (let a = 0; a < 8; a++) for (let b = 0; b < 8; b++) {
+    if (a === b) continue;
+    const cards = cardsFor(round), board = new MatchBoard(cards, { shuffled: false });
+    assert(board.snapshot().every(card => card.card === null));
+    assert.equal(board.reveal(-1, 'child'), null); assert.equal(board.reveal(a, 'sparky'), null);
+    assert(board.reveal(a, 'child')); assert.equal(board.reveal(a, 'child'), null);
+    assert.equal(board.snapshot().filter(card => card.card).length, 1);
+    board.reveal(b, 'child');
+    assert.equal(board.reveal((b + 1) % 8, 'child'), null);
+    const result = board.resolve(); assert.equal(result.match, cards[a].pairId === cards[b].pairId);
+    assert.equal(board.resolve(), null); assert.equal(board.reveal(a, 'child'), null);
+    assert(board.advance()); assert.equal(board.actor, 'sparky'); assert.equal(board.advance(), false);
+    assert.equal(board.matched.size, result.match ? 1 : 0);
+  }
+});
+
+test('200 shuffled rounds finish with strict alternation and a companion using observations only', () => {
+  for (let trial = 0; trial < 200; trial++) {
+    const board = new MatchBoard(cardsFor(PACK.rounds[trial % 4]));
+    const memory = new CompanionMemory(); let previous = 'sparky';
+    while (board.phase !== 'complete') {
+      assert.notEqual(board.actor, previous); previous = board.actor;
+      const first = board.reveal(memory.chooseFirst(board.available()), board.actor); memory.observe(first);
+      const second = board.reveal(memory.chooseSecond(board.available(), first), board.actor); memory.observe(second);
+      const result = board.resolve(); if (result.match) memory.removePair(result.pairId);
+      board.advance(); assert(board.attempts <= 12, 'Observation-driven player should converge.');
+    }
+    assert.equal(board.matched.size, 4); assert.equal(board.available().length, 0);
+    assert.equal(board.history.filter(turn => turn.match).length, 4);
+  }
+});
+
+test('Companion cannot remember an unseen identity; hints use real observed positions', () => {
+  const memory = new CompanionMemory(); assert.equal(memory.hint([0, 1, 2]).type, 'none');
+  memory.observe({ index: 6, item: 'football', pairId: 'round' });
+  assert.equal(memory.hint([2, 6]).cards[0].index, 6);
+  assert.equal(memory.chooseFirst([1, 6], () => .9), 1);
+  memory.observe({ index: 1, item: 'beachball', pairId: 'round' });
+  assert.deepEqual(memory.knownPair([1, 6]), [6, 1]);
+  assert.equal(memory.hint([1, 6], { index: 1, pairId: 'round' }).cards[0].index, 6);
+  assert.equal(memory.chooseSecond([1, 6], { index: 1, pairId: 'round' }), 6);
+  assert.equal(memory.hint([1, 6, 7], { index: 7, pairId: 'box' }).type, 'none', 'Do not suggest an unrelated pair after the child has selected a card.');
+  memory.removePair('round'); assert.equal(memory.seen.size, 0);
+});
+
+test('Discovery collection is unique, persistent and robust to unavailable/corrupt storage', () => {
+  const save = emptySave();
+  for (const round of PACK.rounds) { discover(save, cardsFor(round).map(card => card.item)); save.completed.push(round.id); }
+  assert.equal(save.discoveries.length, 18);
+  assert.equal(discover(save, ['football', 'book']).length, 0);
+  assert.deepEqual(sanitizeSave(save), save);
+  assert.deepEqual(sanitizeSave({ discoveries: ['bad', 'football', 'football'], completed: ['4'] }).discoveries, ['football']);
+  assert.deepEqual(sanitizeSave({ completed: ['4'] }).completed, []);
+  const broken = { getItem() { throw Error('private'); }, setItem() { throw Error('quota'); } };
+  assert.deepEqual(readSave(broken), emptySave()); assert.equal(writeSave(save, broken), false);
+  assert.deepEqual(readSave({ getItem: () => '{bad' }), emptySave());
+  let value; const storage = { getItem: () => value, setItem: (_, input) => { value = input; } };
+  assert(writeSave(save, storage)); assert.deepEqual(readSave(storage), save);
+});
+
+test('Shuffle is a copy and always preserves all cards', () => {
+  const cards = cardsFor(PACK.rounds[0]), before = JSON.stringify(cards);
+  for (let i = 0; i < 100; i++) assert.deepEqual(shuffle(cards).map(card => card.id).sort(), cards.map(card => card.id).sort());
+  assert.equal(JSON.stringify(cards), before);
+});
+
+test('Cancelled and paused turn timelines never run into a new round', async () => {
+  const timeline = new Timeline();
+  const old = timeline.wait(10000); timeline.cancel(); assert.equal(await old, false);
+  timeline.pause(); let complete = false;
+  const pending = timeline.wait(10).then(ok => { complete = ok; });
+  await new Promise(resolve => setTimeout(resolve, 30)); assert.equal(complete, false);
+  timeline.resume(); await pending; assert.equal(complete, true);
+  timeline.pause(); const cancelled = timeline.wait(20); timeline.cancel(); assert.equal(await cancelled, false);
+  assert.equal(timeline.tasks.size, 0);
+});
+
+test('Voice fails gracefully, falls back only once, and respects mute and stale generations', async () => {
+  const spoken = [], settings = { voice: true, effects: false };
+  const engine = { cancel() {}, getVoices: () => [], speak: line => spoken.push(line.text) };
+  let clip;
+  const audio = new GameAudio(settings, { engine, clips: { Hello: './missing.wav' }, utterance: text => ({ text }), createAudio: () => (clip = { play: () => Promise.reject(Error('missing')), pause() {} }) });
+  audio.say('Hello'); clip.onerror(); await Promise.resolve(); assert.deepEqual(spoken, ['Hello']);
+  audio.say('Hello'); audio.stop(); await Promise.resolve(); assert.equal(spoken.length, 1);
+  settings.voice = false; audio.say('Silent'); assert.equal(spoken.length, 1);
+  assert.doesNotThrow(() => new GameAudio({ voice: true }, { engine: null }).say('No engine'));
+});

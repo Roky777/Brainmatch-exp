@@ -1,0 +1,87 @@
+# Art provenance
+
+## Current approved adventure scene
+
+Built-in image generation was used, not the API/CLI fallback. The user approved concept `exec-10f61a00-a693-4d53-aa3c-12af32f0ac49.png`, then requested 99% the same art with a slight cute touch. The supplied Goldman screenshot was an art-direction reference, not a shipped game asset. All three outputs below are shipped locally in `assets/` as optimized WebP files.
+
+| Runtime file | Generated source |
+| --- | --- |
+| `assets/adventure-garden.webp` | `exec-679b4b94-0c17-4934-bb0a-8da3bc89f8c8.png` |
+| `assets/stone-leaf.webp` | `exec-cfbced4d-7594-4d9f-b853-fae79f342962.png` |
+| `assets/explorer-costume.webp` | `exec-f373ccfa-7875-4e11-942e-997cf59539d3.png` |
+
+Final prompt briefs: keep the approved richly inked and painted turquoise-waterfall garden almost unchanged; add a round little bird and cream flowers; remove all tiles, character and UI to leave an empty limestone terrace. Create one front-facing, rounded limestone memory tile with a green engraved leaf and subtle moss, transparent outside the tile. Isolate the explorer mascot in a moss-green vest, cream shirt, brown belt and boots on transparent background. The generated mascot's head is **not used**: `sparky.js` clips the costume below the neck and overlays the supplied `assets/sparky/idle.webp` face. Only head/body motion is used; the original face pixels and flame silhouette remain intact.
+
+Source session: `/Users/rax/.codex/generated_images/01a0de79-dcf3-74f2-83c7-d60969a94185/`. Runtime does not depend on that location. `prepare-assets.mjs` records the import mapping. These are raster assets, while cards, buttons, objects, captions and progress are live interactive elements, not baked into a screenshot.
+
+## Earlier picture-book study (superseded)
+
+The implemented scene uses the built-in image-generation tool's Japanese picture-book direction: delicate gouache/watercolor washes, warm ivory paper grain, peach blossoms, sage foliage and quiet open areas for play. Prompts requested no baked-in characters, controls, words, cards or undiscovered objects in the scene backgrounds.
+
+| Current asset | Generated source |
+| --- | --- |
+| `book-garden-portrait.webp` | `exec-af2867e5-ccf0-4676-bff9-c9b817fbf788.png` |
+| `book-garden-wide.webp` | `exec-65146cd4-e219-4360-bab3-8a4b0260539f.png` |
+| `storybook-open.webp` | `exec-02a9fd5a-7290-4954-9644-f3dafe92d9eb.png` |
+| `paper-card-back.webp` | `exec-18fd8e0b-f035-49d1-94f9-e9ba1f2bf7ea.png` |
+
+Book brief: an overhead open blank ivory storybook, gently worn paper edges, brown cloth cover, tiny painted leaves and blossoms only at the extreme corners. The generated book retained a brown backdrop despite a transparency request; the runtime clips its perimeter to the physical book outline. Card brief: one tactile apricot watercolor paper card, cream border, a single sage sprout and tiny cream flower, no faces or writing. Backgrounds use a cottage and blossom branches only at the edges, leaving the mossy clearing quiet.
+
+The full composition concept `exec-fc357545-7df9-438d-b148-cffae877745f.png` was used as a **style reference**, not a runtime screenshot. No text or objects from that concept are used as noninteractive substitutes for game controls.
+
+The superseded picture-book study used an SVG garden-apron mascot. It was replaced after user feedback; current Sparky instead uses the original face and a painted explorer costume. Earlier generated poses and landscape assets below remain development studies, not the current character or scene.
+
+## Supplied project art
+
+The user provided `sorting template` as their existing game/art reference and asked that it be used for this game. Only the necessary images were copied into this standalone template. The reference game's code, nested Git history, Android project and unused assets were not imported.
+
+11 picture illustrations were taken from `assets/GRADE 1/maths game/` in that folder:
+
+- `level 3/football.png`, `level 3/orange.png`, `level 3/matchbox.png`, `level 3/book.png`, `level 3/stationary box.png`.
+- `LEVEL 1+2/ball (1).png`.
+- `level 4/birthday_cap.png`, `level 4/paper_cone.png`, `level 4/funnel.png`, `level 4/drinking_glass.png`, `level 4/water_bottle (1).png`.
+
+Seven Sparky pose sheets came from `assets/characters/runtime/sparky-{idle,thinking,happy,thumbs-up,surprised,present-right,blink}.png`. They retain their original 724 × 543 grid and alpha. These sheets have loose pose registration, so the runtime selects inspected frames instead of playing the entire grid as a jittery animation. Container motion provides breathing and a small cheer.
+
+All source ownership remains with its respective owner. These supplied assets are not represented as public-domain or independently licensed artwork. The user should retain their original rights records before wider redistribution.
+
+## New generated illustrations
+
+Six images were created for this task with the built-in image-generation tool. No artwork, branding, characters or dialogue from Daniel Tiger or PBS is used.
+
+| Shipped asset | Generated source filename |
+| --- | --- |
+| `picnic-garden.webp` | `exec-7c9da965-bdf0-4480-bd90-97cbcefb2dda.png` |
+| `items/beachball.webp` | `exec-e8053899-b529-4a4f-8dfe-a0ca636453eb.png` |
+| `items/watermelon.webp` | `exec-bba1f6b3-dd26-4737-a920-811ce5ae8a4f.png` |
+| `items/shoebox.webp` | `exec-72eed347-59bf-44fb-a104-baea51e1f7f5.png` |
+| `items/icecream.webp` | `exec-970b2cea-5fe4-4220-bd74-d99ad7ee62b9.png` |
+| `items/notebook.webp` | `exec-543981f2-8638-4939-9ff5-d72a8f3431ab.png` |
+
+Original generated PNGs remain in the local image-generation session `01a0de79-dcf3-74f2-83c7-d60969a94185`. The game ships optimized WebPs, not references to that local cache.
+
+### Generation brief
+
+Background: premium original 2D children's memory-game picnic garden, sunny golden light, soft painted shading, clean friendly silhouettes, mint/teal foliage, apricot flowers and blue sky. Pavilion at far left, framing trees at far right, distant lake/bridge/hills; horizon around 45%; central 65% kept quiet for eight cards. A picnic blanket at bottom left. No UI, text, cards, characters or animals.
+
+Object treatment: one isolated, easily recognized Grade 1 picture-card object, bold clean dark navy contour, saturated colors, smoothly shaded glossy highlights, generous transparent padding, no text, labels, faces, backdrop or cast shadow. Large readable silhouette, coordinated with the supplied Sparky and object art.
+
+Subjects:
+
+- Beach ball: coral, teal and warm yellow panels, round inflated silhouette.
+- Watermelon: one nearly spherical green striped watermelon, not a slice.
+- Shoe box: closed coral rectangular box with a cream lid, clearly box-like.
+- Ice-cream cone: one creamy scoop with a long visible pointed waffle cone.
+- Notebook: closed yellow rectangular notebook with a teal spine, no printed words.
+
+These are the recorded art briefs; the import script identifies the exact resulting artifacts.
+
+## Optimization and reproducibility
+
+`prepare-assets.mjs` imports from the two source folders using `cwebp`. Cards are resized to 384 px with preserved alpha, Sparky sheets keep their pixel dimensions, and the scene is 1536 × 1024. Total shipped visual assets are approximately 1.4 MB. No remote asset URLs or missing generation-cache dependencies are used at runtime.
+
+```sh
+node shape-friends/prepare-assets.mjs '/path/to/sorting template' '/path/to/generated_images/01a0de79-dcf3-74f2-83c7-d60969a94185'
+```
+
+The local Garden font is reused from `../assets/garden.woff2`, under the existing SIL Open Font License in `../assets/OFL.txt`. Card backs, UI marks, pointer, transitions and chimes are original code-created elements.

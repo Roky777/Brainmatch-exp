@@ -109,6 +109,15 @@ await click('#dismiss-rotate');
 assert(await evaluate('document.querySelector("#rotate-tip").hidden'));
 await evaluate('document.querySelector("#visit-picnic").hidden=true');
 await viewport(1440,1000);
+// Real generated clips are served locally and play without pitch/rate tricks.
+await evaluate(`(() => { const play=HTMLMediaElement.prototype.play; HTMLMediaElement.prototype.play=function(){window.__playedVoice=this;return play.call(this);}; })()`);
+await click('#repeat');
+await until('window.__playedVoice?.currentTime > 0');
+assert(await evaluate('window.__playedVoice.src.endsWith("voice/renders/welcome-v1.mp3")'));
+assert.equal(await evaluate('window.__playedVoice.playbackRate'),1);
+await evaluate('window.__playedVoice.pause()');
+const decodedClips=await evaluate(`(async()=>{const {VOICE_CLIPS}=await import('./audio.js');const context=new AudioContext();let count=0;for(const path of Object.values(VOICE_CLIPS)){const response=await fetch(path);if(!response.ok)throw Error(path);const buffer=await context.decodeAudioData(await response.arrayBuffer());if(buffer.duration<=0)throw Error('empty audio');count++;}await context.close();return count;})()`);
+assert.equal(decodedClips,8);
 await evaluate('document.querySelector(".memory-card").focus()');
 await send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13, text: '\r', unmodifiedText: '\r' });
 await send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13 });
@@ -200,7 +209,7 @@ if (process.argv.includes('--full')) {
   await send('Page.reload'); await delay(600); await until('document.querySelectorAll(".memory-card").length === 8');
   assert.equal(await evaluate('document.querySelectorAll(".is-matched").length'), 0);
   assert.equal(await evaluate('JSON.parse(localStorage.getItem("brainmatch:shape-friends:v1")).discoveries.length'), 18);
-  await click('#visit-picnic'); assert.equal(await evaluate('document.querySelectorAll(".picnic-toy").length'), 18);
+  await click('#picnic-basket'); assert.equal(await evaluate('document.querySelectorAll(".picnic-toy").length'), 18);
   await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
   await click('.picnic-toy:not([hidden])');
   assert.equal(await evaluate('getComputedStyle(document.querySelector(".picnic-toy:not([hidden])")).animationName'), 'none');

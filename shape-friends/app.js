@@ -7,8 +7,10 @@ import { GameAudio } from './audio.js';
 import { Sparky, sparkyArt } from './sparky.js';
 import { LivingGarden } from './garden.js';
 import { Picnic } from './picnic.js';
+import { world, icon } from '../art.js';
 
 const $ = id => document.getElementById(id);
+document.querySelector('.garden-background').innerHTML = world();
 // Board, rim controls and collection drawer form one responsive play object.
 document.querySelector('.match-area').append($('discovery-strip'));
 $('discovery-strip').append($('hint'));
@@ -64,6 +66,7 @@ function startRound(id) {
   $('chapter-title').textContent = round.title;
   $('cards').innerHTML = Array.from({ length: board.size }, (_, index) => `<button class="memory-card" type="button" data-index="${index}" aria-label="Hidden card ${index + 1}"><span class="card-inner"><span class="card-face card-back" aria-hidden="true"><span class="card-emblem"><svg viewBox="0 0 60 60"><path d="M30 9c4 11 12 15 20 17-10 4-17 10-20 24-4-12-10-20-20-24 11-3 17-9 20-17Z"/><circle cx="46" cy="10" r="3"/><circle cx="11" cy="46" r="2"/></svg></span></span><span class="card-face card-front" aria-hidden="true"></span></span><span class="match-check" hidden aria-hidden="true">✓</span></button>`).join('');
   renderPath(); renderBoard(); renderTray(); updatePause(); sparky.set('greeting', 1400);
+  $('cards').querySelectorAll('.card-emblem').forEach(el => { el.innerHTML = icon('star'); });
   say(id === '1' ? 'Let’s find shape friends! Pick two.' : 'More shape friends! You go first.');
 }
 function renderBoard() {
@@ -135,6 +138,9 @@ async function resolveTurn(ticket) {
   }
   renderBoard();
   if (!await wait(result.match ? 1300 : 900, ticket)) return;
+  // Let local character clips finish their short reaction before changing turns.
+  const voiceTail = audio.remainingMs();
+  if (voiceTail > 80 && !await wait(voiceTail, ticket)) return;
   clearEffects(); board.advance(); renderBoard();
   // Let the cards close before the next player's input becomes available.
   if (!await wait(420, ticket)) return;

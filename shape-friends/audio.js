@@ -1,6 +1,15 @@
 // Populate with approved local recordings without changing any gameplay code.
 // Keys are caption text; values are URLs relative to this module.
-export const VOICE_CLIPS = {};
+export const VOICE_CLIPS = {
+  "Let’s find shape friends! Pick two.": "voice/renders/welcome-v1.mp3",
+  "Your turn! Pick two.": "voice/renders/your-turn-v1.mp3",
+  "My turn! Hmm… this one?": "voice/renders/my-turn-v1.mp3",
+  "You found shape friends! Hooray!": "voice/renders/match-v1.mp3",
+  "Not quite! Let’s remember them.": "voice/renders/remember-v1.mp3",
+  "More shape friends! You go first.": "voice/renders/next-v1.mp3",
+  "Hi, friend! Let’s find a pair.": "voice/renders/hello-v1.mp3",
+  "Shape friends for our picnic!": "voice/renders/sparky-match-v1.mp3"
+};
 export const EFFECT_CLIPS = {};
 
 export class GameAudio {
@@ -10,6 +19,7 @@ export class GameAudio {
     this.context = null; this.clip = null; this.generation = 0;
   }
   unlock() { try { this.context ||= new AudioContext(); this.context.resume().catch(() => {}); } catch {} }
+  remainingMs() { return this.settings.voice && this.clip && !this.clip.paused && Number.isFinite(this.clip.duration) ? Math.max(0, Math.min(4000, (this.clip.duration-this.clip.currentTime)*1000)) : 0; }
   stop() { this.generation++; try { this.engine?.cancel(); this.clip?.pause(); } catch {} this.clip = null; }
   say(text) {
     this.stop();

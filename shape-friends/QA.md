@@ -1,5 +1,13 @@
 # Verification — September 27, 2026
 
+## Clean Pip-inspired / local voice follow-up
+
+The original Pip lesson was opened and screenshot-reviewed before adapting its existing world art, simpler cards and smaller coach composition. Eight generated English voice cues ship locally. These are initial voice candidates, not perceptually approved custom character recordings. Remaining dynamic narration retains device fallback.
+
+- 34 unit tests passed; all eight local MP3s decoded in Chromium and welcome playback advanced at normal playback rate.
+- Full four-round browser campaign passed with 18 discoveries, saved-progress restoration, mouse/touch interaction, pause, keyboard controls and reduced motion; no browser exceptions or missing assets.
+- Desktop and phone screenshots reviewed. The persistence test now uses the visible collection basket, not the retired toolbar shortcut.
+
 ## Board-first tabletop follow-up
 
 - 32 unit tests and all four browser-played rounds passed, including discoveries, saved progress, mouse/touch interaction and reduced motion.

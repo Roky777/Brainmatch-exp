@@ -1,6 +1,12 @@
 # Shape Friends — Sparky's play courtyard
 
-**Current build: playable hand-inked toy courtyard with sprite-sheet animation.** Four Grade 1 matching rounds, eight turquoise wooden star tiles, and Sparky in an explorer outfit. Three normalized four-frame atlases provide blink/wave, thinking/pointing and celebration drawings. These preserve the supplied flame-character design but redraw expressions for animation; the old static face/costume collage is no longer used. Tap Sparky to wave. The setting is an open seaside toy courtyard, replacing the dense jungle/ruins direction. The discovery scene shows one activity and at most six toys at once. Watering progress is saved; roll/bounce and music play remain available.
+## Current: clean Pip-inspired presentation and local voice cues
+
+The active `clean.css` presentation reuses Pip's original `world()` and star artwork from `../art.js`, with simple mint/cream cards, uncluttered controls and a small coach area. The older painted courtyard/tabletop presentations remain source history; their heavy surfaces are overridden. Pip's own game files are not modified.
+
+Eight main Sparky cues now use locally shipped generated MP3s (`voice/renders/`, AI Voice Generator's `delicate` preset). Reactions wait for the bounded remainder of a playing clip before switching turns. These are initial gentle voice candidates, not an impersonation or custom-trained child character voice. Remaining dynamic object names and discovery lines still use device speech. Voice can be muted independently. The assistant verified files and playback, not perceptual voice quality; audition before production release.
+
+Four Grade 1 matching rounds, eight simple star cards, and Sparky in an explorer outfit. Three normalized four-frame atlases provide blink/wave, thinking/pointing and celebration drawings. These preserve the supplied flame-character design but redraw expressions for animation. Tap Sparky to wave. The discovery scene shows one activity and at most six toys at once. Watering progress is saved; roll/bounce and music play remain available.
 
 This is not yet a playtested 30-minute adventure or a finished custom-voice production. More authored activities and child playtesting are needed to establish sustained engagement. There are no streaks, retention-pressure systems or forced session lengths.
 
@@ -10,9 +16,9 @@ Run `npm start` from the repository root and open **http://127.0.0.1:4178/shape-
 
 ## The experience
 
-The matching scene is board-first: all eight tiles sit inside one inset tabletop, with turn/progress on its rim and a collection drawer attached directly below. Sparky stands beside this shared play object. A successful match briefly links the two cards before their objects travel into the collection drawer. The courtyard is a subdued backdrop, not the play surface. `tabletop.css` owns this composition; it reuses the existing painted tile edging rather than adding new generated art.
+The matching scene is board-first: eight cards form one clear grid, with compact turn/progress above and a small collection tray below. Sparky coaches from below the board. A successful match briefly links the two cards before their objects travel into the collection tray. `clean.css` overrides the earlier tabletop surfaces with Pip's quiet world and simple card treatment.
 
-Landscape is the primary presentation: a fitted 16:9 stage keeps the painted world undistorted, with Sparky beside the tiles. Portrait remains playable and offers a dismissible rotation suggestion; there is no orientation lock. Rotating does not reset the board. The suggestion dismissal lasts for the browser session when session storage is available.
+Landscape is the primary presentation, using a fitted 16:9 stage. Portrait remains playable and offers a dismissible rotation suggestion; there is no orientation lock. Rotating does not reset the board. The suggestion dismissal lasts for the browser session when session storage is available.
 
 Flip a card immediately. Find **different objects with the same overall shape**, rather than duplicate images. You and Sparky alternate one two-card turn each, including after a match. Sparky visibly thinks and points, uses only previously revealed observations, and contributes to the same picnic. No timer, penalties, XP, winner or loser.
 
@@ -31,7 +37,7 @@ The picnic is available from the small basket during your turn, including after 
 
 1. Duplicate the `shape-friends` folder for another topic. Keep URLs relative.
 2. Edit `content.js`: pack metadata, four rounds of four pairs, object names, asset keys and interaction types. Keep two cards per pair and unique item IDs within each round.
-3. Add transparent object WebPs to `assets/items/`. A 384 px image is sufficient for cards and toys. Current scene art is `assets/play-courtyard.webp`, `star-tile.webp` and `assets/animation/{wave,think,cheer}.webp`.
+3. Add transparent object WebPs to `assets/items/`. A 384 px image is sufficient for cards and toys. Current world/star art comes from `../art.js`; animation uses `assets/animation/{wave,think,cheer}.webp`.
 4. Give the new pack its own storage key in `save.js`. Never reuse another game's key.
 5. Adjust `SHAPES` and matching language in `app.js`, then update page metadata and labels in `index.html`. The current template is specifically a **shape** matcher, not a generic automatically localized engine.
 6. Add reviewed voice recordings to the manifest in `audio.js`, then run the rule tests and browser playtest with the new content.
@@ -48,7 +54,7 @@ The presentation uses a four-column board and is tuned for eight cards per round
 - `app.js`: round lifecycle, visible card rendering, input gates, transitions and captions.
 - `sparky.js`: timed atlas-frame playback, game-state reactions, pause and reduced-motion handling. No artificial lip-sync. `pack-sparky.py` normalizes/assembles the generated strips with the sprite-pipeline scripts.
 - `garden.js`: scene flowers and paper butterflies; receives discovery progress, never hidden card identities.
-- `playful.css`: current open-courtyard presentation; `adventure.css` supplies landscape layout and shared interaction styles inherit from `book.css` and `style.css`.
+- `clean.css`: active Pip-inspired presentation; earlier styles supply shared layout and interaction rules through the import chain.
 - `picnic.js`: discovered-object interactions, drag cancellation and keyboard equivalents.
 - `audio.js`: separate speech/effect settings, approved-clip lookup, non-blocking device fallback.
 
@@ -56,9 +62,9 @@ State flow: your two flips → hold/reaction → Sparky's two flips → hold/rea
 
 ## Sound and accessibility
 
-Sparky currently uses **browser/device synthetic speech**, not a custom recording or a clone. Available voices differ between devices, so this build does not promise a particular cute voice. There are no external TTS keys or services in the game. Audio can fail or be muted without blocking play. Captions are always visible, and the current board message can be replayed.
+Sparky uses eight local generated voice clips for main cues, plus browser/device speech for uncovered dynamic lines. No voice cloning was used. Available fallback voices differ between devices. There are no external TTS keys or synthesis requests in the running game. Audio can fail or be muted without blocking play. Captions are always visible, and the current board message can be replayed.
 
-`VOICE_CLIPS` maps exact caption strings to local reviewed recordings. Approved clips play without pitch/rate alteration. A failed clip falls back at most once; a stopped/obsolete clip cannot start stale speech. The default effects are soft original synthesized notes, with a separate toggle. No background music is bundled.
+`VOICE_CLIPS` maps exact caption strings to local generated recordings awaiting perceptual approval. Clips play without pitch/rate alteration. A failed clip falls back at most once; a stopped/obsolete clip cannot start stale speech. The default effects are soft original synthesized notes, with a separate toggle. No background music is bundled.
 
 Use an original bright, warm, playful Sparky voice for the final production pass. Do not copy a reference show's actor or character voice. Keep lines short, friendly and intelligible; use licensed or consented recordings.
 

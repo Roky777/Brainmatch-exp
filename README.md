@@ -6,8 +6,6 @@ The original six-level **Flip & Grow** experience remains intact. The home scree
 
 Barnyard Together keeps every spoken line captioned and uses the browser/OS English speech voice as its clearly identified prototype fallback. Voice and music/effects have separate controls, and missing speech never blocks play.
 
-**[Shape Friends](shape-friends/README.md)** is the reusable Grade 1 shape-matching template at `/shape-friends/`. Choose Practice or Beat Sparky, then 4, 6 or 8 cards with different Sparky memory levels. The play screen keeps only cards, a compact indicator and animated Sparky; the former picnic shelf is no longer shown. Dream-style art and 21 local voice clips are bundled. This is not yet a complete class 1–3 curriculum or fully acted cartoon voice production. Original Pip/Barnyard source and saves remain separate. See [art provenance](shape-friends/ASSETS.md).
-
 ## Play
 
 Serve the repository with `npm start`, then open http://127.0.0.1:4178. Node 20+ is recommended. No dependencies or build step are required. The root `index.html` and relative module/asset URLs work on GitHub Pages, including a repository subpath.
@@ -51,7 +49,7 @@ The single source of reward truth is `game-data.js`. Storage key: `brainmatch-ex
 - `voice.js`: recorded-clip playback with Hindi device-speech fallback.
 - `tests/`: `npm test` verifies reward boundaries, full campaigns, replay accounting, shuffled decks, save validation and timer safety.
 
-Baloo 2 is included under the SIL Open Font License in `assets/OFL.txt`. Pip's Garden visuals and chimes are original code-native assets. Shape Friends additionally uses user-supplied and newly generated illustrations, documented separately. Rupee coins are stylized learning illustrations, not banknote scans.
+Baloo 2 is included under the SIL Open Font License in `assets/OFL.txt`. All other visuals and chimes are original code-native assets. Rupee coins are stylized learning illustrations, not banknote scans.
 
 ## Hosting
 

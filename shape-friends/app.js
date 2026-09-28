@@ -8,6 +8,8 @@ import { Sparky, sparkyArt } from './sparky.js';
 import { LivingGarden } from './garden.js';
 import { Picnic } from './picnic.js';
 import { icon } from '../art.js';
+import { LEVELS, playOptions, resultFor } from './play-options.js';
+import { Dialogue } from './dialogue.js';
 
 const $ = id => document.getElementById(id);
 // Board, rim controls and collection drawer form one responsive play object.
@@ -15,10 +17,13 @@ document.querySelector('.match-area').append($('discovery-strip'));
 $('discovery-strip').append($('hint'));
 const save = readSave(), audio = new GameAudio(save), timeline = new Timeline();
 const sparky = new Sparky($('sparky'));
+const menuSparky = new Sparky($('menu-sparky'));
 document.querySelector('.mini-sparky').innerHTML = sparkyArt('picnic-sparky');
 const garden = new LivingGarden($('living-garden'), { speak: text => say(text), effect: kind => audio.effect(kind), discovered: save.discoveries.length / 2 });
 const reduced = matchMedia('(prefers-reduced-motion: reduce)');
 let board, memory, round, mode = 'match', busy = false, run = 0, started = false;
+let options = playOptions(), guideMemory = new CompanionMemory();
+const dialogue = new Dialogue();
 const picnic = new Picnic($('picnic'), {
   speak: text => say(text, 'picnic-caption'), effect: kind => audio.effect(kind),
   progress: save.gardenWater, onProgress: value => { save.gardenWater = value; persist(); },
@@ -32,8 +37,9 @@ function say(text, destination = 'caption') {
   if (started) audio.say(text);
 }
 function updatePause() {
-  const paused = document.hidden || $('settings-dialog').open || mode === 'explore';
+  const paused = document.hidden || $('settings-dialog').open || mode === 'explore' || mode === 'setup';
   sparky.pause(paused);
+  menuSparky.pause(document.hidden || $('settings-dialog').open || mode !== 'setup');
   if (paused) { timeline.pause(); audio.stop(); } else timeline.resume();
 }
 async function wait(ms, ticket = run) { return await timeline.wait(ms) && ticket === run; }
@@ -56,17 +62,26 @@ function renderPath() {
 function startRound(id) {
   if (!roundById(id) || !unlocked(id)) id = '1';
   run++; timeline.cancel(); audio.stop(); clearEffects(); picnic.cancelDrag();
-  round = roundById(id); board = new MatchBoard(cardsFor(round)); memory = new CompanionMemory();
+  round = roundById(id);
+  const level = LEVELS[options.level];
+  board = new MatchBoard(cardsFor({ pairs: round.pairs.slice(0, level.pairs) }), { mode: options.mode });
+  memory = new CompanionMemory({ capacity: level.capacity }); guideMemory = new CompanionMemory();
   // Decode round art before its flip; these URLs never expose deck positions.
   for (const { item } of cardsFor(round)) { const image = new Image(); image.src = assetURL(item); image.decode?.().catch(() => {}); }
   mode = 'match'; busy = false; save.activeRound = id; persist();
+  $('setup-view').hidden = true; $('result-view').hidden = true;
+  document.querySelector('.match-area').hidden = false;
+  $('app').dataset.playMode = options.mode;
+  $('app').dataset.level = options.level;
+  $('cards').style.setProperty('--columns', level.pairs === 3 ? '3' : level.pairs === 2 ? '2' : '4');
+  $('cards').setAttribute('aria-label', `${board.size} memory cards. Match things with the same shape.`);
   $('app').dataset.mode = mode; $('play-layout').hidden = false; $('discovery-strip').hidden = false;
   $('explore-view').hidden = true; $('chapter-number').textContent = id.padStart(2, '0');
   $('chapter-title').textContent = round.title;
   $('cards').innerHTML = Array.from({ length: board.size }, (_, index) => `<button class="memory-card" type="button" data-index="${index}" aria-label="Hidden card ${index + 1}"><span class="card-inner"><span class="card-face card-back" aria-hidden="true"><span class="card-emblem"><svg viewBox="0 0 60 60"><path d="M30 9c4 11 12 15 20 17-10 4-17 10-20 24-4-12-10-20-20-24 11-3 17-9 20-17Z"/><circle cx="46" cy="10" r="3"/><circle cx="11" cy="46" r="2"/></svg></span></span><span class="card-face card-front" aria-hidden="true"></span></span><span class="match-check" hidden aria-hidden="true">✓</span></button>`).join('');
   renderPath(); renderBoard(); renderTray(); updatePause(); sparky.set('greeting', 1400);
   $('cards').querySelectorAll('.card-emblem').forEach(el => { el.innerHTML = icon('star'); });
-  say(id === '1' ? 'Let’s find shape friends! Pick two.' : 'More shape friends! You go first.');
+  say(dialogue.next(options.mode));
 }
 function renderBoard() {
   const canPlay = board.actor === 'child' && board.phase === 'ready' && !busy && mode === 'match';
@@ -87,9 +102,13 @@ function renderBoard() {
     }
   });
   $('turn-chip').dataset.actor = board.actor;
-  $('turn-chip').querySelector('strong').textContent = board.phase === 'complete' ? 'We did it!' : board.actor === 'child' ? 'Your turn!' : 'Sparky’s turn!';
+  const bonus = board.mode === 'challenge' && board.history.at(-1)?.match;
+  $('turn-chip').querySelector('strong').textContent = board.phase === 'complete' ? 'We did it!' : board.actor === 'child' ? (bonus ? 'You go again!' : 'Your turn!') : (bonus ? 'Sparky goes again!' : 'Sparky’s turn!');
   $('pair-progress').innerHTML = Array.from({ length: board.pairCount }, (_, i) => `<i class="${i < board.matched.size ? 'found' : ''}"></i>`).join('');
   $('pair-progress').setAttribute('aria-label', `${board.matched.size} of ${board.pairCount} pairs found`);
+  $('pair-progress').hidden = options.mode === 'challenge';
+  $('match-score').hidden = options.mode !== 'challenge';
+  $('match-score').textContent = `You ${board.scores.child} · Sparky ${board.scores.sparky}`;
   $('hint').disabled = !canPlay;
   $('visit-picnic').hidden = !save.discoveries.length || mode !== 'match';
   $('visit-picnic').disabled = !canPlay;
@@ -105,7 +124,7 @@ function renderTray() {
 function reveal(index, actor) {
   const observation = board.reveal(index, actor);
   if (!observation) return null;
-  memory.observe(observation); audio.effect('flip'); renderBoard();
+  memory.observe(observation); guideMemory.observe(observation); audio.effect('flip'); renderBoard();
   return observation;
 }
 async function childFlip(index) {
@@ -115,7 +134,7 @@ async function childFlip(index) {
   $('cards').querySelectorAll('.hinted').forEach(node => node.classList.remove('hinted'));
   sparky.set('thinking'); sparky.look((index % 4 - 1.5) * 2);
   if (board.open.length === 1) {
-    say(`A ${ITEMS[observation.item].name.toLowerCase()}! Find its shape friend.`);
+    if (board.attempts % 2 === 0 && audio.remainingMs() < 100) say(dialogue.next('first'));
   } else {
     busy = true; renderBoard(); await resolveTurn(run);
   }
@@ -125,15 +144,16 @@ async function resolveTurn(ticket) {
   const result = board.resolve(); if (!result) return;
   if (result.match) {
     memory.removePair(result.pairId);
+    guideMemory.removePair(result.pairId);
     discover(save, result.items); persist();
     garden.grow();
     sparky.set('happy', 2200); audio.effect('match');
-    say(result.actor === 'child' ? 'You found shape friends! Hooray!' : 'Shape friends for our picnic!');
+    say(result.actor === 'child' ? dialogue.next('match') : 'I found a pair!');
     $('pair-celebration').textContent = SHAPES[result.pairId].name;
-    $('pair-celebration').hidden = false; renderTray(); connectPair(result.indices); flyDiscoveries(result.indices);
+    $('pair-celebration').hidden = false; renderTray(); connectPair(result.indices);
   } else {
     sparky.set('thinking');
-    say(result.actor === 'child' ? 'Not quite! Let’s remember them.' : 'Oops! Your turn to look.');
+    say(dialogue.next(result.actor === 'child' ? 'miss' : 'sparkyMiss'));
   }
   renderBoard();
   if (!await wait(result.match ? 1300 : 900, ticket)) return;
@@ -158,7 +178,7 @@ async function pointAt(index, ticket) {
 }
 async function sparkyTurn(ticket) {
   busy = true; renderBoard(); sparky.set('thinking');
-  say(memory.knownPair(board.available()) ? 'I remember these two!' : 'My turn! Hmm… this one?');
+  say('My turn! Hmm… this one?');
   if (!await wait(600, ticket)) return;
   const firstIndex = memory.chooseFirst(board.available());
   if (!await pointAt(firstIndex, ticket)) return;
@@ -207,9 +227,14 @@ function confetti() {
 function finishRound() {
   if (!save.completed.includes(round.id)) save.completed.push(round.id);
   persist(); renderPath(); audio.effect('finish');
-  showPicnic(); confetti();
-  say(save.completed.length === PACK.rounds.length ? 'All our friends! We did it!' : 'We did it! Let’s play!', 'picnic-caption');
-  $('next-round').focus({ preventScroll: true });
+  mode = 'result'; $('app').dataset.mode = mode;
+  document.querySelector('.match-area').hidden = true; $('result-view').hidden = false;
+  const outcome = resultFor(board);
+  $('result-title').textContent = { practice:'You found them all!', win:'You beat Sparky!', lose:'Sparky wins this time!', tie:'A brilliant tie!' }[outcome];
+  $('result-score').textContent = options.mode === 'practice' ? `${board.pairCount} pairs found` : `You ${board.scores.child} · Sparky ${board.scores.sparky}`;
+  sparky.set(outcome === 'lose' ? 'greeting' : 'happy', 2400);
+  say(dialogue.next(outcome === 'practice' ? 'done' : outcome)); confetti();
+  $('play-again').focus({ preventScroll: true });
 }
 function showPicnic() {
   if (!save.discoveries.length) return;
@@ -233,11 +258,11 @@ function hint() {
   if (busy || timeline.paused || board.actor !== 'child' || board.phase !== 'ready') return;
   activateAudio();
   const selected = board.snapshot().find(card => card.visible && !card.matched);
-  const result = memory.hint(board.available(), selected ? { ...selected.card, index: selected.index } : null);
-  if (result.type === 'none') say(selected ? 'Let’s try a new card!' : 'Pick one! We’ll remember together.');
+  const result = guideMemory.hint(board.available(), selected ? { ...selected.card, index: selected.index } : null);
+  if (result.type === 'none') say('Let’s try a new card!');
   else {
     result.cards.forEach(card => $('cards').children[card.index].classList.add('hinted'));
-    say(result.type === 'pair' ? 'I remember these two! Try them.' : `Look here! We saw a ${ITEMS[result.cards[0].item].name.toLowerCase()}.`);
+    say(result.type === 'pair' || result.type === 'mate' ? 'I remember these two! Try them.' : 'Let’s try a new card!');
   }
   sparky.set('thumbs-up', 1800);
 }
@@ -253,7 +278,8 @@ $('cards').addEventListener('click', event => { const card = event.target.closes
 $('hint').addEventListener('click', hint);
 $('sparky').addEventListener('click', () => {
   if (busy || mode !== 'match' || $('settings-dialog').open) return;
-  sparky.set('greeting', 1400); say('Hi, friend! Let’s find a pair.');
+  if (options.mode === 'practice') hint();
+  else { sparky.set('greeting', 1400); say('Hi, friend! Let’s find a pair.'); }
 });
 $('repeat').addEventListener('click', () => { activateAudio(); audio.say($('caption').textContent); });
 $('chapter-path').addEventListener('click', event => { const target = event.target.closest('[data-round]'); if (target && unlocked(target.dataset.round)) { $('settings-dialog').close(); startRound(target.dataset.round); } });
@@ -278,4 +304,34 @@ $('dismiss-rotate').addEventListener('click', () => {
   $('rotate-tip').hidden = true;
   try { sessionStorage.setItem('shape-friends:rotation-dismissed', 'yes'); } catch {}
 });
-settingsUI(); startRound(save.activeRound);
+function setupUI() {
+  document.querySelectorAll('button[data-play-mode]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.playMode === options.mode)));
+  document.querySelectorAll('button[data-level]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.level === options.level)));
+  const level = LEVELS[options.level];
+  $('level-description').textContent = options.mode === 'practice' ? `${level.pairs * 2} cards · Take your time. Tap Sparky for help.` : level.description;
+}
+function showSetup() {
+  run++; timeline.cancel(); audio.stop(); clearEffects(); picnic.cancelDrag(); busy = false;
+  mode = 'setup'; $('app').dataset.mode = mode;
+  $('setup-view').hidden = false; $('play-layout').hidden = true; $('explore-view').hidden = true;
+  $('result-view').hidden = true; $('discovery-strip').hidden = true;
+  $('setup-view').dataset.step = 'menu'; $('mode-panel').hidden = false; $('level-panel').hidden = true;
+  setupUI(); updatePause(); menuSparky.set('greeting',1400);
+  document.querySelector('button[data-play-mode="practice"]').focus({ preventScroll:true });
+}
+function showLevels(playMode) {
+  options = playOptions(playMode, options.level); setupUI();
+  $('setup-view').dataset.step = 'levels'; $('mode-panel').hidden = true; $('level-panel').hidden = false;
+  $('level-title').textContent = options.mode === 'practice' ? 'Practice' : 'Beat Sparky';
+  menuSparky.set('present-right',1400);
+  document.querySelector(`button[data-level="${options.level}"]`).focus({preventScroll:true});
+}
+document.querySelectorAll('button[data-play-mode]').forEach(button => button.addEventListener('click', () => showLevels(button.dataset.playMode)));
+$('back-to-modes').addEventListener('click',showSetup);
+$('menu-sparky').addEventListener('click',()=>{activateAudio();menuSparky.set('greeting',1400);$('menu-caption').textContent='Hi, friend! Let’s find a pair.';audio.say($('menu-caption').textContent);});
+document.querySelectorAll('button[data-level]').forEach(button => button.addEventListener('click', () => { options = playOptions(options.mode, button.dataset.level); setupUI(); }));
+$('start-game').addEventListener('click', () => { activateAudio(); startRound(save.activeRound); });
+$('play-again').addEventListener('click', () => { activateAudio(); startRound(round.id === '4' ? '1' : String(Number(round.id) + 1)); });
+$('choose-game').addEventListener('click', showSetup);
+document.querySelector('.home-button').addEventListener('click', event => { event.preventDefault(); if ($('settings-dialog').open) $('settings-dialog').close(); showSetup(); });
+settingsUI(); startRound(save.activeRound); showSetup();

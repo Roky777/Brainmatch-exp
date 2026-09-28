@@ -1,7 +1,12 @@
 // This module accepts revealed observations and legal positions, never a deck.
 export class CompanionMemory {
-  constructor() { this.seen = new Map(); }
-  observe(observation) { if (observation) this.seen.set(observation.index, { ...observation }); }
+  constructor({ capacity = Infinity } = {}) { this.seen = new Map(); this.capacity = Math.max(2, capacity); }
+  observe(observation) {
+    if (!observation) return;
+    this.seen.delete(observation.index);
+    this.seen.set(observation.index, { ...observation });
+    while (this.seen.size > this.capacity) this.seen.delete(this.seen.keys().next().value);
+  }
   removePair(pairId) {
     for (const [index, card] of this.seen) if (card.pairId === pairId) this.seen.delete(index);
   }

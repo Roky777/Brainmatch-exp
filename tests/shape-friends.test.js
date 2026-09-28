@@ -40,20 +40,21 @@ test('Every legal two-card choice in every round resolves by shape, not identica
     assert.equal(board.reveal((b + 1) % 8, 'child'), null);
     const result = board.resolve(); assert.equal(result.match, cards[a].pairId === cards[b].pairId);
     assert.equal(board.resolve(), null); assert.equal(board.reveal(a, 'child'), null);
-    assert(board.advance()); assert.equal(board.actor, 'sparky'); assert.equal(board.advance(), false);
+    assert(board.advance()); assert.equal(board.actor, result.match ? 'child' : 'sparky'); assert.equal(board.advance(), false);
     assert.equal(board.matched.size, result.match ? 1 : 0);
   }
 });
 
-test('200 shuffled rounds finish with strict alternation and a companion using observations only', () => {
+test('200 shuffled rounds finish with match-earned extra turns and observed memory only', () => {
   for (let trial = 0; trial < 200; trial++) {
     const board = new MatchBoard(cardsFor(PACK.rounds[trial % 4]));
-    const memory = new CompanionMemory(); let previous = 'sparky';
+    const memory = new CompanionMemory(); let expected = 'child';
     while (board.phase !== 'complete') {
-      assert.notEqual(board.actor, previous); previous = board.actor;
+      assert.equal(board.actor, expected);
       const first = board.reveal(memory.chooseFirst(board.available()), board.actor); memory.observe(first);
       const second = board.reveal(memory.chooseSecond(board.available(), first), board.actor); memory.observe(second);
       const result = board.resolve(); if (result.match) memory.removePair(result.pairId);
+      if (!result.match) expected = expected === 'child' ? 'sparky' : 'child';
       board.advance(); assert(board.attempts <= 12, 'Observation-driven player should converge.');
     }
     assert.equal(board.matched.size, 4); assert.equal(board.available().length, 0);

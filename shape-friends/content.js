@@ -52,7 +52,7 @@ export const SHAPES = {
   cylinder: { name: 'Tall, round friends', detail: 'Both are tall and round, like a cylinder.', color: '#8cb4d1' },
 };
 
-export function assetURL(id) { return new URL(`./assets/items/${ITEMS[id].asset}.webp`, import.meta.url).href; }
+export function assetURL(id) { return new URL(`./assets/items-dream/${ITEMS[id].asset}.webp`, import.meta.url).href; }
 export function roundById(id) { return PACK.rounds.find(round => round.id === String(id)); }
 export function cardsFor(round) {
   return round.pairs.flatMap(([pairId, a, b]) => [a, b].map((item, side) => ({ id: `${pairId}-${side}`, pairId, item })));

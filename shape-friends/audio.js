@@ -1,6 +1,19 @@
 // Populate with approved local recordings without changing any gameplay code.
 // Keys are caption text; values are URLs relative to this module.
 export const VOICE_CLIPS = {
+  "Let’s practise! You pick. I’ll cheer!": "voice/renders/practice-start-v1.mp3",
+  "Ready to play against me? You go first!": "voice/renders/challenge-start-v1.mp3",
+  "Hmm… what could go with that?": "voice/renders/wonder-v1.mp3",
+  "Oh, wow! You remembered!": "voice/renders/match-wow-v1.mp3",
+  "Almost! I’m cheering for you. Try again!": "voice/renders/miss-kind-v1.mp3",
+  "Oops! I forgot that one!": "voice/renders/sparky-oops-v1.mp3",
+  "You beat me! That was brilliant!": "voice/renders/win-v1.mp3",
+  "I won this time! Shall we play again?": "voice/renders/lose-v1.mp3",
+  "A tie! We make a great team!": "voice/renders/tie-v1.mp3",
+  "You found them all! High five!": "voice/renders/practice-done-v1.mp3",
+  "I found a pair!": "voice/renders/sparky-found-v1.mp3",
+  "I remember these two! Try them.": "voice/renders/hint-known-v1.mp3",
+  "Let’s try a new card!": "voice/renders/hint-look-v1.mp3",
   "Let’s find shape friends! Pick two.": "voice/renders/welcome-v1.mp3",
   "Your turn! Pick two.": "voice/renders/your-turn-v1.mp3",
   "My turn! Hmm… this one?": "voice/renders/my-turn-v1.mp3",

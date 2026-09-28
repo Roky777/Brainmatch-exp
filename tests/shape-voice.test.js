@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {GameAudio,VOICE_CLIPS} from '../shape-friends/audio.js';
-test('Eight generated Sparky cues are nonempty local MP3s',async()=>{
-  assert.equal(Object.keys(VOICE_CLIPS).length,8);
+test('Twenty-one generated Sparky cues are nonempty local MP3s',async()=>{
+  assert.equal(Object.keys(VOICE_CLIPS).length,21);
   for(const [text,path] of Object.entries(VOICE_CLIPS)){
     assert(text.length>5);assert(path.startsWith('voice/renders/'));
     const bytes=await readFile(new URL('../shape-friends/'+path,import.meta.url));assert(bytes.length>1000);

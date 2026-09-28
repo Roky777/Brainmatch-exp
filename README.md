@@ -6,7 +6,7 @@ The original six-level **Flip & Grow** experience remains intact. The home scree
 
 Barnyard Together keeps every spoken line captioned and uses the browser/OS English speech voice as its clearly identified prototype fallback. Voice and music/effects have separate controls, and missing speech never blocks play.
 
-**New: [Shape Friends](shape-friends/README.md)** is the first reusable Grade 1 GDD template, available at `/shape-friends/` and through a small home-screen link. Match objects by shape with the supplied Sparky mascot, discover 18 picnic objects across four rounds, and play together in a persistent picnic. Its source, new generated garden/object illustrations, supplied art and save data are isolated from the original games. See its [art provenance](shape-friends/ASSETS.md) and template guide for reuse. This game currently uses device-speech fallback, not custom character recordings.
+**[Shape Friends](shape-friends/README.md)** is the reusable Grade 1 shape-matching template at `/shape-friends/`. Choose Practice or Beat Sparky, then 4, 6 or 8 cards with different Sparky memory levels. The play screen keeps only cards, a compact indicator and animated Sparky; the former picnic shelf is no longer shown. Dream-style art and 21 local voice clips are bundled. This is not yet a complete class 1–3 curriculum or fully acted cartoon voice production. Original Pip/Barnyard source and saves remain separate. See [art provenance](shape-friends/ASSETS.md).
 
 ## Play
 

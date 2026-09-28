@@ -1,5 +1,16 @@
 # Verification — September 27, 2026
 
+## September 28 — dream theme, mode menus and match-earned turns
+
+- 38 unit tests passed, including extra turns for both players, all score outcomes and bounded observed-only Sparky memory. Original Pip/Barnyard rules remain unchanged.
+- Chromium completed all six Practice/Beat Sparky × 4/6/8-card combinations. Checked phone, small landscape and desktop bounds, keyboard menu selection, touch reveal, home cancellation, pause and reduced motion. No browser exceptions or missing assets.
+- All 21 local voice clips decoded; intro playback advanced. Acting quality has not been perceptually approved.
+- Reviewed home, separate levels and gameplay screenshots. Home places animated Sparky beside the mode menu. Gameplay removes the collection shelf and level selectors.
+- Fixed a selector collision between app datasets and mode/level buttons. Button selection now explicitly targets buttons.
+- Foreground repaint was blocked by image-generation usage limits. Current art uses a top-aligned crop, not a newly painted grass removal. Existing Sparky face/atlases remain; colour filtering and grounding shadow are presentation adjustments only.
+
+The entries below describe earlier iterations, not the current active theme.
+
 ## September 28 — calmer painted background and grouped layout
 
 - Active scenery is the simplified `calm-meadow-v2.webp`, not the rejected dense orchard. Desktop, portrait and small-landscape screenshots inspected behind live cards.

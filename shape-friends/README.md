@@ -1,85 +1,52 @@
-# Shape Friends — Sparky's play courtyard
+# Shape Friends — play with Sparky
 
-## Current: clean Pip-inspired presentation and local voice cues
+Run `npm start` from the repository root and open http://127.0.0.1:4178/shape-friends/. No build or runtime dependencies. Original Pip and Barnyard games remain intact.
 
-The active `clean.css` presentation uses `assets/calm-meadow-v2.webp` and Pip's star artwork from `../art.js`, with simple mint/cream cards. The painted meadow keeps the centre open, with restrained edge planting and a soft distant hill. Board, collection shelf and coach follow one layout flow; the basket, collected objects and hint have separate shelf slots. Earlier vector/orchard/courtyard presentations remain source studies; their heavy surfaces are overridden. Pip's own game files are not modified.
+## Current experience
 
-Eight main Sparky cues now use locally shipped generated MP3s (`voice/renders/`, AI Voice Generator's `delicate` preset). Reactions wait for the bounded remainder of a playing clip before switching turns. These are initial gentle voice candidates, not an impersonation or custom-trained child character voice. Remaining dynamic object names and discovery lines still use device speech. Voice can be muted independently. The assistant verified files and playback, not perceptual voice quality; audition before production release.
+The home screen places animated Sparky on the left and **Practice** / **Beat Sparky** on the right. Choosing either opens a separate level-selection panel; Back returns to the two-mode menu.
 
-Four Grade 1 matching rounds, eight simple star cards, and Sparky in an explorer outfit. Three normalized four-frame atlases provide blink/wave, thinking/pointing and celebration drawings. These preserve the supplied flame-character design but redraw expressions for animation. Tap Sparky to wave. The discovery scene shows one activity and at most six toys at once. Watering progress is saved; roll/bounce and music play remain available.
+| Level | Cards | Sparky remembers |
+| --- | ---: | --- |
+| Little spark | 4 | Last 2 observed positions |
+| Bright spark | 6 | Last 4 observed positions |
+| Super spark | 8 | All revealed positions |
 
-This is not yet a playtested 30-minute adventure or a finished custom-voice production. More authored activities and child playtesting are needed to establish sustained engagement. There are no streaks, retention-pressure systems or forced session lengths.
+Practice gives every turn to the child. Tap Sparky for a hint based only on previously revealed cards. In Beat Sparky, each pair earns one point and another turn; a miss passes play to the other player. This rule applies equally to the child and Sparky. The result can be a child win, Sparky win or tie. No timer, penalty, purchases or retention pressure.
 
-A sunny, cooperative memory game with Sparky. Built from the supplied **Brain Match Game GDD**, Grade 1 Mathematics, Chapter 2, “What is Long? What is Round?” (pages 15–16). The supplied Sparky and object art establish the character style; the picnic world and five additional objects are newly generated illustrations.
+The matching screen contains cards, one compact turn/progress-or-score indicator, Sparky with a short caption, home and pause. No collection shelf, hint button, rotation prompt, picnic activities or level selectors compete with the board. Result actions offer another board or return to setup. Home cancels the current turn and returns to setup.
 
-Run `npm start` from the repository root and open **http://127.0.0.1:4178/shape-friends/**. No install, bundler, third-party runtime or build step. This route also works under a GitHub Pages repository subpath. Pip’s Garden and Barnyard Together remain separate, unchanged games; the original home screen has an additive link here.
+Content remains the Grade 1 GDD **What is Long? What is Round?** pack: four authored sets of different objects sharing an overall shape. Difficulty levels are NOT grade labels; a full class 1–3 curriculum has not been authored. Smaller boards use the first two or three pairs of the selected set. Completing a board unlocks the next set; replay moves to it. Progress uses the existing isolated save key. Settings can select unlocked sets.
 
-## The experience
+## Art and character
 
-The matching scene is board-first: eight cards form one clear grid, with compact turn/progress above and a small collection tray below. Sparky coaches from below the board. A successful match briefly links the two cards before their objects travel into the collection tray. `clean.css` overrides the earlier tabletop surfaces with Pip's quiet world and simple card treatment.
+The active `dream.css` theme follows the latest dream-sky reference: luminous blue sky, pink-lilac clouds, sunlit leaves, smooth shaded objects and blue-lilac star cards. The quiet central play area and Sparky's existing face/sprite atlases are preserved. See [ASSETS.md](ASSETS.md) for generated sources, prompts and provenance. Original and earlier painted objects remain available; `prepare-painted-art.mjs` with the `dream` argument reproduces current atlas extraction with cwebp.
 
-Landscape is the primary presentation, using a fitted 16:9 stage. Portrait remains playable and offers a dismissible rotation suggestion; there is no orientation lock. Rotating does not reset the board. The suggestion dismissal lasts for the browser session when session storage is available.
+Sparky uses drawn greeting, blinking, thinking/pointing and celebration frames. Event-driven dialogue rotates match/miss variants, responds to wins/ties and leaves quiet time for play. Twenty-one local English MP3 clips are shipped, including 13 new mode/reaction clips. Main active captions have local recordings; device speech is a failure fallback. Voice and effects have separate toggles, captions and replay.
 
-Flip a card immediately. Find **different objects with the same overall shape**, rather than duplicate images. You and Sparky alternate one two-card turn each, including after a match. Sparky visibly thinks and points, uses only previously revealed observations, and contributes to the same picnic. No timer, penalties, XP, winner or loser.
+**Voice limitation:** generated with AI Voice Generator's gentle `delicate` preset. Context and animation are implemented, but emotional acting has not been perceptually approved. No custom character-trained voice, microphone conversation or phoneme lip-sync. The assistant checked playback/decoding, not acting quality. Voice direction and clean scripts live in `voice/`.
 
-| Round | Round | Box-like | Cone-like | Tall and round |
-| --- | --- | --- | --- | --- |
-| 1 | Football / beach ball | Matchbox / book | Birthday cap / paper cone | Glass / water bottle |
-| 2 | Ball / orange | Matchbox / pencil box | Birthday cap / funnel | Glass / bottle |
-| 3 | Watermelon / ball | Shoe box / book | Ice-cream cone / birthday cap | Tumbler / water bottle |
-| 4 | Orange / football | Notebook / matchbox | Funnel / paper cone | Tumbler / bottle |
+## Architecture
 
-Matches contribute **both** objects to the shared discovery tray. A picnic opens after each round, with tap-to-play reactions and three drag/tap destinations. Round objects accumulate: 18 named discoveries, rendered with 16 unique object illustrations. Glass/tumbler and bottle/water bottle intentionally share supplied art. Those GDD names remain distinct content IDs.
+- `engine.js`: hidden cards, input lock, practice/challenge turns, pair scores.
+- `companion.js`: bounded observed-position memory; never receives hidden deck identities.
+- `play-options.js`: level definitions, option validation and result classification.
+- `dialogue.js`: context-specific rotating line banks.
+- `app.js`: setup, round lifecycle, interaction, results, pause/cancellation.
+- `audio.js`, `sparky.js`: local clip playback and sprite-frame reactions.
+- `content.js`: stable item IDs, shape pairs and versioned dream-art URLs.
+- `save.js`, `timeline.js`: isolated persistent progress and cancellable waits.
 
-The picnic is available from the small basket during your turn, including after a refresh. Replay reshuffles the board without duplicating discoveries. Completed rounds, discoveries and flower-watering progress persist; an unfinished matching board starts fresh after a reload. This does not affect the original Pip save system.
+Earlier picnic modules/assets remain as source history but are not exposed in the current mode-first flow. Old discovery data is preserved. There is no analytics, account or child-data collection.
 
-## Reuse this as a template
+## Verification and reuse
 
-1. Duplicate the `shape-friends` folder for another topic. Keep URLs relative.
-2. Edit `content.js`: pack metadata, four rounds of four pairs, object names, asset keys and interaction types. Keep two cards per pair and unique item IDs within each round.
-3. Add transparent object WebPs to `assets/items/`. A 384 px image is sufficient for cards and toys. Current scenery is `assets/calm-meadow-v2.webp`, star art comes from `../art.js`, and animation uses `assets/animation/{wave,think,cheer}.webp`.
-4. Give the new pack its own storage key in `save.js`. Never reuse another game's key.
-5. Adjust `SHAPES` and matching language in `app.js`, then update page metadata and labels in `index.html`. The current template is specifically a **shape** matcher, not a generic automatically localized engine.
-6. Add reviewed voice recordings to the manifest in `audio.js`, then run the rule tests and browser playtest with the new content.
+`npm test` covers the original games, shape rules, scoring, mode transitions, fair memory, saves, audio failures, sprite frames and dialogue coverage.
 
-The presentation uses a four-column board and is tuned for eight cards per round. More pairs require a deliberate layout change and phone QA, not just a data edit.
-
-## Module boundaries
-
-- `content.js`: curriculum and stable asset IDs.
-- `engine.js`: hidden deck, legal reveals, pair resolution, strict turn alternation.
-- `companion.js`: observed-position memory, fair card choices and hints. It receives no hidden deck.
-- `save.js`: isolated, validated discovery/completion/settings storage.
-- `timeline.js`: pause/resume/cancel-safe waits.
-- `app.js`: round lifecycle, visible card rendering, input gates, transitions and captions.
-- `sparky.js`: timed atlas-frame playback, game-state reactions, pause and reduced-motion handling. No artificial lip-sync. `pack-sparky.py` normalizes/assembles the generated strips with the sprite-pipeline scripts.
-- `garden.js`: scene flowers and paper butterflies; receives discovery progress, never hidden card identities.
-- `clean.css`: active Pip-inspired presentation; earlier styles supply shared layout and interaction rules through the import chain.
-- `picnic.js`: discovered-object interactions, drag cancellation and keyboard equivalents.
-- `audio.js`: separate speech/effect settings, approved-clip lookup, non-blocking device fallback.
-
-State flow: your two flips → hold/reaction → Sparky's two flips → hold/reaction → your turn. Completion opens the picnic. A settings dialog or hidden tab pauses pending turn waits. Reshuffling/changing rounds cancels old callbacks before making a new deck.
-
-## Sound and accessibility
-
-Sparky uses eight local generated voice clips for main cues, plus browser/device speech for uncovered dynamic lines. No voice cloning was used. Available fallback voices differ between devices. There are no external TTS keys or synthesis requests in the running game. Audio can fail or be muted without blocking play. Captions are always visible, and the current board message can be replayed.
-
-`VOICE_CLIPS` maps exact caption strings to local generated recordings awaiting perceptual approval. Clips play without pitch/rate alteration. A failed clip falls back at most once; a stopped/obsolete clip cannot start stale speech. The default effects are soft original synthesized notes, with a separate toggle. No background music is bundled.
-
-Use an original bright, warm, playful Sparky voice for the final production pass. Do not copy a reference show's actor or character voice. Keep lines short, friendly and intelligible; use licensed or consented recordings.
-
-All controls are native buttons or links. Tab/Enter/Space work; Escape opens or dismisses settings. Picnic drag-and-drop also works by selecting an object, then selecting a destination. Focus is visible; reduced-motion disables movement; phone layouts remain scrollable when height is limited. There is no account, analytics, advertising or child-data collection. Device speech may be implemented by the browser/OS.
-
-## Verification
-
-`npm test` runs the existing game tests and new shape-matching tests. `tests/shape-friends.test.js` covers all 224 ordered two-card choices across four rounds, 200 complete shuffled boards, fair memory/hints, input locking, turn alternation, assets, saves, timer cancellation/pause, mute and failed/stale voice clips.
-
-For browser QA, launch the local server and an isolated Chrome with `--headless=new --remote-debugging-port=9223`, then run:
-
+With the local server and isolated Chrome debugging on port 9223:
 ```sh
-node tests/shape-friends-browser.mjs --full
+node tests/shape-modes-browser.mjs
 ```
+The old `shape-friends-browser.mjs` entry point delegates to this current suite. It plays all six mode/level combinations, checks responsive bounds, local audio decoding/playback, score totals, pause, cancellation and reduced motion. See [QA.md](QA.md).
 
-The browser script operates native controls, observes only revealed card labels, plays all four rounds, exercises picnic interactions, checks restoration and reduced motion, and captures screenshots in `/tmp/brainmatch-shape-friends-*.png`. It uses Chrome's local debugging protocol and no external dependencies. Set `CHROME_DEBUG_URL` or `GAME_URL` to use other local ports.
-
-See [ASSETS.md](ASSETS.md) for art provenance and reproducible import instructions. User reference folders and the full GDD are not needed to run the shipped game and are not included in the commit.
+To reuse the template, author a new content pack, assign a distinct storage key and update labels/assets. Test curriculum accuracy and silhouettes with children and educators. This is not yet validated 30-minute engagement or device-lab Safari certification.

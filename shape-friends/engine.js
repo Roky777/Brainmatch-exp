@@ -10,7 +10,7 @@ export function shuffle(cards, rng = Math.random) {
 // The renderer and companion never receive a hidden card's identity.
 export class MatchBoard {
   #cards;
-  constructor(cards, { rng = Math.random, shuffled = true } = {}) {
+  constructor(cards, { rng = Math.random, shuffled = true, mode = 'challenge' } = {}) {
     if (!cards.length || cards.length % 2) throw new Error('A board needs complete pairs.');
     const counts = new Map();
     for (const card of cards) counts.set(card.pairId, (counts.get(card.pairId) || 0) + 1);
@@ -23,6 +23,8 @@ export class MatchBoard {
     this.phase = 'ready';
     this.attempts = 0;
     this.history = [];
+    this.mode = mode === 'practice' ? 'practice' : 'challenge';
+    this.scores = { child: 0, sparky: 0 };
   }
   get size() { return this.#cards.length; }
   available() { return this.#cards.flatMap((card, index) => this.matched.has(card.pairId) ? [] : [index]); }
@@ -38,7 +40,7 @@ export class MatchBoard {
     if (this.phase !== 'resolving') return null;
     const [a, b] = this.open.map(index => this.#cards[index]);
     const result = { match: a.pairId === b.pairId, pairId: a.pairId, items: [a.item, b.item], indices: [...this.open], actor: this.actor };
-    if (result.match) this.matched.add(a.pairId);
+    if (result.match) { this.matched.add(a.pairId); this.scores[this.actor]++; }
     this.history.push({ actor: this.actor, match: result.match });
     this.attempts++;
     // The controller owns the visual transition. Input remains locked until advance.
@@ -48,7 +50,9 @@ export class MatchBoard {
   advance() {
     if (this.phase !== 'transition') return false;
     this.open = [];
-    this.actor = this.actor === 'child' ? 'sparky' : 'child';
+    // A pair earns another turn for either player. Only a miss hands over play.
+    if (this.mode === 'practice') this.actor = 'child';
+    else if (!this.history.at(-1)?.match) this.actor = this.actor === 'child' ? 'sparky' : 'child';
     this.phase = this.matched.size === this.pairCount ? 'complete' : 'ready';
     return true;
   }

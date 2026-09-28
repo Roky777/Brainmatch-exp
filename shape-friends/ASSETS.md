@@ -1,5 +1,27 @@
 # Art provenance
 
+## Active dream direction — September 28
+
+Follow-up foreground cleanup: the built-in image edit hit its usage limit and produced no replacement. The current scene uses a top-aligned 123% CSS crop to reduce foreground grass; this is not a painted removal. Sparky retains his existing face and animation atlases, with a restrained colour filter and soft grounding shadow. Further character relighting and foreground repaint remain art-polish work.
+
+The latest user reference supersedes the ink/watercolour direction below. `dream.css` preserves the minimal mode-first layout and Sparky's existing face/atlases while changing background, card, control and object materials. These assets were made with the built-in image tool, not CLI image generation.
+
+- `assets/dream-meadow-v1.webp`, source `exec-f0a16d3a-8362-4e4c-99d9-e774b500f3e9.png`: prompt — original dreamy luminous anime-inspired meadow; blue sky, pink-lilac clouds, sunlit translucent leaves, soft natural bloom; slim tree at far left, detail at edges, quiet central 70%; no UI, characters, props, dense foliage, paper grain or ink outlines. The user's attached dream-tree image is a style reference only.
+- `assets/dream-star-card.webp`, source `exec-3ec0c5ea-5e29-486a-bc94-ada50d1da91f.png`: prompt — square smooth periwinkle/powder-blue/lilac card, one softly lit smiling golden star, fine cream inset border, no grain, glitter, props, text or thick bevels.
+- `assets/items-dream/*.webp`, edited atlas source `exec-1ef8e2cb-3444-400c-ace8-137c3c25628d.png`: prompt — preserve the earlier sixteen-object atlas identities, silhouettes, positions, grid, colours and scale; replace grain/brown ink with smooth luminous anime object painting, warm upper-left highlights, blue-lilac shadow bounce, delicate coloured contours, transparent surroundings, no added props/text.
+
+Reproduce objects/card with `node shape-friends/prepare-painted-art.mjs GENERATED_SESSION dream`. Background uses `cwebp -q 88`. Older art is retained as studies and is not the active visual theme. No claim of human-made artwork or exact reproduction of the user's reference.
+
+## Earlier painted play objects and materials — September 28
+
+The approved `calm-meadow-v2.webp` background and Sparky sprite sheets remain unchanged. `painted.css` uses newly generated material and object art to match the background. All three were made with the built-in image tool, not CLI generation; these are AI-generated illustrations, not commissioned human artwork.
+
+- `assets/items-painted/*.webp`: sixteen separate objects extracted from one transparent 4×4 atlas, source `exec-6a770a1f-48d5-41cb-826d-5b02429a8f52.png`. Prompt: delicate warm-grey ink, translucent watercolour/gouache shading, cream pigment, soft upper-left light, clear curriculum silhouettes, no faces/labels/scenery/glossy 3D; ordered football, beach ball, blue ball, orange, watermelon, matchbox, book, pencil case, shoe box, notebook, birthday hat, paper cone, funnel, ice cream, glass, water bottle. The 18 content IDs still share glass/tumbler and bottle/water-bottle pictures.
+- `assets/painted-star-card.webp`: source `exec-89370fb9-0798-442d-a735-5bbbf8b900b2.png`. Prompt: dusty-teal watercolour paper, small softly painted smiling honey star, fine organic warm-grey ink, one thin cream inset border, no stitching, bevel, text, glitter or plastic finish.
+- `assets/ivory-paper.webp`: source `exec-47bd6629-a3e0-412c-b08e-9b64f9c77e9e.png`. Prompt: extremely subtle warm-ivory watercolour paper material with a clean centre, no objects/text/stains/folds. Only the quiet opaque centre is used.
+
+`prepare-painted-art.mjs` records inspected atlas gutters and reproducible cwebp conversion. Original object files remain intact. Controls remain live accessible SVG/button elements, with fine ink, muted colours and shared paper surfaces; the game is not a flattened generated screenshot.
+
 ## Current: calm painted meadow and organised play area
 
 `assets/calm-meadow-v2.webp` is the active background, generated with the built-in image tool from source `exec-9d9832ec-9907-4635-a7dd-d45feb69fb04.png`. Converted with `cwebp -q 88`. It is one generated illustration, not human-made art or an assembly of cutouts. The supplied Goldman image was a style reference, not a shipped asset.

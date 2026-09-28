@@ -84,6 +84,13 @@ await send('Input.dispatchKeyEvent',{type:'keyDown',key:'Enter',code:'Enter',win
 await send('Input.dispatchKeyEvent',{type:'keyUp',key:'Enter',code:'Enter',windowsVirtualKeyCode:13});
 assert.equal(await evaluate('document.querySelector("button[data-play-mode=challenge]").getAttribute("aria-pressed")'),'true');
 await until('document.querySelector("#setup-view").dataset.step==="levels"');
+assert.equal(await evaluate('document.querySelector("#level-title").textContent'),'Beat Sparky');
+for(const [width,height] of [[390,844],[320,568],[1440,1000]]){
+ await viewport(width,height);await noOverflow();
+ const bounds=await evaluate('(()=>{const a=document.querySelector("#back-to-modes").getBoundingClientRect(),b=document.querySelector("#start-game").getBoundingClientRect();return {top:a.top,bottom:b.bottom}})()');
+ assert(bounds.top>=0&&bounds.bottom<=height,`Beat Sparky levels visible ${width}x${height}: ${JSON.stringify(bounds)}`);
+ await screenshot('beat-sparky-levels-'+width+'x'+height);
+}
 await click('#back-to-modes');
 await click('button[data-play-mode="practice"]');
 assert.equal(await evaluate('document.querySelector("#level-title").textContent'),'Practice');

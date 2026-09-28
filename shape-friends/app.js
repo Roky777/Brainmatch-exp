@@ -173,22 +173,28 @@ async function resolveTurn(ticket) {
 }
 async function tapAt(index, ticket) {
   clearPointer();
+  // A deliberate gesture: Sparky aims, releases a separate star, then the
+  // star's contact flips the card. The card never flips before impact.
+  sparky.set('present-right', 1500);
+  if (!await wait(reduced.matches ? 20 : 260, ticket)) return false;
   const target = $('cards').children[index], rect = target.getBoundingClientRect();
   const character = $('sparky').getBoundingClientRect();
-  const shoulder = {x:character.left + character.width*.27,y:character.top + character.height*.72};
+  const shoulder = {x:character.left + character.width*.25,y:character.top + character.height*.58};
   const tip = {x:rect.left + rect.width*.53,y:rect.top + rect.height*.53};
   const hand = $('hand');
   hand.style.left = `${shoulder.x-28}px`;
   hand.style.top = `${shoulder.y-28}px`;
-  hand.classList.add('visible'); target.classList.add('targeted');
-  sparky.set('present-right');
+  hand.classList.add('visible');
+  const dx=tip.x-shoulder.x,dy=tip.y-shoulder.y;
   tapAnimation = hand.animate([
-    {transform:'translate(0,0) scale(.55) rotate(-30deg)',opacity:0},
-    {transform:`translate(${(tip.x-shoulder.x)*.2}px,${(tip.y-shoulder.y)*.2}px) scale(1) rotate(0deg)`,opacity:1,offset:.23},
-    {transform:`translate(${tip.x-shoulder.x}px,${tip.y-shoulder.y}px) scale(1.2) rotate(150deg)`,opacity:1},
-  ],{duration:reduced.matches?90:570,easing:'cubic-bezier(.25,.7,.2,1)',fill:'forwards'});
+    {transform:'translate(0,0) scale(.42) rotate(-35deg)',opacity:0},
+    {transform:`translate(${dx*.15}px,${dy*.15-28}px) scale(1) rotate(10deg)`,opacity:1,offset:.2},
+    {transform:`translate(${dx*.62}px,${dy*.62-54}px) scale(1.12) rotate(110deg)`,opacity:1,offset:.65},
+    {transform:`translate(${dx}px,${dy}px) scale(1.35) rotate(195deg)`,opacity:1},
+  ],{duration:reduced.matches?90:570,easing:'cubic-bezier(.33,.13,.35,1)',fill:'forwards'});
   try { await tapAnimation.finished; } catch { return false; }
-  return ticket === run && await wait(reduced.matches?45:140,ticket);
+  target.classList.add('targeted');
+  return ticket === run && await wait(reduced.matches?20:100,ticket);
 }
 async function finishTap(ticket) {
   clearPointer();

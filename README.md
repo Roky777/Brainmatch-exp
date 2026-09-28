@@ -6,6 +6,10 @@ The original six-level **Flip & Grow** experience remains intact. The home scree
 
 Barnyard Together keeps every spoken line captioned and uses the browser/OS English speech voice as its clearly identified prototype fallback. Voice and music/effects have separate controls, and missing speech never blocks play.
 
+## Shape Friends
+
+[Shape Friends](shape-friends/README.md) is a separate Grade 1 shape-memory game with Sparky, available at `/shape-friends/`. Choose Practice or Beat Sparky, select a 4-, 6-, or 8-card board, then find matching shape pairs. Run `npm test` for its logic tests; see its [art provenance](shape-friends/ASSETS.md), [design research](shape-friends/DESIGN_RESEARCH.md), and [verification notes](shape-friends/QA.md).
+
 ## Play
 
 Serve the repository with `npm start`, then open http://127.0.0.1:4178. Node 20+ is recommended. No dependencies or build step are required. The root `index.html` and relative module/asset URLs work on GitHub Pages, including a repository subpath.

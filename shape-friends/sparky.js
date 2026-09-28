@@ -1,6 +1,6 @@
 // The user's 4 x 3 kimono sheets keep Sparky's face and costume together.
 export const SPARKY_CLIPS = Object.freeze({
-  idle: { sheet:'peek', frames:[10,11,10], times:[2700,170,950], loop:true },
+  idle: { sheet:'peek', frames:[11,10,11], times:[2400,200,1200], loop:true },
   greeting: { sheet:'expressions', frames:[4,5,6,7,4], times:[220,220,220,250,650], loop:false },
   thinking: { sheet:'expressions', frames:[8,9,10,11], times:[220,350,380,450], loop:true },
   'present-right': { sheet:'reach', frames:[0,1,2,3], times:[110,130,150,580], loop:false },

@@ -75,7 +75,7 @@ for(const [width,height] of [[390,844],[375,669],[320,568],[844,390],[667,375],[
  await viewport(width,height);await noOverflow();
  assert(await evaluate('document.querySelector("#level-panel").hidden'),'Levels are not on the home menu');
  assert(await evaluate('(()=>{const r=document.querySelector("button[data-play-mode=challenge]").getBoundingClientRect();return r.top>=0&&r.bottom<=innerHeight})()'),'Home menu visible');
- assert(await evaluate('(()=>{const r=document.querySelector("#menu-caption").getBoundingClientRect();return r.left>=0&&r.right<=innerWidth})()'),'Sparky caption stays onscreen');
+ assert(await evaluate('(()=>{const r=document.querySelector("#menu-caption").getBoundingClientRect();return r.left>=0&&r.right<=innerWidth})()'),`Sparky caption stays onscreen at ${width}x${height}`);
  await screenshot('setup-'+width+'x'+height);
 }
 await viewport(1440,1000);
@@ -152,8 +152,8 @@ await evaluate('window.__originalRandom=Math.random;Math.random=()=>0');
 await click('#start-game');await click('[data-index="0"]');await click('[data-index="1"]');
 await until('document.querySelector("#turn-chip").dataset.actor==="sparky"');
 await until('document.querySelector("#hand").classList.contains("visible")');
-await delay(400);await screenshot('kimono-reach');
-assert(await evaluate('document.querySelector("#hand").getBoundingClientRect().width>100'),'Kimono sleeve reaches toward a card');
+await delay(400);await screenshot('sparky-card-tap');
+assert(await evaluate('document.querySelector("#hand").getBoundingClientRect().width>=50'),'Sparky sends a visible card-tap cue');
 await click('.home-button');await evaluate('Math.random=window.__originalRandom');
 await click('button[data-play-mode="challenge"]');await click('button[data-level="clever"]');await click('#start-game');await click('[data-index="0"]');
 await click('.home-button');await delay(1500);assert.equal(await evaluate('document.querySelector("#app").dataset.mode'),'setup');

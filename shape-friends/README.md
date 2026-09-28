@@ -20,7 +20,7 @@ Content remains the Grade 1 GDD **What is Long? What is Round?** pack: four auth
 
 ## Art and character
 
-The active `studio.css` layout builds on the dream-sky scene: luminous blue sky, pink-lilac clouds, sunlit leaves, smooth shaded objects and blue-lilac star cards. The quiet central play area is preserved. The supplied kimono Sparky expression, peek, reach and reaction sheets now drive the character, and the reach animation points to cards during his turn. See [ASSETS.md](ASSETS.md) for sources and provenance. Earlier painted objects remain available; `prepare-painted-art.mjs` with the `dream` argument reproduces current object atlas extraction with cwebp.
+The active `studio.css` layout builds on the dream-sky scene: luminous blue sky, pink-lilac clouds, sunlit leaves, smooth shaded objects and blue-lilac star cards. The quiet central play area is preserved. The supplied kimono Sparky expression, peek, reach and reaction sheets drive the character. His turn uses a drawn pointing pose, a larger body motion and a travelling card-tap sparkle; the rejected rubber-arm stretch is no longer shown. See [ASSETS.md](ASSETS.md) for sources and provenance. Earlier painted objects remain available; `prepare-painted-art.mjs` with the `dream` argument reproduces current object atlas extraction with cwebp.
 
 Sparky uses sheet frames for greeting, thinking, reaching, cheering and peeking. Event-driven dialogue rotates match/miss variants, responds to wins/ties and leaves quiet time for play. Twenty-one local English MP3 clips are shipped, including 13 mode/reaction clips. Main active captions have local recordings; device speech is a failure fallback. Voice and effects have separate toggles, captions and replay.
 

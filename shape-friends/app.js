@@ -22,7 +22,7 @@ document.querySelector('.mini-sparky').innerHTML = sparkyArt('picnic-sparky');
 const garden = new LivingGarden($('living-garden'), { speak: text => say(text), effect: kind => audio.effect(kind), discovered: save.discoveries.length / 2 });
 const reduced = matchMedia('(prefers-reduced-motion: reduce)');
 let board, memory, round, mode = 'match', busy = false, run = 0, started = false;
-let armAnimation = null;
+let tapAnimation = null;
 let options = playOptions(), guideMemory = new CompanionMemory();
 const dialogue = new Dialogue();
 const picnic = new Picnic($('picnic'), {
@@ -41,12 +41,12 @@ function updatePause() {
   const paused = document.hidden || $('settings-dialog').open || mode === 'explore' || mode === 'setup';
   sparky.pause(paused);
   menuSparky.pause(document.hidden || $('settings-dialog').open || mode !== 'setup');
-  if (armAnimation) paused ? armAnimation.pause() : armAnimation.play();
+  if (tapAnimation) paused ? tapAnimation.pause() : tapAnimation.play();
   if (paused) { timeline.pause(); audio.stop(); } else timeline.resume();
 }
 async function wait(ms, ticket = run) { return await timeline.wait(ms) && ticket === run; }
 function clearPointer() {
-  armAnimation?.cancel(); armAnimation = null;
+  tapAnimation?.cancel(); tapAnimation = null;
   $('hand').classList.remove('visible');
   $('cards').querySelectorAll('.targeted').forEach(node => node.classList.remove('targeted'));
 }
@@ -171,48 +171,43 @@ async function resolveTurn(ticket) {
   if (board.actor === 'sparky') await sparkyTurn(ticket);
   else { sparky.set('present-right', 1700); say('Your turn! Pick two.'); }
 }
-async function pointAt(index, ticket) {
+async function tapAt(index, ticket) {
   clearPointer();
   const target = $('cards').children[index], rect = target.getBoundingClientRect();
   const character = $('sparky').getBoundingClientRect();
-  const shoulder = {x:character.left + character.width*.31,y:character.top + character.height*.83};
+  const shoulder = {x:character.left + character.width*.27,y:character.top + character.height*.72};
   const tip = {x:rect.left + rect.width*.53,y:rect.top + rect.height*.53};
-  const distance = Math.hypot(tip.x-shoulder.x,tip.y-shoulder.y);
-  const height = Math.max(38,Math.min(62,character.height*.45));
-  const angle = Math.atan2(shoulder.y-tip.y,shoulder.x-tip.x)*180/Math.PI;
   const hand = $('hand');
-  hand.style.left = `${shoulder.x-distance}px`;
-  hand.style.top = `${shoulder.y-height/2}px`;
-  hand.style.width = `${distance}px`;
-  hand.style.height = `${height}px`;
-  hand.style.transform = `rotate(${angle}deg)`;
+  hand.style.left = `${shoulder.x-28}px`;
+  hand.style.top = `${shoulder.y-28}px`;
   hand.classList.add('visible'); target.classList.add('targeted');
   sparky.set('present-right');
-  armAnimation = hand.animate([{clipPath:'inset(0 0 0 100%)'},{clipPath:'inset(0 0 0 0)'}],{duration:reduced.matches?90:480,easing:'cubic-bezier(.18,.7,.25,1)',fill:'forwards'});
-  try { await armAnimation.finished; } catch { return false; }
-  return ticket === run && await wait(reduced.matches?45:90,ticket);
+  tapAnimation = hand.animate([
+    {transform:'translate(0,0) scale(.55) rotate(-30deg)',opacity:0},
+    {transform:`translate(${(tip.x-shoulder.x)*.2}px,${(tip.y-shoulder.y)*.2}px) scale(1) rotate(0deg)`,opacity:1,offset:.23},
+    {transform:`translate(${tip.x-shoulder.x}px,${tip.y-shoulder.y}px) scale(1.2) rotate(150deg)`,opacity:1},
+  ],{duration:reduced.matches?90:570,easing:'cubic-bezier(.25,.7,.2,1)',fill:'forwards'});
+  try { await tapAnimation.finished; } catch { return false; }
+  return ticket === run && await wait(reduced.matches?45:140,ticket);
 }
-async function retractArm(ticket) {
-  const hand = $('hand');
-  armAnimation = hand.animate([{clipPath:'inset(0 0 0 0)'},{clipPath:'inset(0 0 0 100%)'}],{duration:reduced.matches?90:330,easing:'ease-in',fill:'forwards'});
-  try { await armAnimation.finished; } catch { return false; }
+async function finishTap(ticket) {
   clearPointer();
-  return ticket === run;
+  return ticket === run && await wait(reduced.matches?20:100,ticket);
 }
 async function sparkyTurn(ticket) {
   busy = true; renderBoard(); sparky.set('thinking');
   say('My turn! Hmm… this one?');
   if (!await wait(600, ticket)) return;
   const firstIndex = memory.chooseFirst(board.available());
-  if (!await pointAt(firstIndex, ticket)) return;
+  if (!await tapAt(firstIndex, ticket)) return;
   const first = reveal(firstIndex, 'sparky');
-  if (!await retractArm(ticket)) return;
+  if (!await finishTap(ticket)) return;
   if (!first || !await wait(650, ticket)) return;
   sparky.set('thinking');
   const secondIndex = memory.chooseSecond(board.available(), first);
-  if (!await pointAt(secondIndex, ticket)) return;
+  if (!await tapAt(secondIndex, ticket)) return;
   reveal(secondIndex, 'sparky');
-  if (!await retractArm(ticket)) return;
+  if (!await finishTap(ticket)) return;
   await resolveTurn(ticket);
 }
 function flyDiscoveries(indices) {

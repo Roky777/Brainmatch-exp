@@ -2,7 +2,7 @@
 
 ## Current: clean Pip-inspired presentation and local voice cues
 
-The active `clean.css` presentation reuses Pip's original `world()` and star artwork from `../art.js`, with simple mint/cream cards, uncluttered controls and a small coach area. The older painted courtyard/tabletop presentations remain source history; their heavy surfaces are overridden. Pip's own game files are not modified.
+The active `clean.css` presentation uses `assets/calm-meadow-v2.webp` and Pip's star artwork from `../art.js`, with simple mint/cream cards. The painted meadow keeps the centre open, with restrained edge planting and a soft distant hill. Board, collection shelf and coach follow one layout flow; the basket, collected objects and hint have separate shelf slots. Earlier vector/orchard/courtyard presentations remain source studies; their heavy surfaces are overridden. Pip's own game files are not modified.
 
 Eight main Sparky cues now use locally shipped generated MP3s (`voice/renders/`, AI Voice Generator's `delicate` preset). Reactions wait for the bounded remainder of a playing clip before switching turns. These are initial gentle voice candidates, not an impersonation or custom-trained child character voice. Remaining dynamic object names and discovery lines still use device speech. Voice can be muted independently. The assistant verified files and playback, not perceptual voice quality; audition before production release.
 
@@ -37,7 +37,7 @@ The picnic is available from the small basket during your turn, including after 
 
 1. Duplicate the `shape-friends` folder for another topic. Keep URLs relative.
 2. Edit `content.js`: pack metadata, four rounds of four pairs, object names, asset keys and interaction types. Keep two cards per pair and unique item IDs within each round.
-3. Add transparent object WebPs to `assets/items/`. A 384 px image is sufficient for cards and toys. Current world/star art comes from `../art.js`; animation uses `assets/animation/{wave,think,cheer}.webp`.
+3. Add transparent object WebPs to `assets/items/`. A 384 px image is sufficient for cards and toys. Current scenery is `assets/calm-meadow-v2.webp`, star art comes from `../art.js`, and animation uses `assets/animation/{wave,think,cheer}.webp`.
 4. Give the new pack its own storage key in `save.js`. Never reuse another game's key.
 5. Adjust `SHAPES` and matching language in `app.js`, then update page metadata and labels in `index.html`. The current template is specifically a **shape** matcher, not a generic automatically localized engine.
 6. Add reviewed voice recordings to the manifest in `audio.js`, then run the rule tests and browser playtest with the new content.

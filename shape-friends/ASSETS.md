@@ -1,6 +1,14 @@
 # Art provenance
 
-## Board-first composition follow-up
+## Current: calm painted meadow and organised play area
+
+`assets/calm-meadow-v2.webp` is the active background, generated with the built-in image tool from source `exec-9d9832ec-9907-4635-a7dd-d45feb69fb04.png`. Converted with `cwebp -q 88`. It is one generated illustration, not human-made art or an assembly of cutouts. The supplied Goldman image was a style reference, not a shipped asset.
+
+Final prompt brief: background only, landscape 16:9; retain delicate ink and softly painted storybook finish while reducing environmental detail by at least 80%; broad pale sage meadow, pale blue sky, one distant hill, sparse cropped tree at far left and low planting bottom right; central 80% quiet; no interface, mascot, cards, apples, flowers, fences, rocks, buildings, strong shadows or dense foreground. Soft diffuse daylight and low-contrast cream/sage/blue palette.
+
+`assets/quiet-garden.svg` is the earlier code-authored vector composition study. `assets/painted-orchard-v1.webp` (generated source `exec-c9e1eeee-e0b0-4951-83ea-11d1c26571a5.png`) is the richer orchard study rejected as too busy. Neither is loaded by the active presentation. Existing cards, object art, Sparky sprites and voice clips are unchanged. Layout uses one flow for board, shelf and coach, with explicit nonoverlap checks.
+
+## Earlier board-first composition follow-up
 
 No new raster artwork was generated for the tabletop pass: the built-in image tool returned a usage-limit error. The implemented inset board uses native layout/material styling and reuses `assets/star-tile.webp` as nine-slice painted wood edging. The existing courtyard, tile art and sprite atlases are unchanged. The board, rim indicators and discovery drawer share one layout parent. Match connections are runtime SVG feedback, not baked illustrations.
 

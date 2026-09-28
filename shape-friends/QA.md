@@ -1,5 +1,12 @@
 # Verification — September 27, 2026
 
+## September 28 — calmer painted background and grouped layout
+
+- Active scenery is the simplified `calm-meadow-v2.webp`, not the rejected dense orchard. Desktop, portrait and small-landscape screenshots inspected behind live cards.
+- Board, shelf and coach now share a flow-based layout. Browser bounds assertions check separate basket/object/hint slots, coach below shelf, and no sprite/dialogue overlap at six viewport sizes.
+- 34 unit tests passed. Final full Chromium campaign passed all four rounds, 18 discoveries, persistence, mouse/touch interaction, keyboard controls, sprite pause/reduced motion and voice playback, with no browser exceptions or missing assets.
+- An intermediate run began before the orchard conversion completed and reported missing images; the final run above started with the selected meadow file installed and passed.
+
 ## Clean Pip-inspired / local voice follow-up
 
 The original Pip lesson was opened and screenshot-reviewed before adapting its existing world art, simpler cards and smaller coach composition. Eight generated English voice cues ship locally. These are initial voice candidates, not perceptually approved custom character recordings. Remaining dynamic narration retains device fallback.

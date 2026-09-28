@@ -1,7 +1,7 @@
 @import url('tabletop.css');
 /* Reuse Pip's original quiet world and visual hierarchy, not its game state. */
 :root{--ink:#55506b;--focus:#8e69b7}
-.garden-background{background-image:none!important;filter:none;background:#cce5dc}
+.garden-background{background:#cce5dc url('assets/calm-meadow-v2.webp') center/cover no-repeat!important;filter:none}
 .garden-background>svg{width:100%;height:100%;stroke:none;display:block}
 .board-wrap{border:0;border-radius:0;background:none;box-shadow:none;padding:44px 12px 12px}
 .board-wrap:before{display:none}
@@ -50,4 +50,46 @@
 }
 @media(orientation:portrait) and (max-height:700px){
   .speech-bubble p{font-size:13px}.turn-chip strong{font-size:15px}.rotate-tip{top:13%}
+}
+
+/* One flow owns the board, collection shelf and coach. No independent offsets. */
+#app{container-type:inline-size}
+.play-layout{inset:9% 0 2%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0}
+.match-area{position:relative;inset:auto;translate:none;width:min(60%,820px);max-width:none;flex:none}
+.board-wrap{padding:48px 12px 14px}
+.turn-banner{top:0}
+.memory-board{gap:16px}.memory-card{aspect-ratio:1.08}
+.match-area .discovery-basket{height:60px;display:flex;align-items:center;gap:12px;padding:7px 12px;background:#fff4dce8;border:2px solid #fcf8e8;border-radius:18px;box-shadow:0 3px #91ad8733}
+.basket-button{position:relative;inset:auto;width:48px;height:44px;flex:none;opacity:1}
+.discovery-tray{position:static;translate:none;width:auto;height:44px;flex:1;min-width:0;gap:8px;align-items:center;overflow:hidden}
+.tray-item{flex:none;width:40px;height:40px;filter:none}
+.discovery-basket .hint-button{position:relative;inset:auto;flex:none;width:44px;height:44px;box-shadow:none;border:0;border-left:1px solid #d7d9ba;border-radius:0;background:transparent;padding:8px}
+.companion{position:relative;inset:auto;display:flex;align-items:center;justify-content:center;gap:4px;width:min(60%,820px);height:clamp(90px,12cqw,160px);margin-top:68px;flex:none}
+#sparky.sparky-sprite{position:relative;inset:auto;width:auto;height:100%;max-width:none;flex:none;order:-1;aspect-ratio:1}
+.speech-bubble{position:relative;inset:auto;translate:none;transform:none;rotate:0deg;width:auto;max-width:410px;flex:1;min-height:60px;padding:14px 49px 14px 18px;border:2px solid #fffbed;box-shadow:0 3px #8fa78122}
+.speech-bubble:after{display:block;left:-12px;right:auto;bottom:18px;width:14px;height:18px;rotate:0;background:#fff7e3;clip-path:polygon(100% 0,100% 100%,0 60%)}
+.speech-bubble button{width:40px;height:40px;right:4px;padding:9px}
+.living-garden{display:none}
+@media(orientation:landscape) and (max-height:500px){
+  .play-layout{inset:9% 0 1%}
+  .match-area,.companion{width:54%}
+  .board-wrap{padding:33px 7px 10px}.memory-board{gap:10px}
+  .turn-banner{top:0;padding:5px 12px}
+  .match-area .discovery-basket{height:48px;padding:2px 6px;gap:6px}
+  .basket-button{width:40px;height:40px}.discovery-tray{height:40px;gap:4px}.tray-item{width:33px;height:33px}
+  .companion{margin-top:52px;height:75px}
+  .speech-bubble{min-height:48px;padding:9px 43px 9px 12px}.speech-bubble p{font-size:14px}
+}
+@media(orientation:portrait){
+  .play-layout{inset:23% 0 3%;justify-content:flex-start}
+  .match-area,.companion{width:92%}
+  .board-wrap{padding:43px 7px 12px}.memory-board{gap:10px}
+  .match-area .discovery-basket{height:58px;padding:5px 7px;gap:6px}
+  .basket-button{width:44px}.discovery-tray{gap:5px}.tray-item{width:34px;height:34px}
+  .companion{height:115px;margin-top:70px;gap:0}
+  .speech-bubble{min-height:62px;padding:12px 40px 12px 12px}.speech-bubble p{font-size:15px}
+}
+@media(orientation:portrait) and (max-height:700px){
+  .play-layout{top:22%}.companion{height:95px;margin-top:65px}
+  .speech-bubble p{font-size:13px}
 }

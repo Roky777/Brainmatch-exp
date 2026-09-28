@@ -7,10 +7,9 @@ import { GameAudio } from './audio.js';
 import { Sparky, sparkyArt } from './sparky.js';
 import { LivingGarden } from './garden.js';
 import { Picnic } from './picnic.js';
-import { world, icon } from '../art.js';
+import { icon } from '../art.js';
 
 const $ = id => document.getElementById(id);
-document.querySelector('.garden-background').innerHTML = world();
 // Board, rim controls and collection drawer form one responsive play object.
 document.querySelector('.match-area').append($('discovery-strip'));
 $('discovery-strip').append($('hint'));

@@ -101,6 +101,13 @@ for (const [width,height] of [[390,844],[320,568],[844,390],[667,375],[1024,768]
     const tray=document.querySelector('#discovery-strip').getBoundingClientRect();
     return cards.left>=board.left && cards.right<=board.right && cards.top>=board.top && cards.bottom<=board.bottom && Math.abs(tray.top-board.bottom)<2;
   })()`), `Cards and attached tray must stay within one tabletop at ${width}x${height}`);
+  assert(await evaluate(`(() => {
+    const box=s=>document.querySelector(s).getBoundingClientRect();
+    const tray=box('#discovery-strip'), coach=box('.companion'), sprite=box('#sparky'), speech=box('.speech-bubble');
+    const basket=box('#picnic-basket'), items=box('#discovery-tray'), hint=box('#hint');
+    return coach.top>=tray.bottom && sprite.right<=speech.left && speech.bottom<=innerHeight &&
+      basket.right<=items.left && items.right<=hint.left && hint.right<=tray.right;
+  })()`), `Collection and coach must have ordered, nonoverlapping slots at ${width}x${height}`);
   await noOverflow(); await screenshot(`landscape-check-${width}x${height}`);
 }
 await viewport(390,844);

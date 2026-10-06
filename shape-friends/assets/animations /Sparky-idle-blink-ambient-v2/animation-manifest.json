@@ -1,0 +1,300 @@
+{
+  "clip": "sparky_idle_blink",
+  "version": 2,
+  "frames": [
+    {
+      "file": "sparky_idle_blink_000.png",
+      "durationMs": 2500,
+      "eyelidClosed": 0,
+      "flameTipSwayPx": 0,
+      "seatAnchor": [
+        285,
+        329
+      ],
+      "mouthAnchor": [
+        259,
+        234
+      ],
+      "wandHandPivot": [
+        185,
+        280
+      ],
+      "wandTip": [
+        154,
+        244
+      ]
+    },
+    {
+      "file": "sparky_idle_blink_001.png",
+      "durationMs": 250,
+      "eyelidClosed": 0,
+      "flameTipSwayPx": 0.6,
+      "seatAnchor": [
+        285,
+        329
+      ],
+      "mouthAnchor": [
+        259,
+        234
+      ],
+      "wandHandPivot": [
+        185,
+        280
+      ],
+      "wandTip": [
+        154,
+        244
+      ],
+      "gaze": "subtle attentive eye shift"
+    },
+    {
+      "file": "sparky_idle_blink_002.png",
+      "durationMs": 42,
+      "eyelidClosed": 0.2,
+      "flameTipSwayPx": 1.1,
+      "seatAnchor": [
+        285,
+        329
+      ],
+      "mouthAnchor": [
+        259,
+        234
+      ],
+      "wandHandPivot": [
+        185,
+        280
+      ],
+      "wandTip": [
+        154,
+        244
+      ]
+    },
+    {
+      "file": "sparky_idle_blink_003.png",
+      "durationMs": 42,
+      "eyelidClosed": 0.45,
+      "flameTipSwayPx": 1.4,
+      "seatAnchor": [
+        285,
+        329
+      ],
+      "mouthAnchor": [
+        259,
+        234
+      ],
+      "wandHandPivot": [
+        185,
+        280
+      ],
+      "wandTip": [
+        154,
+        244
+      ]
+    },
+    {
+      "file": "sparky_idle_blink_004.png",
+      "durationMs": 42,
+      "eyelidClosed": 0.75,
+      "flameTipSwayPx": 1.1,
+      "seatAnchor": [
+        285,
+        329
+      ],
+      "mouthAnchor": [
+        259,
+        234
+      ],
+      "wandHandPivot": [
+        185,
+        280
+      ],
+      "wandTip": [
+        154,
+        244
+      ]
+    },
+    {
+      "file": "sparky_idle_blink_005.png",
+      "durationMs": 42,
+      "eyelidClosed": 1,
+      "flameTipSwayPx": 0.6,
+      "seatAnchor": [
+        285,
+        329
+      ],
+      "mouthAnchor": [
+        259,
+        234
+      ],
+      "wandHandPivot": [
+        185,
+        280
+      ],
+      "wandTip": [
+        154,
+        244
+      ]
+    },
+    {
+      "file": "sparky_idle_blink_006.png",
+      "durationMs": 84,
+      "eyelidClosed": 1,
+      "flameTipSwayPx": 0,
+      "seatAnchor": [
+        285,
+        329
+      ],
+      "mouthAnchor": [
+        259,
+        234
+      ],
+      "wandHandPivot": [
+        185,
+        280
+      ],
+      "wandTip": [
+        154,
+        244
+      ]
+    },
+    {
+      "file": "sparky_idle_blink_007.png",
+      "durationMs": 42,
+      "eyelidClosed": 0.75,
+      "flameTipSwayPx": -0.4,
+      "seatAnchor": [
+        285,
+        329
+      ],
+      "mouthAnchor": [
+        259,
+        234
+      ],
+      "wandHandPivot": [
+        185,
+        280
+      ],
+      "wandTip": [
+        154,
+        244
+      ]
+    },
+    {
+      "file": "sparky_idle_blink_008.png",
+      "durationMs": 42,
+      "eyelidClosed": 0.45,
+      "flameTipSwayPx": -0.5,
+      "seatAnchor": [
+        285,
+        329
+      ],
+      "mouthAnchor": [
+        259,
+        234
+      ],
+      "wandHandPivot": [
+        185,
+        280
+      ],
+      "wandTip": [
+        154,
+        244
+      ]
+    },
+    {
+      "file": "sparky_idle_blink_009.png",
+      "durationMs": 42,
+      "eyelidClosed": 0.2,
+      "flameTipSwayPx": -0.3,
+      "seatAnchor": [
+        285,
+        329
+      ],
+      "mouthAnchor": [
+        259,
+        234
+      ],
+      "wandHandPivot": [
+        185,
+        280
+      ],
+      "wandTip": [
+        154,
+        244
+      ]
+    },
+    {
+      "file": "sparky_idle_blink_010.png",
+      "durationMs": 84,
+      "eyelidClosed": 0,
+      "flameTipSwayPx": 0,
+      "seatAnchor": [
+        285,
+        329
+      ],
+      "mouthAnchor": [
+        259,
+        234
+      ],
+      "wandHandPivot": [
+        185,
+        280
+      ],
+      "wandTip": [
+        154,
+        244
+      ]
+    },
+    {
+      "file": "sparky_idle_blink_011.png",
+      "durationMs": 750,
+      "eyelidClosed": 0,
+      "flameTipSwayPx": 0,
+      "seatAnchor": [
+        285,
+        329
+      ],
+      "mouthAnchor": [
+        259,
+        234
+      ],
+      "wandHandPivot": [
+        185,
+        280
+      ],
+      "wandTip": [
+        154,
+        244
+      ]
+    }
+  ],
+  "canvas": [
+    512,
+    512
+  ],
+  "loop": true,
+  "neutralFrames": [
+    0,
+    11
+  ],
+  "coordinateSystem": "top-left frame-local",
+  "source": "approved idle master; eye-region blink drawings with local flame-tip sway",
+  "note": "Open neutral is held for 2.5 seconds before the blink. Blink transitions use approximately 24 fps timing; no whole-character transform.",
+  "frameRateDuringMotion": 24,
+  "holdFrames": [
+    0,
+    1,
+    11
+  ],
+  "safeHandoffFrames": [
+    0,
+    10,
+    11
+  ],
+  "loopPoint": {
+    "from": 11,
+    "to": 0
+  },
+  "anchorsNote": "Frame-local top-left pixel positions, manually marked on the approved neutral drawing; seat and wand positions remain identical.",
+  "preview": "idle_blink_preview.png is an animated transparent PNG (APNG), with 24 fps motion frames and variable holds; idle_blink_preview.gif is a convenience copy."
+}

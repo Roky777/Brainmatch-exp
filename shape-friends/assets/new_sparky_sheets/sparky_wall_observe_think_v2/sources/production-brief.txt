@@ -1,0 +1,369 @@
+Create a complete production-ready animation package named `sparky_wall_observe_think_v2`.
+
+IMPORTANT: This must replace the incomplete previous version. Generate every required frame, including clean new Frames 006 and 007. Do not omit, crop, distort or substitute any frame.
+
+REFERENCE IMAGES
+
+Use the attached original Sparky identity image as the absolute character reference.
+
+Also use:
+
+1. The approved wall-idle Frame 000 as the exact neutral starting pose.
+2. The existing incomplete observe/think frames as pose and registration references.
+3. The matching left, center and right wand-pick Frame 000 images as the exact ending poses.
+
+CHARACTER APPEARANCE — PRESERVE EXACTLY
+
+Sparky is a friendly childlike flame character.
+
+He must retain:
+
+- The exact yellow flame-shaped face and head.
+- The same orange inner flame shading.
+- The same strong red-orange outer flame outline.
+- The same flame-tip count, shape, spacing and proportions.
+- Large white oval eyes with black pupils and small white highlights.
+- Thin red-orange eyebrows.
+- Small friendly curved mouth.
+- Soft rounded cheeks.
+- The same head-to-body proportions as the approved reference.
+- The same cobalt-blue kimono.
+- The same cream V-shaped collar.
+- The same golden-yellow waist sash.
+- The same round gold sash clasp.
+- The same dark-blue lower garment.
+- The same blue-and-cream shoes.
+- The same white four-finger gloves.
+- The same short brown wand with a gold five-point star.
+
+Never use turquoise overalls, red sleeves, shorts, a different costume, a different wand or a different character design.
+
+SEATED POSITION AND REGISTRATION
+
+Create three complete directional variants:
+
+- `left`
+- `center`
+- `right`
+
+Each variant must contain exactly 16 transparent frames.
+
+Technical requirements:
+
+- Canvas: exactly 512 × 512 pixels per frame.
+- Transparent RGBA background.
+- Straight alpha.
+- sRGB colour space.
+- Sparky remains seated on an invisible horizontal wall.
+- The wall plane is at `y = 300`.
+- Do not draw the wall, cloud, platform, cards, UI or background.
+- Keep `seatAnchor = [256, 300]` identical in every frame.
+- Hips, thighs and seated contact must never slide.
+- Both legs hang naturally in front.
+- Shoes must remain registered without popping or changing size.
+- Sparky must retain the same scale and canvas position in all variants.
+- Maintain at least 24 pixels of transparent padding around all visible artwork.
+- Do not crop the flame, glove, wand, shoes or costume.
+
+The three variants must differ only through pupil direction and a very small head-direction adjustment. Body position, costume, scale and seat registration must remain identical.
+
+ANIMATION PURPOSE
+
+This animation plays after Sparky sees a card that has actually been revealed.
+
+Sparky must:
+
+1. Look toward the genuinely revealed card.
+2. Briefly observe it.
+3. Bring his free hand near his chin.
+4. Show gentle uncertainty while remembering.
+5. Resolve his thought.
+6. Commit his gaze toward the card he will legally choose.
+7. Prepare the wand hand for the following wand-pick animation.
+
+Sparky must never appear to know the identity of an unrevealed card.
+
+Do not show:
+
+- X-ray vision.
+- Scanning light.
+- Magical detection.
+- Answer beams.
+- Card symbols.
+- Card pictures.
+- Glowing clues.
+- Pointing lines.
+- Telepathy.
+- A guaranteed-correct expression.
+- Any hidden-information knowledge.
+
+HAND RULES
+
+The viewer-left hand holds the brown gold-star wand securely throughout the animation.
+
+- Wand length must never change.
+- Wand star must never detach.
+- Wand grip must remain anatomically consistent.
+- Do not cast magic in this animation.
+- Do not lift the wand into the final casting motion before the specified preparation frames.
+
+The viewer-right hand is the free hand.
+
+- It moves gradually toward the chin.
+- It must remain a white four-finger glove.
+- It must never cover the mouth.
+- It must never merge into the face.
+- It must never gain or lose fingers.
+- It must never become oversized.
+- It must never pass through the sleeve or head.
+- Frames 006 and 007 require especially clean glove anatomy and smooth sleeve deformation.
+
+FRAME-BY-FRAME PLAN
+
+Apply this complete plan independently to the left, center and right variants.
+
+Frame 000 — NEUTRAL START
+
+- Pixel-identical to approved wall-idle Frame 000.
+- Sparky faces forward.
+- Neutral friendly smile.
+- Both hands in their approved resting positions.
+- Exact seat, costume, wand and shoe registration.
+
+Frame 001 — EYES MOVE FIRST
+
+- Pupils move toward the actually revealed card.
+- Use the direction of the current variant: left, center or right.
+- Head and body remain unchanged.
+- Do not move the hand yet.
+
+Frame 002 — HEAD FOLLOWS
+
+- Head follows the pupil direction by approximately 2 degrees.
+- Keep the movement subtle.
+- Seat, torso, wand and legs remain fixed.
+
+Frame 003 — ATTENTION
+
+- Eyebrows lift slightly to show attention.
+- Eyes remain directed toward the revealed card.
+- Expression is curious and friendly, not surprised or worried.
+
+Frame 004 — OBSERVE_HOLD
+
+- Stable observation pose.
+- Mark this frame as `OBSERVE_HOLD`.
+- Hold may be extended briefly by the game.
+- No body drift or costume change.
+
+Frame 005 — RETURN SLIGHTLY
+
+- Eyes move slightly back toward centre.
+- The movement should suggest remembering the observed card.
+- Head remains close to the previous position.
+
+Frame 006 — HAND RISE BEGINS
+
+- Create a completely new clean drawing for this formerly missing frame.
+- Viewer-right elbow bends gently.
+- Free glove begins rising from the resting position toward the chin.
+- Hand remains below the mouth.
+- Four rounded fingers must be clearly readable.
+- Sleeve follows naturally without stretching or collapsing.
+- This must be a smooth bridge between Frames 005 and 007.
+
+Frame 007 — HAND NEAR CHIN
+
+- Create a completely new clean drawing for this formerly missing frame.
+- Free glove reaches a comfortable thinking position near the chin.
+- Glove must not touch or cover the mouth.
+- Palm angle and finger arrangement must transition smoothly from Frame 006 to Frame 008.
+- Preserve four fingers and correct wrist attachment.
+- No face distortion, hand-face merging or sleeve popping.
+
+Frame 008 — GENTLE UNCERTAINTY
+
+- Eyebrows show mild thoughtful uncertainty.
+- Add a very small head tilt.
+- Expression remains warm and child-friendly.
+- No sadness, fear, frustration or exaggerated confusion.
+- Free hand stays near the chin.
+
+Frame 009 — MEMORY COMPARISON
+
+- Eyes make one small, controlled comparison movement.
+- It should feel like Sparky is remembering previously revealed positions.
+- Do not scan every card.
+- Do not suggest knowledge of unseen cards.
+- Body and seat remain fixed.
+
+Frame 010 — THOUGHT RESOLVES
+
+- Eyebrows relax.
+- Small confident-but-not-certain smile.
+- Head begins returning from the thinking tilt.
+- Free hand begins preparing to lower.
+
+Frame 011 — GAZE COMMITS
+
+- Pupils commit toward the selected target direction.
+- The selected target must come from legal game memory only.
+- No pointing or magic.
+- Do not move the seat or legs.
+
+Frame 012 — HEAD FOLLOWS COMMITTED GAZE
+
+- Head follows the committed gaze by approximately 2 degrees.
+- Keep motion smooth and restrained.
+- Free hand continues returning from the chin.
+
+Frame 013 — WAND PREPARATION
+
+- Wand-holding hand makes a tiny preparation adjustment.
+- Do not lift, point, cast or release a star.
+- The movement must lead naturally into the corresponding wand-pick animation.
+
+Frame 014 — CHOOSE_HOLD
+
+- Stable committed-choice pose.
+- Mark this frame as `CHOOSE_HOLD`.
+- This frame may be held until the game starts the wand-pick action.
+- No movement, drift or magical effect.
+
+Frame 015 — EXACT WAND-PICK HANDOFF
+
+- Must be pixel-identical to Frame 000 of the corresponding supplied wand-pick variant.
+- Left observe Frame 015 must match left wand-pick Frame 000.
+- Center observe Frame 015 must match center wand-pick Frame 000.
+- Right observe Frame 015 must match right wand-pick Frame 000.
+- Match scale, seat anchor, head position, gaze, hands, wand, costume and shoes exactly.
+- The transition into the wand-pick animation must contain no pop or jump.
+
+MOTION REQUIREMENTS
+
+- Animate at 24 fps.
+- Use restrained, smooth ease-in and ease-out motion.
+- Pupils lead the head movement.
+- The head follows with a slight natural delay.
+- The hand rise must be continuous across Frames 005–008.
+- The hand return must be continuous across Frames 010–014.
+- No sudden pose replacement.
+- No frame-to-frame scale change.
+- No seat drift.
+- No limb popping.
+- No costume morphing.
+- No flame-outline boiling.
+- No camera movement.
+- No squash-and-stretch of the entire character.
+
+TIMING
+
+Use these default frame durations for every variant:
+
+- Frame 000: 250 ms
+- Frame 001: 83.333 ms
+- Frame 002: 83.333 ms
+- Frame 003: 83.333 ms
+- Frame 004: 500 ms — `OBSERVE_HOLD`
+- Frame 005: 83.333 ms
+- Frame 006: 83.333 ms
+- Frame 007: 83.333 ms
+- Frame 008: 125 ms
+- Frame 009: 125 ms
+- Frame 010: 83.333 ms
+- Frame 011: 83.333 ms
+- Frame 012: 83.333 ms
+- Frame 013: 83.333 ms
+- Frame 014: 500 ms — `CHOOSE_HOLD`
+- Frame 015: 83.333 ms — wand-pick handoff
+
+DELIVERY STRUCTURE
+
+Deliver exactly 48 numbered transparent PNG frames:
+
+left/
+- sparky_wall_observe_think_left_000.png
+- through
+- sparky_wall_observe_think_left_015.png
+
+center/
+- sparky_wall_observe_think_center_000.png
+- through
+- sparky_wall_observe_think_center_015.png
+
+right/
+- sparky_wall_observe_think_right_000.png
+- through
+- sparky_wall_observe_think_right_015.png
+
+Also deliver:
+
+1. `atlas_left.png`
+   - Exact 2048 × 2048 image.
+   - 4 columns × 4 rows.
+   - Every cell exactly 512 × 512.
+   - No spacing, labels, borders or background.
+
+2. `atlas_center.png`
+   - Same specifications.
+
+3. `atlas_right.png`
+   - Same specifications.
+
+4. Three labelled 4 × 4 contact sheets for review.
+
+5. Three transparent repeated previews.
+
+6. Three temporary-wall composite previews.
+
+7. A 100-pixel game-size comparison preview showing all directions.
+
+8. `animation-manifest.json`.
+
+MANIFEST REQUIREMENTS
+
+The manifest must include:
+
+- Clip name.
+- Variant names.
+- Frame count.
+- Frame rate.
+- Per-frame durations.
+- Canvas size.
+- Atlas grid.
+- Straight-alpha RGBA declaration.
+- `wallPlaneY = 300`.
+- `seatAnchor` for every frame.
+- `mouthAnchor` for every frame.
+- `wandTip` for every frame.
+- `freeHand` anchor for every frame.
+- Shoe anchors for every frame.
+- Bounding box for every frame.
+- `OBSERVE_HOLD = 004`.
+- `CHOOSE_HOLD = 014`.
+- `WAND_PICK_HANDOFF = 015`.
+- Confirmation that each Frame 015 is pixel-identical to the corresponding wand-pick Frame 000.
+
+STRICT REJECTION CONDITIONS
+
+Reject and regenerate the package if any of these occur:
+
+- Frames 006 or 007 are missing.
+- Any frame is cropped.
+- Glove has the wrong number of fingers.
+- Hand merges with the face.
+- Hand covers the mouth.
+- Sleeve changes costume design.
+- Wand changes length or shape.
+- Sparky wears overalls.
+- Seat anchor moves.
+- Hips or thighs slide.
+- Shoes pop or change size.
+- Head or body scale changes.
+- Flame silhouette changes unexpectedly.
+- Left, center and right variants use different body registration.
+- Sparky appears to know an unseen card.
+- Cards, walls, platforms, UI or backgrounds appear in runtime frames.
+- Frame 015 does not exactly match the corresponding wand-pick Frame 000.
+- Atlas cells are not exactly 512 × 512.
+- Labels or borders appear in runtime atlases.

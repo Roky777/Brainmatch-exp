@@ -1,0 +1,40 @@
+{
+  "006": {
+    "sourceFlameBounds": [
+      420,
+      107,
+      948,
+      659
+    ],
+    "referenceFlameBounds": [
+      186,
+      31,
+      366,
+      216
+    ],
+    "registrationUniformScale": 0.3409090909090909,
+    "translation": [
+      42.81818181818184,
+      -5.477272727272727
+    ]
+  },
+  "007": {
+    "sourceFlameBounds": [
+      422,
+      110,
+      946,
+      660
+    ],
+    "referenceFlameBounds": [
+      186,
+      31,
+      366,
+      216
+    ],
+    "registrationUniformScale": 0.3435114503816794,
+    "translation": [
+      41.03816793893128,
+      -6.786259541984734
+    ]
+  }
+}

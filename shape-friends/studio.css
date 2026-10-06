@@ -68,20 +68,27 @@ button:focus-visible,a:focus-visible,summary:focus-visible{outline:4px solid #ff
 .scene-controls .toy-button:hover{transform:translateY(-2px)}
 .companion{right:-1%;bottom:3%;width:min(51%,700px);height:clamp(185px,23vw,320px);align-items:flex-end}
 #sparky.sparky-sprite{height:100%;filter:drop-shadow(0 10px 7px #566b9b4a)}
-.sparky-hand{position:fixed;width:56px;height:56px;display:grid;place-items:center;z-index:32;pointer-events:none;opacity:0;translate:none;transform:none;filter:drop-shadow(0 3px 3px #a0624e7a);font:900 55px/1 'Trebuchet MS',sans-serif;color:#ffe37d;text-shadow:0 0 8px #fffaf1,0 0 16px #ffe27d,0 3px #e9a756}
+.sparky-hand{position:fixed;inset:0;width:100vw;height:100vh;z-index:32;pointer-events:none;opacity:0;translate:none;transform:none;filter:drop-shadow(0 3px 3px #364d8b55)}
 .sparky-hand.visible{opacity:1}
-.sparky-hand:before,.sparky-hand:after{content:'✦';position:absolute;font-size:18px;color:#fff5bb;text-shadow:0 0 9px #ffe177}
-.sparky-hand:before{left:-12px;top:9px}.sparky-hand:after{right:-11px;bottom:7px;font-size:14px}
+.sparky-hand svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.sparky-hand path{fill:none;stroke-linecap:round;stroke-linejoin:round}
+.reach-outline{stroke:#253366;stroke-width:29}
+.reach-sleeve{stroke:#3287cf;stroke-width:23}
+.reach-highlight{stroke:#92dbfa;stroke-width:6;opacity:.85}
+.reach-glove{position:absolute;width:54px;height:82px;object-fit:contain;transform:rotate(-22deg);transform-origin:76% 40%;filter:drop-shadow(0 2px 2px #25336666)}
+.touch-spark{position:absolute;opacity:0;color:#fff4aa;font:900 36px/1 'Trebuchet MS',sans-serif;text-shadow:0 0 9px white,0 0 19px #ffe38a;transform:translate(-50%,-50%) scale(.4)}
+.sparky-hand.contact .touch-spark{animation:touch-spark .42s ease-out both}
+@keyframes touch-spark{35%{opacity:1;transform:translate(-50%,-50%) scale(1.35)}100%{opacity:0;transform:translate(-50%,-50%) scale(.65)}}
 .memory-card.targeted{outline:0;animation:sparky-target .55s ease-in-out infinite alternate}
 @keyframes sparky-target{to{filter:drop-shadow(0 0 13px #ffe9a7db)}}
 #sparky[data-pose=idle]{animation:sparky-breathe 3.8s ease-in-out infinite}
 #sparky[data-pose=thinking]{animation:sparky-think .75s ease-in-out}
-#sparky[data-pose=present-right]{animation:sparky-present .64s cubic-bezier(.2,1.2,.3,1)}
+#sparky[data-pose=present-right]{animation:sparky-present .62s ease-out both}
 #sparky[data-pose=happy],#sparky[data-pose=thumbs-up]{animation:sparky-celebrate .7s cubic-bezier(.2,1.3,.3,1)}
 #sparky[data-pose=greeting],#menu-sparky[data-pose=greeting]{animation:sparky-wave .9s ease-in-out}
 @keyframes sparky-breathe{50%{transform:translateY(-1%) scale(1.018)}}
 @keyframes sparky-think{40%{transform:rotate(-3deg)}70%{transform:rotate(2deg)}}
-@keyframes sparky-present{0%{transform:scale(.94) rotate(3deg)}50%{transform:scale(1.08) rotate(-3deg)}100%{transform:scale(1) rotate(0)}}
+@keyframes sparky-present{0%{transform:rotate(0)}50%{transform:rotate(-3deg)}100%{transform:rotate(-2deg)}}
 @keyframes sparky-celebrate{0%{transform:translateY(0) scale(.91)}45%{transform:translateY(-7%) scale(1.08)}100%{transform:translateY(0) scale(1)}}
 @keyframes sparky-wave{40%{transform:rotate(-4deg)}70%{transform:rotate(2deg)}}
 .speech-bubble{max-width:420px;border-radius:22px 22px 10px 22px;border:2px solid #fffdf5;background:#fffaf3f2;box-shadow:0 5px #8392bb,0 8px 16px #4c578545;padding:16px 48px 16px 20px}
@@ -197,4 +204,4 @@ dialog#settings-dialog::backdrop{background:#1a2a54b8;backdrop-filter:blur(5px)}
  .speech-bubble p{font-size:12px}
  #sparky.sparky-sprite{order:1;height:min(30vh,122px)}
 }
-@media(prefers-reduced-motion:reduce){.primary-button,.secondary-button,.mode-choices button,.level-choices button,.memory-card{transition:none!important}.memory-card.targeted,#sparky[data-pose],#menu-sparky[data-pose]{animation:none!important}}
+@media(prefers-reduced-motion:reduce){.primary-button,.secondary-button,.mode-choices button,.level-choices button,.memory-card{transition:none!important}.memory-card.targeted,#sparky[data-pose],#menu-sparky[data-pose],.sparky-hand.contact .touch-spark{animation:none!important}}

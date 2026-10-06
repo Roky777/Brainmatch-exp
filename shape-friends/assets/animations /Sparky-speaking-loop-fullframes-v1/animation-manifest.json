@@ -1,0 +1,412 @@
+{
+  "clip": "sparky_speaking_loop",
+  "status": "complete numbered preview frames; not production approved",
+  "canvas": [
+    512,
+    512
+  ],
+  "frameRateDuringMotion": 24,
+  "loop": true,
+  "neutralFrames": [
+    0,
+    13
+  ],
+  "holdFrames": [
+    0,
+    6,
+    9,
+    13
+  ],
+  "safeHandoffFrames": [
+    0,
+    13
+  ],
+  "coordinateSystem": "top-left frame-local",
+  "coordinateCaveat": "Anchor values are approximate reference anchors, not measured separately in the generated poses; do not use for final rigging.",
+  "frames": [
+    {
+      "file": "sparky_speaking_loop_000.png",
+      "durationMs": 500,
+      "source": "approved neutral master",
+      "bounds": [
+        125,
+        51,
+        441,
+        434
+      ],
+      "seatAnchor": [
+        285,
+        329
+      ],
+      "mouthAnchor": [
+        259,
+        234
+      ],
+      "wandHandPivot": [
+        185,
+        280
+      ],
+      "wandTip": [
+        154,
+        244
+      ]
+    },
+    {
+      "file": "sparky_speaking_loop_001.png",
+      "durationMs": 42,
+      "source": "generated sheet A, upper row",
+      "bounds": [
+        125,
+        51,
+        422,
+        433
+      ],
+      "seatAnchor": [
+        285,
+        329
+      ],
+      "mouthAnchor": [
+        259,
+        234
+      ],
+      "wandHandPivot": [
+        185,
+        280
+      ],
+      "wandTip": [
+        154,
+        244
+      ]
+    },
+    {
+      "file": "sparky_speaking_loop_002.png",
+      "durationMs": 42,
+      "source": "generated sheet A, upper row",
+      "bounds": [
+        125,
+        51,
+        424,
+        433
+      ],
+      "seatAnchor": [
+        285,
+        329
+      ],
+      "mouthAnchor": [
+        259,
+        234
+      ],
+      "wandHandPivot": [
+        185,
+        280
+      ],
+      "wandTip": [
+        154,
+        244
+      ]
+    },
+    {
+      "file": "sparky_speaking_loop_003.png",
+      "durationMs": 42,
+      "source": "generated sheet A, upper row",
+      "bounds": [
+        125,
+        51,
+        419,
+        433
+      ],
+      "seatAnchor": [
+        285,
+        329
+      ],
+      "mouthAnchor": [
+        259,
+        234
+      ],
+      "wandHandPivot": [
+        185,
+        280
+      ],
+      "wandTip": [
+        154,
+        244
+      ]
+    },
+    {
+      "file": "sparky_speaking_loop_004.png",
+      "durationMs": 42,
+      "source": "generated sheet A, upper row",
+      "bounds": [
+        125,
+        51,
+        417,
+        433
+      ],
+      "seatAnchor": [
+        285,
+        329
+      ],
+      "mouthAnchor": [
+        259,
+        234
+      ],
+      "wandHandPivot": [
+        185,
+        280
+      ],
+      "wandTip": [
+        154,
+        244
+      ]
+    },
+    {
+      "file": "sparky_speaking_loop_005.png",
+      "durationMs": 42,
+      "source": "generated sheet A, upper row",
+      "bounds": [
+        125,
+        51,
+        418,
+        433
+      ],
+      "seatAnchor": [
+        285,
+        329
+      ],
+      "mouthAnchor": [
+        259,
+        234
+      ],
+      "wandHandPivot": [
+        185,
+        280
+      ],
+      "wandTip": [
+        154,
+        244
+      ]
+    },
+    {
+      "file": "sparky_speaking_loop_006.png",
+      "durationMs": 500,
+      "source": "generated sheet A, upper row",
+      "bounds": [
+        125,
+        51,
+        414,
+        433
+      ],
+      "seatAnchor": [
+        285,
+        329
+      ],
+      "mouthAnchor": [
+        259,
+        234
+      ],
+      "wandHandPivot": [
+        185,
+        280
+      ],
+      "wandTip": [
+        154,
+        244
+      ]
+    },
+    {
+      "file": "sparky_speaking_loop_007.png",
+      "durationMs": 42,
+      "source": "generated sheet B, lower row",
+      "bounds": [
+        125,
+        51,
+        412,
+        433
+      ],
+      "seatAnchor": [
+        285,
+        329
+      ],
+      "mouthAnchor": [
+        259,
+        234
+      ],
+      "wandHandPivot": [
+        185,
+        280
+      ],
+      "wandTip": [
+        154,
+        244
+      ]
+    },
+    {
+      "file": "sparky_speaking_loop_008.png",
+      "durationMs": 42,
+      "source": "generated sheet B, lower row",
+      "bounds": [
+        125,
+        51,
+        403,
+        433
+      ],
+      "seatAnchor": [
+        285,
+        329
+      ],
+      "mouthAnchor": [
+        259,
+        234
+      ],
+      "wandHandPivot": [
+        185,
+        280
+      ],
+      "wandTip": [
+        154,
+        244
+      ]
+    },
+    {
+      "file": "sparky_speaking_loop_009.png",
+      "durationMs": 300,
+      "source": "generated sheet B, lower row",
+      "bounds": [
+        125,
+        51,
+        401,
+        433
+      ],
+      "seatAnchor": [
+        285,
+        329
+      ],
+      "mouthAnchor": [
+        259,
+        234
+      ],
+      "wandHandPivot": [
+        185,
+        280
+      ],
+      "wandTip": [
+        154,
+        244
+      ]
+    },
+    {
+      "file": "sparky_speaking_loop_010.png",
+      "durationMs": 42,
+      "source": "generated sheet B, lower row",
+      "bounds": [
+        125,
+        51,
+        399,
+        433
+      ],
+      "seatAnchor": [
+        285,
+        329
+      ],
+      "mouthAnchor": [
+        259,
+        234
+      ],
+      "wandHandPivot": [
+        185,
+        280
+      ],
+      "wandTip": [
+        154,
+        244
+      ]
+    },
+    {
+      "file": "sparky_speaking_loop_011.png",
+      "durationMs": 42,
+      "source": "generated sheet B, lower row",
+      "bounds": [
+        125,
+        51,
+        401,
+        433
+      ],
+      "seatAnchor": [
+        285,
+        329
+      ],
+      "mouthAnchor": [
+        259,
+        234
+      ],
+      "wandHandPivot": [
+        185,
+        280
+      ],
+      "wandTip": [
+        154,
+        244
+      ]
+    },
+    {
+      "file": "sparky_speaking_loop_012.png",
+      "durationMs": 42,
+      "source": "generated sheet B, lower row",
+      "bounds": [
+        125,
+        51,
+        400,
+        433
+      ],
+      "seatAnchor": [
+        285,
+        329
+      ],
+      "mouthAnchor": [
+        259,
+        234
+      ],
+      "wandHandPivot": [
+        185,
+        280
+      ],
+      "wandTip": [
+        154,
+        244
+      ]
+    },
+    {
+      "file": "sparky_speaking_loop_013.png",
+      "durationMs": 500,
+      "source": "approved neutral master",
+      "bounds": [
+        125,
+        51,
+        441,
+        434
+      ],
+      "seatAnchor": [
+        285,
+        329
+      ],
+      "mouthAnchor": [
+        259,
+        234
+      ],
+      "wandHandPivot": [
+        185,
+        280
+      ],
+      "wandTip": [
+        154,
+        244
+      ]
+    }
+  ],
+  "knownIssues": [
+    "Body, face and wand registration vary between generated poses and the approved neutral.",
+    "Some sheet source drawings approach cell edges; inspect the exported fingertips and wand stars.",
+    "Gesture and head motion are not fully coherent hand-drawn in-betweens.",
+    "Lip-sync mouth registration requires artist correction."
+  ]
+}

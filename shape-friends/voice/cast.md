@@ -1,0 +1,5 @@
+# Render record
+
+September 28 addition: 13 local clips (`practice-start`, `challenge-start`, `wonder`, `match-wow`, `miss-kind`, `sparky-oops`, `win`, `lose`, `tie`, `practice-done`, `sparky-found`, `hint-known`, `hint-look`), version 1. Same provider and `delicate` preset below. Scripts contain only spoken words; unsupported acting tags were not sent to the engine. All main active mode/game reaction captions now have local clips. These improve contextual variety, but expressive character acting still needs listening approval; no emotional-model controls were exposed by this provider.
+
+Provider: connected AI Voice Generator / AI Doc Maker. Voice ID: delicate. Model class/version: not exposed by tool. No speed or pitch overrides. Each short caption was supplied as both full transcript and preview transcript; the returned playable MP3 was downloaded for local runtime use. No external synthesis happens during game play. Remaining uncovered lines use device speech. Clips have not been perceptually auditioned by the assistant.

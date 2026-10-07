@@ -1,11 +1,11 @@
-import { PACK, ITEMS, SHAPES, assetURL, cardsFor, roundById } from './content.js';
+import { ITEMS, SHAPES, assetURL, cardsFor, roundById, getTheme, itemFor } from './content.js';
 import { MatchBoard } from './engine.js';
 import { CompanionMemory } from './companion.js';
 import { Timeline } from './timeline.js';
 import { readSave, writeSave, discover } from './save.js';
 import { GameAudio } from './audio.js';
 import { MusicLoop } from './music.js';
-import { Sparky, sparkyArt, SEATED_OBSERVE_HANDOFF_MS, SEATED_WAND_RECOVERY_MS, SEATED_JOY_DURATION, SEATED_JOY_RECOVERY_MS, SEATED_MISS_DURATION, SEATED_MISS_RECOVERY_MS, seatedObserveDirection, seatedWandTip } from './sparky.js';
+import { Sparky, sparkyArt, seatedObserveDirection, seatedWandTip } from './sparky.js';
 import { LivingGarden } from './garden.js';
 import { Picnic } from './picnic.js';
 import { icon } from '../art.js';
@@ -18,6 +18,7 @@ const $ = id => document.getElementById(id);
 document.querySelector('.match-area').append($('discovery-strip'));
 $('discovery-strip').append($('hint'));
 const save = readSave();
+let theme = getTheme(save.theme), pack = theme.pack;
 // The child-facing Music control is the single master switch for all non-voice audio.
 save.effects = save.music;
 const audio = new GameAudio(save), music = new MusicLoop(save), timeline = new Timeline();
@@ -25,21 +26,59 @@ const sparky = new Sparky($('sparky'), { seated: true });
 $('app').dataset.sparkyReady = 'true';
 const menuSparky = new Sparky($('menu-sparky'), { seated: true });
 document.querySelector('.mini-sparky').innerHTML = sparkyArt('picnic-sparky');
-const garden = new LivingGarden($('living-garden'), { speak: text => say(text), effect: kind => audio.effect(kind), discovered: save.discoveries.length / 2 });
+const garden = new LivingGarden($('living-garden'), { speak: text => say(text), effect: kind => audio.effect(kind), discovered: save.discoveries.filter(id=>ITEMS[id]).length / 2 });
 const reduced = matchMedia('(prefers-reduced-motion: reduce)');
 let board, memory, round, mode = 'match', busy = false, run = 0, started = false, voiceMoments = {};
+let matchCount = 0, missCount = 0;
 let tapAnimation = null, tapGeometry = null;
-const CARD_REVEAL_HOLD_MS=1250, SPARKY_REVEAL_HOLD_MS=700, STAR_TRAVEL_MS=760, BETWEEN_ACTIONS_MS=320, VOICE_START_TIMEOUT_MS=1800, VOICE_TIMEOUT_MS=6000;
+// Keep choices readable without turning each reveal into a blocking cutscene.
+const CARD_REVEAL_HOLD_MS=650, SPARKY_REVEAL_HOLD_MS=480, STAR_TRAVEL_MS=500, RESULT_READ_MS=620, CARD_CLOSE_MS=300, BETWEEN_ACTIONS_MS=100, VOICE_TIMEOUT_MS=6000;
 const cloudReveal = new CloudReveal($('cloud-curtain'), $('cloud-veil'));
 let options = playOptions(), guideMemory = new CompanionMemory();
 const dialogue = new Dialogue();
 const artCache=new Map();
+const sparkyAnchor=document.querySelector('.sparky-anchor');
+const resultCharacterSpace=document.querySelector('.result-character-space');
 const picnic = new Picnic($('picnic'), {
   speak: text => say(text, 'picnic-caption'), effect: kind => audio.effect(kind),
   progress: save.gardenWater, onProgress: value => { save.gardenWater = value; persist(); },
 });
 
 function persist() { $('save-notice').hidden = writeSave(save); }
+function themeProgress(id = theme.id) { return id === 'neon' ? save.neonStars : id === 'seasons' ? save.seasonStars : save.dreamStars; }
+function themeUnlocked(id) {
+  if(id==='dream')return true;
+  if(id==='seasons')return save.dreamStars.length>=3;
+  return id==='neon'&&save.dreamStars.length+save.seasonStars.length>=5;
+}
+function nextRoundId() {
+  const index = pack.rounds.findIndex(item => item.id === round?.id);
+  return pack.rounds[(index + 1) % pack.rounds.length]?.id || '1';
+}
+function applyTheme() {
+  theme = getTheme(save.theme); pack = theme.pack;
+  document.body.dataset.theme = theme.id; $('app').dataset.theme = theme.id;
+  document.title = `${pack.title} · Dream Brainmatch`;
+  document.querySelector('#app > h1').textContent = pack.title;
+  const clouds={dream:'./assets/sparky-seat-cloud-v1.webp',seasons:'./assets/season-sparky-cloud-v1.webp',neon:'./assets/neon-sparky-cloud-v1.webp'};
+  document.querySelector('.sparky-seat-cloud').src = new URL(clouds[theme.id], import.meta.url).href;
+  const titles={dream:'Shape<br>Friends',seasons:'Season<br>Parade',neon:'Neon<br>Shape Lab'};
+  const kickers={dream:'A little shape adventure',seasons:'Find friends from every season',neon:'Match the glowing shapes'};
+  $('setup-title').innerHTML = `${titles[theme.id]}<span aria-hidden="true">✦</span>`;
+  document.querySelector('.setup-kicker').textContent = kickers[theme.id];
+  $('theme-open').setAttribute('aria-label', `Change world. Current world: ${theme.title}`);
+  $('theme-open-label').textContent = 'Worlds';
+  document.querySelectorAll('[data-theme-choice]').forEach(button => {
+    const id = button.dataset.themeChoice, unlocked = themeUnlocked(id), active = id === theme.id;
+    button.classList.toggle('is-locked', !unlocked); button.classList.toggle('is-active', active);
+    button.setAttribute('aria-pressed', String(active)); button.setAttribute('aria-disabled', String(!unlocked));
+    const left = id === 'neon' ? Math.max(0,5-save.dreamStars.length-save.seasonStars.length) : Math.max(0,3-save.dreamStars.length);
+    button.querySelector('.theme-status').textContent = active ? 'Playing here' : unlocked ? 'Visit world' : `${left} more ${left===1?'match':'matches'}`;
+  });
+  $('theme-dialog-message').textContent = themeUnlocked('neon')
+    ? 'Pick a world. You can come back whenever you like.'
+    : themeUnlocked('seasons') ? `${Math.max(0,5-save.dreamStars.length-save.seasonStars.length)} more ${5-save.dreamStars.length-save.seasonStars.length===1?'match':'matches'} will light up the Neon Lab.` : 'Play three matches to open Season Parade.';
+}
 function preloadArt(item) {
   const src=assetURL(item);
   if(!artCache.has(src))artCache.set(src,new Promise(resolve=>{
@@ -66,16 +105,24 @@ function narrateNow(key,{first=1,every=0}={}) {
   const count=(voiceMoments[key]||0)+1;voiceMoments[key]=count;
   return count<=first||(every>0&&(count-first)%every===0);
 }
-function celebratePair(text,voiced=true) {
+function celebratePair(text,voiced=true,gesture='joy') {
   $('caption').textContent=text;
-  if(!voiced||!started||!save.voice){sparky.pairJoy();return Promise.resolve({started:false,reason:'silent'});}
+  if(!voiced||!started||!save.voice){
+    if(gesture==='nod')sparky.nodYes();
+    else sparky.pairJoy();
+    return Promise.resolve({started:false,reason:'silent'});
+  }
   let began=false;
   const completion=audio.say(text,{onStart:meta=>{began=true;music.setDucked(true);sparky.pairJoy();sparky.holdPairJoy();sparky.speakOverCurrentPose(text,meta.durationMs,meta.clock,meta.silences);},onEnd:()=>{sparky.finishSpeaking();sparky.finishPairJoy();music.setDucked(false);}});
   completion.then(()=>{if(!began)sparky.pairJoy();});return completion;
 }
-function reassureMiss(text,voiced=true) {
+function reassureMiss(text,voiced=true,gesture='miss') {
   $('caption').textContent=text;
-  if(!voiced||!started||!save.voice){sparky.gentleMiss();return Promise.resolve({started:false,reason:'silent'});}
+  if(!voiced||!started||!save.voice){
+    if(gesture==='nod')sparky.nodYes();
+    else sparky.gentleMiss();
+    return Promise.resolve({started:false,reason:'silent'});
+  }
   let began=false;
   const completion=audio.say(text,{onStart:meta=>{began=true;music.setDucked(true);sparky.gentleMiss();sparky.holdGentleMiss();sparky.speakOverCurrentPose(text,meta.durationMs,meta.clock,meta.silences);},onEnd:()=>{sparky.finishSpeaking();sparky.finishGentleMiss();music.setDucked(false);}});
   completion.then(()=>{if(!began)sparky.gentleMiss();});return completion;
@@ -102,13 +149,6 @@ async function waitForVoice(completion,ticket=run) {
   if(ticket!==run)return false;
   // A broken device speech engine must never trap a turn indefinitely.
   if(outcome==='timeout'){audio.stop();await Promise.resolve();}
-  return ticket===run;
-}
-async function waitForVoiceStart(completion,ticket=run) {
-  if(!completion?.started)return ticket===run;
-  let timeout;
-  const outcome=await Promise.race([completion.started.then(()=> 'started'),new Promise(resolve=>{timeout=setTimeout(()=>resolve('timeout'),VOICE_START_TIMEOUT_MS);})]);
-  clearTimeout(timeout);if(outcome==='timeout')audio.stop();
   return ticket===run;
 }
 function clearPointer() {
@@ -154,28 +194,38 @@ function unveilBoard() {
   cloudReveal.start(focus, hideCloudCurtain);
 }
 function unlocked(id) {
-  const index = PACK.rounds.findIndex(item => item.id === id);
-  return index === 0 || save.completed.includes(PACK.rounds[index - 1].id);
+  const index = pack.rounds.findIndex(item => item.id === id);
+  return index === 0 || themeProgress().includes(pack.rounds[index - 1].id);
+}
+function dockSparkyAtBoard(){
+  if(sparkyAnchor.parentElement!==$('play-layout'))$('result-view').after(sparkyAnchor);
+  $('sparky').removeAttribute('tabindex');
+}
+function dockSparkyAtResult(){
+  if(sparkyAnchor.parentElement!==resultCharacterSpace)resultCharacterSpace.append(sparkyAnchor);
+  $('sparky').tabIndex=-1;
 }
 function startRound(id) {
   const enteringPlay = mode !== 'match';
-  if (!roundById(id) || !unlocked(id)) id = '1';
+  if (!roundById(id, pack) || !unlocked(id)) id = '1';
   run++; timeline.cancel(); audio.stop(); clearEffects(); picnic.cancelDrag();
-  round = roundById(id);
+  round = roundById(id, pack);
   const level = LEVELS[options.level];
   board = new MatchBoard(cardsFor({ pairs: round.pairs.slice(0, level.pairs) }), { mode: options.mode });
   memory = new CompanionMemory({ capacity: level.capacity, accuracy: level.accuracy }); guideMemory = new CompanionMemory();
   // Decode all possible round art away from the DOM. Hidden card positions and
   // identities remain private, but a selected card never opens onto white.
   const artReady=Promise.all([...new Set(cardsFor({pairs:round.pairs.slice(0,level.pairs)}).map(card=>card.item))].map(preloadArt));
-  mode = 'match'; busy = enteringPlay; voiceMoments={}; save.activeRound = id; persist();
+  mode = 'match'; busy = enteringPlay; voiceMoments={}; matchCount=0; missCount=0; save.activeRound = id; persist();
+  dockSparkyAtBoard();
   $('setup-view').hidden = true; $('result-view').hidden = true;
   document.querySelector('.match-area').hidden = false;
   $('app').dataset.playMode = options.mode;
+  $('app').dataset.theme = theme.id;
   $('app').dataset.level = options.level;
   $('cards').style.setProperty('--columns', level.pairs === 3 ? '3' : level.pairs === 2 ? '2' : '4');
-  $('cards').setAttribute('aria-label', `${board.size} memory cards. Match things with the same shape.`);
-  $('app').dataset.mode = mode; $('play-layout').hidden = false; $('discovery-strip').hidden = false;
+  $('cards').setAttribute('aria-label', `${board.size} memory cards. ${pack.objective}`);
+  $('app').dataset.mode = mode; $('play-layout').hidden = false; $('discovery-strip').hidden = theme.id !== 'dream';
   $('explore-view').hidden = true; $('chapter-number').textContent = id.padStart(2, '0');
   $('chapter-title').textContent = round.title;
   $('cards').innerHTML = Array.from({ length: board.size }, (_, index) => `<button class="memory-card" type="button" data-index="${index}" aria-label="Hidden card ${index + 1}"><span class="card-inner"><span class="card-face card-back" aria-hidden="true"><span class="card-emblem"><svg viewBox="0 0 60 60"><path d="M30 9c4 11 12 15 20 17-10 4-17 10-20 24-4-12-10-20-20-24 11-3 17-9 20-17Z"/><circle cx="46" cy="10" r="3"/><circle cx="11" cy="46" r="2"/></svg></span></span><span class="card-face card-front" aria-hidden="true"></span></span><span class="match-check" hidden aria-hidden="true">✓</span></button>`).join('');
@@ -204,7 +254,7 @@ function renderBoard() {
     const button = $('cards').children[index], front = button.querySelector('.card-front');
     button.classList.toggle('is-open', visible); button.classList.toggle('is-matched', matched);
     button.disabled = !canPlay || visible;
-    button.setAttribute('aria-label', visible ? `${ITEMS[card.item].name}${matched ? ', matched' : ', face up'}. Card ${index + 1}` : `Hidden card ${index + 1}`);
+    button.setAttribute('aria-label', visible ? `${itemFor(card.item).name}${matched ? ', matched' : ', face up'}. Card ${index + 1}` : `Hidden card ${index + 1}`);
     button.querySelector('.match-check').hidden = !matched;
     // An unseen identity is never rendered into the DOM or its accessibility tree.
     if (visible && !front.firstChild) {
@@ -235,16 +285,17 @@ function renderBoard() {
   $('match-score').hidden = options.mode !== 'challenge';
   $('match-score').textContent = `You ${board.scores.child} · Sparky ${board.scores.sparky}`;
   $('hint').disabled = !canPlay;
-  $('visit-picnic').hidden = !save.discoveries.length || mode !== 'match';
+  $('visit-picnic').hidden = theme.id !== 'dream' || !save.discoveries.some(id=>ITEMS[id]) || mode !== 'match';
   $('visit-picnic').disabled = !canPlay;
 }
 function renderTray() {
-  const count = save.discoveries.length;
+  const dreamDiscoveries=save.discoveries.filter(id=>ITEMS[id]);
+  const count = dreamDiscoveries.length;
   $('discovery-count').textContent = count ? `${count} picnic ${count === 1 ? 'discovery' : 'discoveries'}` : 'Let’s fill our picnic!';
   $('basket-count').hidden = !count; $('basket-count').textContent = count;
   $('picnic-basket').setAttribute('aria-label', count ? `Play with our ${count} picnic discoveries` : 'Our picnic basket. Find a pair to fill it!');
   const max = 3;
-  $('discovery-tray').innerHTML = save.discoveries.slice(-max).map(id => `<button class="tray-item" data-discovery="${id}" type="button" aria-label="Visit our picnic with ${ITEMS[id].name}"><img src="${assetURL(id)}" alt=""></button>`).join('');
+  $('discovery-tray').innerHTML = dreamDiscoveries.slice(-max).map(id => `<button class="tray-item" data-discovery="${id}" type="button" aria-label="Visit our picnic with ${itemFor(id).name}"><img src="${assetURL(id)}" alt=""></button>`).join('');
 }
 function reveal(index, actor) {
   const observation = board.reveal(index, actor);
@@ -264,20 +315,26 @@ async function childFlip(index) {
 async function resolveTurn(ticket,{settleMs=CARD_REVEAL_HOLD_MS}={}) {
   if (!await wait(settleMs, ticket)) return;
   const result = board.resolve(); if (!result) return;
-  let reactionVoice;
+  let reactionVoiced=false;
+  let gestureUsed=null;
   if (result.match) {
     memory.removePair(result.pairId);
     guideMemory.removePair(result.pairId);
     discover(save, result.items); persist();
     garden.grow();
     audio.effect('match');
-    const voiced=result.actor==='child'
-      ? narrateNow('child-match',{first:1,every:3})
-      : narrateNow('sparky-match',{first:1});
+    matchCount++;
+    // Alternating cadence: Match 1 is voiced, Match 2 nods, Match 3 is voiced, Match 4 nods...
+    // The game never stays silent, and never repeats speech back-to-back.
+    const matchSpoken = (matchCount % 2 === 1);
+    const voiced=reactionVoiced=result.actor==='child'
+      ? (narrateNow('child-match',{first:1}) || matchSpoken)
+      : false;
+    const gesture=gestureUsed=result.actor==='child' ? (voiced ? 'joy' : 'nod') : (voiced ? 'joy' : 'nod');
     const reaction=result.actor==='child'
       ? (voiced?dialogue.next('match'):'You found a pair!')
       : (voiced?dialogue.next('sparkyMatch'):'Sparky found a pair.');
-    reactionVoice=celebratePair(reaction,voiced);
+    celebratePair(reaction,voiced,gesture);
     $('pair-celebration').textContent = SHAPES[result.pairId].name;
     $('pair-celebration').hidden = false; renderTray();
     result.indices.forEach(index => {
@@ -288,29 +345,29 @@ async function resolveTurn(ticket,{settleMs=CARD_REVEAL_HOLD_MS}={}) {
       burstAtCard(index, true);
     });
   } else {
+    missCount++;
+    const missSpoken = (missCount % 2 === 1);
     const event=result.actor==='child'?'miss':'sparkyMiss';
-    const voiced=result.actor==='child'
-      ? narrateNow('child-miss',{first:1,every:4})
-      : narrateNow('sparky-miss',{first:1});
-    reactionVoice=reassureMiss(voiced?dialogue.next(event):(result.actor==='child'?'Try another pair.':'Sparky will try again later.'),voiced);
+    const voiced=reactionVoiced=result.actor==='child'
+      ? (narrateNow('child-miss',{first:1}) || missSpoken)
+      : false;
+    // On subsequent non-matches, nod gently as friendly acknowledgement
+    // without repeating speech or holding the board.
+    const gesture=gestureUsed=result.actor==='child' ? (voiced ? 'miss' : 'nod') : 'miss';
+    reassureMiss(voiced?dialogue.next(event):(result.actor==='child'?'Try another pair.':'Sparky will try again later.'),voiced,gesture);
   }
   renderBoard();
-  if(!await waitForVoiceStart(reactionVoice,ticket))return;
-  if (!await wait(result.match ? SEATED_JOY_DURATION-SEATED_JOY_RECOVERY_MS : SEATED_MISS_DURATION-SEATED_MISS_RECOVERY_MS, ticket)) return;
-  // The authored happy/reassure hold remains active until the real voice ends.
-  if(!await waitForVoice(reactionVoice,ticket))return;
-  if(!await wait(result.match?SEATED_JOY_RECOVERY_MS:SEATED_MISS_RECOVERY_MS,ticket))return;
-  if(!await wait(BETWEEN_ACTIONS_MS,ticket))return;
+  // Speech and character acting are ambient feedback, not an input lock. The
+  // child can continue after this short, consistent result-reading window.
+  if(!await wait(RESULT_READ_MS,ticket))return;
   clearEffects(); board.advance(); renderBoard();
-  // Let the cards close before the next player's input becomes available.
-  if (!await wait(620, ticket)) return;
+  // Release input as soon as the closing flip is visually understandable.
+  if (!await wait(CARD_CLOSE_MS, ticket)) return;
   if (board.phase === 'complete') { finishRound(); return; }
   busy = false; renderBoard();
-  if (board.actor === 'sparky') await sparkyTurn(ticket);
+  if (board.actor === 'sparky') await sparkyTurn(ticket,{quiet:reactionVoiced});
   else {
-    sparky.set('present-right',1700);
-    if(narrateNow('child-turn',{first:1}))say('Your turn! Which two cards will you try?');
-    else $('caption').textContent='Your turn!';
+    $('caption').textContent='Your turn!';
   }
 }
 function drawStar(progress) {
@@ -370,18 +427,20 @@ async function tapAt(index, ticket, onContact) {
   tapAnimation = moveStar(0, 1, STAR_TRAVEL_MS);
   if (!await tapAnimation.finished || ticket !== run){sparky.cancelWandPick();return false;}
   target.classList.add('targeted'); $('cast-star').classList.add('contact'); burstAtCard(index);
-  const observation=onContact?.();sparky.finishWandPick();
-  if(!await wait(SEATED_WAND_RECOVERY_MS,ticket)){sparky.cancelWandPick();return false;}
+  const observation=onContact?.(),recoveryMs=sparky.finishWandPick();
+  if(!await wait(recoveryMs,ticket)){sparky.cancelWandPick();return false;}
   clearPointer();
-  if(!await wait(120,ticket))return false;
+  if(!await wait(BETWEEN_ACTIONS_MS,ticket))return false;
   return {observation,direction};
 }
-async function sparkyTurn(ticket) {
+async function sparkyTurn(ticket,{quiet=false}={}) {
   busy = true; renderBoard();
-  const introduce=narrateNow('sparky-turn',{first:1});
+  const introduce=!quiet&&narrateNow('sparky-turn',{first:1});
   const turnVoice=introduce?say('My turn! Let me think... I’ll try this one.'):(($('caption').textContent='Sparky is thinking…'),Promise.resolve({started:false,reason:'not-needed'}));
-  if (!await wait(700, ticket)) return;
-  if(!await waitForVoice(turnVoice,ticket))return;
+  // The thought line may continue while the visible choice begins; it never
+  // holds the whole board hostage.
+  void turnVoice;
+  if (!await wait(240, ticket)) return;
   if(!await wait(BETWEEN_ACTIONS_MS,ticket))return;
   // Sparky is a learning companion, not an optimal bot. When he gets ahead he
   // becomes even more forgetful, keeping the match playful for a young child.
@@ -393,10 +452,9 @@ async function sparkyTurn(ticket) {
   const secondIndex = memory.chooseSecond(board.available(),first,Math.random,recall);
   const columns=board.pairCount===2?2:board.pairCount===3?3:4;
   const secondDirection=seatedObserveDirection(secondIndex,columns);
-  sparky.observe(secondDirection);
   // Frame 015 is pixel-identical to the selected wand-pick Frame 000, so the
   // cast starts at the authored handoff instead of flashing through idle.
-  if(!await wait(SEATED_OBSERVE_HANDOFF_MS,ticket))return;
+  if(!await wait(sparky.observe(secondDirection),ticket))return;
   const secondTap=await tapAt(secondIndex,ticket,()=>reveal(secondIndex,'sparky'));
   if(!secondTap||!secondTap.observation)return;
   await resolveTurn(ticket,{settleMs:SPARKY_REVEAL_HOLD_MS});
@@ -422,27 +480,60 @@ function confetti() {
   $('effects-layer').innerHTML = Array.from({ length: 24 }, (_, i) => `<i class="confetti-bit" style="--x:${i * 4.2}%;--delay:${i % 5 * .08}s;--c:${['#eab867', '#9cc493', '#df9c99', '#88bfc0'][i % 4]};--rot:${i * 47}deg"></i>`).join('');
 }
 function finishRound() {
-  if (!save.completed.includes(round.id)) save.completed.push(round.id);
+  const seasonsWereUnlocked=themeUnlocked('seasons');
+  const neonWasUnlocked=themeUnlocked('neon');
+  const completed = themeProgress();
+  completed.push(round.id);
+  if (theme.id === 'neon') save.neonStars = completed;
+  else if (theme.id === 'seasons') save.seasonStars = completed;
+  else save.dreamStars = completed;
   persist(); audio.effect('finish');
+  applyTheme();
+  const openedTheme=!seasonsWereUnlocked&&themeUnlocked('seasons')?'seasons':!neonWasUnlocked&&themeUnlocked('neon')?'neon':null;
   mode = 'result'; $('app').dataset.mode = mode;
+  dockSparkyAtResult();
   document.querySelector('.match-area').hidden = true; $('result-view').hidden = false;
   const outcome = resultFor(board);
-  $('result-title').textContent = { practice:'You found them all!', win:'You beat Sparky!', lose:'Sparky wins this time!', tie:'A brilliant tie!' }[outcome];
-  $('result-score').textContent = options.mode === 'practice' ? `${board.pairCount} pairs found` : `You ${board.scores.child} · Sparky ${board.scores.sparky}`;
+  $('result-title').textContent = { practice:'Every pair found!', win:'You found more!', lose:'Sparky found more!', tie:'You found the same!' }[outcome];
+  const score = $('result-score');
+  $('result-view').classList.remove('has-theme-unlock');
+  if(openedTheme){
+    const unlockedTheme=getTheme(openedTheme);
+    const unlockDialog=$('theme-unlock-dialog');
+    unlockDialog.dataset.theme=openedTheme;
+    $('theme-unlock-title').textContent=unlockedTheme.title;
+    $('theme-unlock-preview').className=`theme-picture theme-picture--${openedTheme}`;
+    $('theme-unlock-message').textContent=openedTheme==='seasons'
+      ? 'Season friends are ready to play!'
+      : 'The glowing Shape Lab is ready!';
+    $('unlock-visit').dataset.theme=openedTheme;
+  }
+  if (options.mode === 'practice') {
+    score.setAttribute('aria-label', `${board.pairCount} pairs found`);
+    score.innerHTML = `<span class="result-score-total"><strong>${board.pairCount}</strong><small>pairs found</small></span>`;
+  } else {
+    score.setAttribute('aria-label', `You ${board.scores.child}, Sparky ${board.scores.sparky}`);
+    score.innerHTML = `<span><small>You</small><strong>${board.scores.child}</strong></span><i aria-hidden="true"></i><span><small>Sparky</small><strong>${board.scores.sparky}</strong></span>`;
+  }
   announceResult(dialogue.next(outcome === 'practice' ? 'done' : outcome)); confetti();
-  $('play-again').focus({ preventScroll: true });
+  if(openedTheme){
+    const unlockDialog=$('theme-unlock-dialog');
+    if(!unlockDialog.open)unlockDialog.showModal();
+    $('unlock-visit').focus({preventScroll:true});
+  }else $('play-again').focus({ preventScroll: true });
 }
 function showPicnic() {
-  if (!save.discoveries.length) return;
+  const dreamDiscoveries=save.discoveries.filter(id=>ITEMS[id]);
+  if (theme.id !== 'dream' || !dreamDiscoveries.length) return;
   if (board.phase !== 'complete' && (busy || board.actor !== 'child')) return;
-  mode = 'explore'; clearEffects(); picnic.render(save.discoveries);
+  mode = 'explore'; clearEffects(); picnic.render(dreamDiscoveries);
   $('app').dataset.mode = mode; $('play-layout').hidden = true; $('discovery-strip').hidden = true; $('explore-view').hidden = false; $('visit-picnic').hidden = true;
-  const complete = board.phase === 'complete', final = save.completed.length === PACK.rounds.length;
+  const complete = board.phase === 'complete', final = new Set(save.dreamStars).size >= getTheme('dream').pack.rounds.length;
   $('explore-title').textContent = final ? 'Our happy picnic!' : 'Picnic time!';
   $('explore-kicker').textContent = complete ? `ROUND ${round.id} · WE DID IT TOGETHER` : 'A LITTLE PLAY BREAK';
   $('explore-message').textContent = 'Tap a discovery, or bring it to a place below.';
   $('next-round').hidden = !complete; $('resume-round').hidden = complete;
-  $('next-round').innerHTML = `${round.id === '4' ? 'Play again!' : 'More shapes!'} <span aria-hidden="true">→</span>`;
+  $('next-round').innerHTML = `${nextRoundId() === '1' ? 'Play again!' : theme.id === 'seasons' ? 'More seasons!' : 'More shapes!'} <span aria-hidden="true">→</span>`;
   updatePause(); window.scrollTo({ top: 0, behavior: 'instant' });
 }
 function resumeRound() {
@@ -460,7 +551,6 @@ function hint() {
     result.cards.forEach(card => $('cards').children[card.index].classList.add('hinted'));
     say(result.type === 'pair' || result.type === 'mate' ? 'I remember seeing those two. Try them!' : 'I’m still learning too. Let’s turn another card.');
   }
-  sparky.set('thumbs-up', 1800);
 }
 function openSettings() { audio.stop(); picnic.cancelDrag(); $('settings-dialog').showModal(); updatePause(); }
 function settingsUI() {
@@ -477,7 +567,7 @@ $('hint').addEventListener('click', hint);
 $('sparky').addEventListener('click', () => {
   if (busy || mode !== 'match' || $('settings-dialog').open) return;
   if (options.mode === 'practice') hint();
-  else { sparky.set('greeting', 1400); say('Hi, friend! Ready to find some shape pairs?'); }
+  else { say('Hi, friend! Ready to find some shape pairs?'); }
 });
 $('repeat').addEventListener('click', () => {
   activateAudio();
@@ -485,10 +575,10 @@ $('repeat').addEventListener('click', () => {
   audio.say(text,{onStart:meta=>{music.setDucked(true);sparky.speak(text,meta.durationMs,meta.clock,meta.silences);},onEnd:()=>{sparky.finishSpeaking();music.setDucked(false);}});
 });
 $('visit-picnic').addEventListener('click', showPicnic);
-$('picnic-basket').addEventListener('click', () => { if (save.discoveries.length) showPicnic(); else { sparky.set('happy', 1300); say('Let’s find a shape pair for our picnic!'); } });
+$('picnic-basket').addEventListener('click', () => { if (save.discoveries.some(id=>ITEMS[id])) showPicnic(); else { say('Let’s find a shape pair for our picnic!'); } });
 $('discovery-tray').addEventListener('click', event => { if (event.target.closest('[data-discovery]')) showPicnic(); });
 $('resume-round').addEventListener('click', resumeRound);
-$('next-round').addEventListener('click', () => { activateAudio(); startRound(round.id === '4' ? '1' : String(Number(round.id) + 1)); });
+$('next-round').addEventListener('click', () => { activateAudio(); startRound(nextRoundId()); });
 $('settings-open').addEventListener('click', openSettings);
 $('settings-dialog').querySelectorAll('[data-close]').forEach(button => button.addEventListener('click', () => $('settings-dialog').close()));
 $('settings-home').addEventListener('click', () => { $('settings-dialog').close(); showSetup(); });
@@ -499,7 +589,9 @@ for (const key of ['voice', 'music']) $(`${key}-toggle`).addEventListener('click
   if (key === 'music') { save.effects = save.music; music.sync(!document.hidden && !$('settings-dialog').open); }
   persist(); settingsUI();
 });
-document.addEventListener('keydown', event => { if (event.key === 'Escape' && !$('settings-dialog').open) { event.preventDefault(); openSettings(); } });
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && !$('settings-dialog').open && !$('level-dialog').open && !$('theme-dialog').open) { event.preventDefault(); openSettings(); }
+});
 document.addEventListener('visibilitychange', () => { if (document.hidden) picnic.cancelDrag(); updatePause(); });
 window.addEventListener('resize', () => { renderTray(); if (board?.actor !== 'sparky') clearPointer(); });
 document.addEventListener('pointerdown', activateAudio, { once: true });
@@ -518,11 +610,12 @@ function showSetup() {
   if($('level-dialog').open)$('level-dialog').close();
   sparky.set('idle');
   hideCloudCurtain();
+  dockSparkyAtBoard();
   mode = 'setup'; $('app').dataset.mode = mode;
   $('setup-view').hidden = false; $('play-layout').hidden = true; $('explore-view').hidden = true;
   $('result-view').hidden = true; $('discovery-strip').hidden = true;
   $('setup-view').dataset.step = 'menu'; $('mode-panel').hidden = false;
-  setupUI(); updatePause(); menuSparky.set('greeting',1400);
+  applyTheme(); setupUI(); updatePause(); menuSparky.nodYes();
   document.querySelector('button[data-play-mode="practice"]').focus({ preventScroll:true });
 }
 function showLevels(playMode) {
@@ -535,15 +628,35 @@ function showLevels(playMode) {
 document.querySelectorAll('button[data-play-mode]').forEach(button => button.addEventListener('click', () => showLevels(button.dataset.playMode)));
 $('level-close').addEventListener('click',()=>$('level-dialog').close());
 $('menu-sparky').addEventListener('click',()=>{
-  activateAudio();menuSparky.set('greeting',1400);
-  $('menu-caption').textContent='Hi, friend! Ready to find some shape pairs?';
+  activateAudio();menuSparky.nodYes();
+  $('menu-caption').textContent=theme.id === 'seasons' ? 'Let’s find which season each picture belongs to!' : theme.id==='neon' ? 'Let’s light up shapes that belong together!' : 'Hi, friend! Ready to find some shape pairs?';
   audio.say($('menu-caption').textContent,{onStart:meta=>{music.setDucked(true);menuSparky.speak($('menu-caption').textContent,meta.durationMs,meta.clock,meta.silences);},onEnd:()=>{menuSparky.finishSpeaking();music.setDucked(false);}});
 });
 document.querySelectorAll('button[data-level]').forEach(button => button.addEventListener('click', () => {
   options = playOptions(options.mode, button.dataset.level);
   $('level-dialog').close();activateAudio();startRound(save.activeRound);
 }));
-$('play-again').addEventListener('click', () => { activateAudio(); startRound(round.id === '4' ? '1' : String(Number(round.id) + 1)); });
+$('play-again').addEventListener('click', () => { activateAudio(); startRound(nextRoundId()); });
 $('choose-game').addEventListener('click', showSetup);
+function openThemes() { applyTheme(); if (!$('theme-dialog').open) $('theme-dialog').showModal(); }
+$('theme-open').addEventListener('click', openThemes);
+$('theme-close').addEventListener('click', () => $('theme-dialog').close());
+document.querySelectorAll('[data-theme-choice]').forEach(button => button.addEventListener('click', () => {
+  const id = button.dataset.themeChoice;
+  if (!themeUnlocked(id)) {
+    button.classList.remove('needs-stars'); void button.offsetWidth; button.classList.add('needs-stars');
+    const left=id==='neon'?Math.max(0,5-save.dreamStars.length-save.seasonStars.length):Math.max(0,3-save.dreamStars.length);
+    $('theme-dialog-message').textContent=id==='neon'
+      ? `Play ${left} more ${left===1?'match':'matches'} to light up the Neon Lab.`
+      : `Play ${left} more ${left===1?'match':'matches'} to open Season Parade.`;
+    return;
+  }
+  save.theme=id; save.activeRound='1'; persist(); applyTheme(); $('theme-dialog').close(); showSetup();
+}));
+$('unlock-visit').addEventListener('click',()=>{
+  const dialog=$('theme-unlock-dialog');
+  save.theme=$('unlock-visit').dataset.theme||'seasons';save.activeRound='1';persist();dialog.close();applyTheme();showSetup();
+});
+$('unlock-later').addEventListener('click',()=>{$('theme-unlock-dialog').close();$('play-again').focus({preventScroll:true});});
 document.querySelector('.home-button').addEventListener('click', event => { event.preventDefault(); if ($('settings-dialog').open) $('settings-dialog').close(); showSetup(); });
-settingsUI(); startRound(save.activeRound); showSetup();
+applyTheme(); settingsUI(); startRound(save.activeRound); showSetup();

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { access, stat } from 'node:fs/promises';
-import { PACK, ITEMS, cardsFor, assetURL } from '../shape-friends/content.js';
+import { PACK, SEASON_PACK, NEON_PACK, ITEMS, SEASON_ITEMS, cardsFor, assetURL, getTheme } from '../shape-friends/content.js';
 import { MatchBoard, shuffle } from '../shape-friends/engine.js';
 import { CompanionMemory } from '../shape-friends/companion.js';
 import { emptySave, sanitizeSave, discover, readSave, writeSave } from '../shape-friends/save.js';
@@ -25,6 +25,48 @@ test('All 18 object IDs resolve to shipped, compact WebP art', async () => {
   for (const id of Object.keys(ITEMS)) {
     const url = new URL(assetURL(id)); await access(url);
     assert((await stat(url)).size < 90000, `${id} exceeds the card budget`);
+  }
+});
+
+test('Season Parade is a complete second world with four visual seasons', async () => {
+  assert.equal(getTheme('seasons').pack, PACK);
+  assert.equal(SEASON_PACK.rounds.length, 4);
+  for (const round of SEASON_PACK.rounds) {
+    const cards=cardsFor(round);
+    assert.equal(cards.length,8);
+    assert.deepEqual(round.pairs.map(pair=>pair[0]),['winter','spring','summer','autumn']);
+    assert.equal(new Set(cards.map(card=>card.item)).size,8);
+  }
+  assert.equal(Object.keys(SEASON_ITEMS).length,16);
+  for(const id of Object.keys(SEASON_ITEMS)){
+    const url=new URL(assetURL(id));await access(url);
+    assert.match(await (await import('node:fs/promises')).readFile(url,'utf8'),/^<svg/);
+  }
+  for(const file of ['season-parade-bg-v1.webp','season-parade-bg-v2.webp','season-card-back-v1.webp','season-card-front-v1.webp','season-sparky-cloud-v1.webp']){
+    const url=new URL(`../shape-friends/assets/${file}`,import.meta.url);await access(url);
+    assert((await stat(url)).size>20000,`${file} must be authored artwork, not a placeholder`);
+    assert((await stat(url)).size<180000,`${file} exceeds the runtime image budget`);
+  }
+  const resultStage=new URL('../shape-friends/assets/season-result-stage-v1.webp',import.meta.url);
+  await access(resultStage);
+  assert((await stat(resultStage)).size>100000,'season result stage must be authored artwork');
+  assert((await stat(resultStage)).size<300000,'season result stage exceeds the runtime image budget');
+});
+
+test('Neon Shape Lab is a complete third world with production artwork',async()=>{
+  assert.equal(getTheme('neon').pack,PACK);
+  assert.equal(NEON_PACK.rounds.length,4);
+  for(const round of NEON_PACK.rounds){
+    const cards=cardsFor(round);
+    assert.equal(cards.length,8);
+    assert.deepEqual(round.pairs.map(pair=>pair[0]),['round','box','cone','cylinder']);
+    assert.equal(new Set(cards.map(card=>card.item)).size,8);
+  }
+  for(const file of ['neon-shape-lab-bg-v2.webp','neon-card-back-v1.webp','neon-card-front-v1.webp','neon-sparky-cloud-v1.webp']){
+    const url=new URL(`../shape-friends/assets/${file}`,import.meta.url);await access(url);
+    const size=(await stat(url)).size;
+    assert(size>50000,`${file} must be authored artwork, not a placeholder`);
+    assert(size<300000,`${file} exceeds the runtime image budget`);
   }
 });
 
@@ -78,6 +120,7 @@ test('Companion cannot remember an unseen identity; hints use real observed posi
 test('Discovery collection is unique, persistent and robust to unavailable/corrupt storage', () => {
   const save = emptySave();
   for (const round of PACK.rounds) { discover(save, cardsFor(round).map(card => card.item)); save.completed.push(round.id); }
+  save.dreamStars=[...save.completed];
   assert.equal(save.discoveries.length, 18);
   assert.equal(discover(save, ['football', 'book']).length, 0);
   assert.deepEqual(sanitizeSave(save), save);
@@ -88,6 +131,22 @@ test('Discovery collection is unique, persistent and robust to unavailable/corru
   assert.deepEqual(readSave({ getItem: () => '{bad' }), emptySave());
   let value; const storage = { getItem: () => value, setItem: (_, input) => { value = input; } };
   assert(writeSave(save, storage)); assert.deepEqual(readSave(storage), save);
+});
+
+test('three completed Dream boards unlock and preserve the Seasons world',()=>{
+  const raw={...emptySave(),dreamStars:['1','2','3'],theme:'seasons'};
+  const restored=sanitizeSave(raw);
+  assert.deepEqual(restored.dreamStars,['1','2','3']);
+  assert.equal(restored.theme,'seasons');
+  assert.equal(sanitizeSave({...raw,dreamStars:['1','2']}).theme,'dream');
+});
+
+test('five completed rounds across worlds unlock and preserve Neon Shape Lab',()=>{
+  const raw={...emptySave(),dreamStars:['1','2','3'],seasonStars:['1','2'],theme:'neon'};
+  const restored=sanitizeSave(raw);
+  assert.deepEqual(restored.seasonStars,['1','2']);
+  assert.equal(restored.theme,'neon');
+  assert.equal(sanitizeSave({...raw,seasonStars:['1']}).theme,'seasons');
 });
 
 test('Shuffle is a copy and always preserves all cards', () => {

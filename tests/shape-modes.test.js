@@ -63,6 +63,34 @@ test('pre-readers can choose a board by card count and start with one tap',async
  const app=await readFile(new URL('../shape-friends/app.js',import.meta.url),'utf8');
  assert.match(app,/button\.dataset\.level\);\s*\$\('level-dialog'\)\.close\(\);activateAudio\(\);startRound\(save\.activeRound\)/);
 });
+test('world chooser is visual, persistent and keeps later worlds behind completed rounds',async()=>{
+ const html=await readFile(new URL('../shape-friends/index.html',import.meta.url),'utf8');
+ const app=await readFile(new URL('../shape-friends/app.js',import.meta.url),'utf8');
+ const css=await readFile(new URL('../shape-friends/prototype.css',import.meta.url),'utf8');
+ assert.match(html,/id="theme-open"/);assert.match(html,/data-theme-choice="dream"/);assert.match(html,/data-theme-choice="seasons"/);assert.match(html,/data-theme-choice="neon"/);
+ assert.match(html,/id="theme-unlock-dialog"/);assert.match(html,/id="unlock-visit"/);assert.match(html,/id="unlock-later"/);
+ assert.match(html,/theme-picture--dream/);assert.match(html,/theme-picture--seasons/);assert.match(html,/theme-picture--neon/);
+ assert.match(app,/save\.dreamStars\.length\s*>=\s*3/);
+ assert.match(app,/save\.dreamStars\.length\+save\.seasonStars\.length\s*>=\s*5/);
+ assert.match(app,/document\.body\.dataset\.theme = theme\.id/);
+ assert.match(app,/unlockDialog\.showModal\(\)/,'new worlds receive a one-time unlock popup');
+ assert.match(app,/\$\('theme-open-label'\)\.textContent = 'Worlds'/,'the permanent world switcher stays explicit');
+ assert.match(app,/season-sparky-cloud-v1\.webp/);
+ assert.match(app,/neon-sparky-cloud-v1\.webp/);
+ assert.match(css,/body\[data-theme="seasons"\]/);
+ assert.match(css,/season-parade-bg-v2\.webp/);
+ assert.match(css,/season-card-back-v1\.webp/);
+ assert.match(css,/season-card-front-v1\.webp/);
+ assert.match(css,/season-result-stage-v1\.webp/);
+ assert.match(css,/body\[data-theme="seasons"\] dialog#level-dialog/,'difficulty modal follows the active world');
+ assert.match(css,/body\[data-theme="seasons"\] dialog\.theme-dialog/,'world modal follows the active world');
+ assert.match(css,/body\[data-theme="neon"\]/);
+ assert.match(css,/neon-shape-lab-bg-v2\.webp/);
+ assert.match(css,/neon-card-back-v1\.webp/);
+ assert.match(css,/neon-card-front-v1\.webp/);
+ assert.match(css,/body\[data-theme="neon"\] #app\[data-mode="match"\] \.board-wrap\{[\s\S]*?border:0;[\s\S]*?background:transparent;box-shadow:none/,'Neon artwork provides the play field without an extra board panel');
+ assert.match(css,/body\[data-theme="neon"\] #app\[data-mode="match"\] #match-score\{[\s\S]*?background:linear-gradient/,'Neon score keeps readable contrast');
+});
 test('pause menu stays child-facing and uses complete setting controls',async()=>{
  const html=await readFile(new URL('../shape-friends/index.html',import.meta.url),'utf8');
  const app=await readFile(new URL('../shape-friends/app.js',import.meta.url),'utf8');
@@ -78,6 +106,24 @@ test('pause menu stays child-facing and uses complete setting controls',async()=
  assert.match(html,/id="settings-home"[\s\S]*Choose a game/);
  assert.match(app,/if \(key === 'music'\) \{ save\.effects = save\.music;/,'Music is the master switch for effects too');
 });
+test('result screen uses gentle language, one clear heading and visual action icons',async()=>{
+ const html=await readFile(new URL('../shape-friends/index.html',import.meta.url),'utf8');
+ const app=await readFile(new URL('../shape-friends/app.js',import.meta.url),'utf8');
+ const css=await readFile(new URL('../shape-friends/prototype.css',import.meta.url),'utf8');
+ assert.doesNotMatch(html,/Round complete/i);
+ assert.doesNotMatch(html,/class="result-kicker"/);
+ for(const id of ['play-again','choose-game']){
+   const button=html.match(new RegExp(`<button id="${id}"[\\s\\S]*?</button>`))?.[0]||'';
+   assert.match(button,/<svg[^>]*aria-hidden="true"/);
+ }
+ assert.match(app,/lose:'Sparky found more!'/);
+ assert.doesNotMatch(app,/Sparky wins this time!/);
+ assert.match(app,/score\.setAttribute\('aria-label'/);
+ assert.match(css,/Result modal architecture/);
+ assert.match(css,/#app\[data-mode="result"\] \.result-actions\{[\s\S]*?border:0;[\s\S]*?background:transparent/);
+ assert.match(css,/body\[data-theme="seasons"\] #app\[data-mode="result"\] \.result-view\{[\s\S]*?--result-surface/);
+ assert.match(css,/body\[data-theme="neon"\] #app\[data-mode="result"\] \.result-view\{[\s\S]*?--result-surface/);
+});
 test('welcome narration finishes before the board accepts taps',async()=>{
  const app=await readFile(new URL('../shape-friends/app.js',import.meta.url),'utf8');
  assert.match(app,/mode = 'match'; busy = enteringPlay/);
@@ -91,4 +137,16 @@ test('card artwork is decoded before play and has a nonblank loading face',async
  assert.match(app,/await artReady;[\s\S]*?busy=false;renderBoard\(\)/);
  assert.match(app,/front\.classList\.add\('is-loading'\)/);
  assert.match(css,/\.card-front\.is-loading::after/);
+ assert.doesNotMatch(css,/\.memory-card:not\(\:disabled\):hover \.card-face\s*\{[^}]*transform:/s,'hover must not replace the face-flip transform');
+ assert.match(css,/\.memory-card:not\(\:disabled\):hover\s*\{[^}]*transform:/s,'hover lifts the complete card instead');
+});
+test('turn pacing releases the board without waiting through speech or full reactions',async()=>{
+ const app=await readFile(new URL('../shape-friends/app.js',import.meta.url),'utf8');
+ assert.match(app,/CARD_REVEAL_HOLD_MS=650/);
+ assert.match(app,/RESULT_READ_MS=620/);
+ assert.match(app,/CARD_CLOSE_MS=300/);
+ assert.doesNotMatch(app,/waitForVoice\(reactionVoice/,'ordinary result speech must not lock card input');
+ assert.match(app,/narrateNow\('child-match',\{first:1\}\)/,'only the first child match in a round is spoken');
+ assert.match(app,/narrateNow\('child-miss',\{first:1\}\)/,'only the first child miss in a round is spoken');
+ assert.match(app,/result\.actor==='child'[\s\S]*?: false;/,'Sparky uses non-verbal feedback for his own results');
 });

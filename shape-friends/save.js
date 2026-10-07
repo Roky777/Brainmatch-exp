@@ -1,13 +1,26 @@
-import { PACK, ITEMS } from './content.js';
+import { PACK, SEASON_PACK, NEON_PACK, hasItem } from './content.js';
 export const SAVE_KEY = 'brainmatch:shape-friends:v1';
-export const emptySave = () => ({ version: 1, discoveries: [], completed: [], voice: true, effects: true, music: true, activeRound: '1', gardenWater: 0 });
+export const emptySave = () => ({ version: 3, discoveries: [], completed: [], seasonCompleted: [], dreamStars: [], seasonStars: [], neonStars: [], theme: 'dream', voice: true, effects: true, music: true, activeRound: '1', gardenWater: 0 });
 export function sanitizeSave(raw) {
   const save = emptySave();
   if (!raw || typeof raw !== 'object') return save;
   const validRounds = PACK.rounds.map(round => round.id);
-  save.discoveries = [...new Set(Array.isArray(raw.discoveries) ? raw.discoveries.filter(item => Object.hasOwn(ITEMS, item)) : [])];
+  save.discoveries = [...new Set(Array.isArray(raw.discoveries) ? raw.discoveries.filter(hasItem) : [])];
   // Completed rounds must have their expected discoveries. Corruption cannot unlock content.
   save.completed = validRounds.filter(id => Array.isArray(raw.completed) && raw.completed.includes(id) && PACK.rounds.find(round => round.id === id).pairs.every(([, a, b]) => save.discoveries.includes(a) && save.discoveries.includes(b)));
+  const validSeasonRounds = SEASON_PACK.rounds.map(round => round.id);
+  save.seasonCompleted = validSeasonRounds.filter(id => Array.isArray(raw.seasonCompleted) && raw.seasonCompleted.includes(id) && SEASON_PACK.rounds.find(round => round.id === id).pairs.every(([, a, b]) => save.discoveries.includes(a) && save.discoveries.includes(b)));
+  const rawDream = Array.isArray(raw.dreamStars) ? raw.dreamStars.filter(id => typeof id === 'string' && validRounds.includes(id)) : [];
+  save.dreamStars = rawDream.length > 0 ? rawDream : validRounds.filter(id => save.completed.includes(id));
+  const rawSeason = Array.isArray(raw.seasonStars) ? raw.seasonStars.filter(id => typeof id === 'string' && validSeasonRounds.includes(id)) : [];
+  save.seasonStars = rawSeason.length > 0 ? rawSeason : validSeasonRounds.filter(id => save.seasonCompleted.includes(id));
+  const validNeonRounds=NEON_PACK.rounds.map(round=>round.id);
+  save.neonStars = Array.isArray(raw.neonStars) ? raw.neonStars.filter(id => typeof id === 'string' && validNeonRounds.includes(id)) : [];
+  const neonUnlocked=save.dreamStars.length+save.seasonStars.length>=5;
+  const seasonsUnlocked=save.dreamStars.length>=3;
+  save.theme = raw.theme === 'neon' && neonUnlocked
+    ? 'neon'
+    : (raw.theme === 'seasons'||raw.theme === 'neon') && seasonsUnlocked ? 'seasons' : 'dream';
   save.voice = raw.voice !== false; save.effects = raw.effects !== false; save.music = raw.music !== false;
   save.activeRound = validRounds.includes(raw.activeRound) ? raw.activeRound : '1';
   save.gardenWater = Number.isInteger(raw.gardenWater) ? Math.max(0, Math.min(3, raw.gardenWater)) : 0;

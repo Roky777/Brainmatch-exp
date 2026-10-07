@@ -19,6 +19,12 @@ export const SEATED_WAND_ROOT = 'assets/new_sparky_sheets/sparky_wall_wand_pick'
 export const SEATED_JOY_SHEET = 'assets/new_sparky_sheets/sparky_wall_pair_joy/sparky_wall_pair_joy_atlas.png';
 export const SEATED_MISS_SHEET = 'assets/new_sparky_sheets/sparky_wall_gentle_miss/sparky_wall_gentle_miss_atlas.png';
 export const SEATED_RESULT_SHEET = 'assets/new_sparky_sheets/sparky_wall_result_reaction/sparky_wall_result_reaction_atlas.png';
+export const SEATED_NOD_YES_SHEET = 'assets/new_sparky_sheets/sparky_wall_nod_yes/atlas.png';
+export const SEATED_NOD_YES_FRAMES = Object.freeze({
+  frames:[0,1,2,3,4,5,6,7,8,9,10,11],
+  times:[120,67,67,67,100,67,67,67,100,67,67,120],
+});
+export const SEATED_NOD_YES_DURATION=SEATED_NOD_YES_FRAMES.times.reduce((sum,time)=>sum+time,0);
 export const MOUTH_VISEME_ROOT = 'assets/new_sparky_sheets/sparky_wall_mouth_visemes';
 export const MOUTH_VISEME_SHEET = `${MOUTH_VISEME_ROOT}/mouth_runtime_atlas.png`;
 export const MOUTH_CLEANUP_SHEET = `${MOUTH_VISEME_ROOT}/integration/base_mouth_cleanup.png`;
@@ -146,6 +152,11 @@ export function seatedResultFrame(elapsed,reduced=false) {
   if(reduced||elapsed>=SEATED_RESULT_HOLD_MS)return 16;
   return timedFrame({frames:SEATED_RESULT_FRAMES.frames.slice(0,16),times:SEATED_RESULT_FRAMES.times.slice(0,16)},elapsed);
 }
+export function seatedNodYesFrame(elapsed,reduced=false) {
+  if(reduced)return 0;
+  if(elapsed>=SEATED_NOD_YES_DURATION)return 11;
+  return timedFrame(SEATED_NOD_YES_FRAMES,elapsed);
+}
 export function seatedTalkFrame(elapsed, duration=3042, reduced=false) {
   if(reduced)return 0;
   const intro={frames:SEATED_TALK_FRAMES.frames.slice(0,8),times:SEATED_TALK_FRAMES.times.slice(0,8)};
@@ -267,10 +278,10 @@ export function sparkyArt(){return '<span class="sparky-mini-frame" aria-hidden=
 export class Sparky {
   constructor(element, { seated = false } = {}) {
     this.element=element;this.seated=seated;this.reduced=matchMedia('(prefers-reduced-motion: reduce)');
-    this.elapsed=0;this.duration=0;this.paused=false;this.last=performance.now();this.drawn='';this.speechActive=false;
+    this.elapsed=0;this.duration=0;this.rate=1;this.paused=false;this.last=performance.now();this.drawn='';this.speechActive=false;
     const observeSources=OBSERVE_VARIANTS.map(seatedObserveSource);
     const wandSources=OBSERVE_VARIANTS.map(seatedWandSource);
-    const sources=seated?[SEATED_IDLE_SHEET,SEATED_TALK_SHEET,SEATED_ARRIVE_SHEET,SEATED_JOY_SHEET,SEATED_MISS_SHEET,SEATED_RESULT_SHEET,MOUTH_VISEME_SHEET,MOUTH_CLEANUP_SHEET,...observeSources,...wandSources]:['peek','expressions','reach','reactions'].map(sheet=>`assets/sparky/kimono-${sheet}-v1.webp`);
+    const sources=seated?[SEATED_IDLE_SHEET,SEATED_TALK_SHEET,SEATED_ARRIVE_SHEET,SEATED_JOY_SHEET,SEATED_MISS_SHEET,SEATED_RESULT_SHEET,SEATED_NOD_YES_SHEET,MOUTH_VISEME_SHEET,MOUTH_CLEANUP_SHEET,...observeSources,...wandSources]:['peek','expressions','reach','reactions'].map(sheet=>`assets/sparky/kimono-${sheet}-v1.webp`);
     this.images=sources.map(src=>{const image=new Image();image.src=src;return image;});
     element.replaceChildren();
     if(seated){
@@ -284,7 +295,7 @@ export class Sparky {
   tick(now) {
     const delta=Math.min(100,now-this.last);this.last=now;
     if(!this.paused&&!document.hidden){
-      this.elapsed+=delta;
+      this.elapsed+=delta*this.rate;
       if(this.duration&&this.elapsed>=this.duration)this.set('idle');
       this.paint();
     }
@@ -292,15 +303,15 @@ export class Sparky {
   }
   paint() {
     if(this.seated){
-      const talking=this.pose==='talk',arriving=this.pose==='arrive',observing=this.pose==='observe',wandPicking=this.pose==='wand-pick',joyful=this.pose==='pair-joy',reassuring=this.pose==='gentle-miss',result=this.pose==='result-reaction';
-      const frame=talking?seatedTalkFrame(this.elapsed,this.duration,this.reduced.matches):arriving?seatedArriveFrame(this.elapsed,this.reduced.matches):observing?seatedObserveFrame(this.elapsed,this.reduced.matches):wandPicking?seatedWandFrame(this.elapsed,this.wandContactElapsed,this.reduced.matches):joyful?seatedJoyFrame(this.elapsed,this.duration,this.reduced.matches):reassuring?seatedMissFrame(this.elapsed,this.duration,this.reduced.matches):result?seatedResultFrame(this.elapsed,this.reduced.matches):seatedIdleFrame(this.elapsed,this.reduced.matches);
-      const sheet=talking?'wall-talk':arriving?'wall-arrive':observing?`wall-observe-${this.observeVariant}`:wandPicking?`wall-wand-${this.wandVariant}`:joyful?'wall-pair-joy':reassuring?'wall-gentle-miss':result?'wall-result-reaction':'wall-idle-formal';
-      const source=talking?SEATED_TALK_SHEET:arriving?SEATED_ARRIVE_SHEET:observing?seatedObserveSource(this.observeVariant,frame):wandPicking?seatedWandSource(this.wandVariant):joyful?SEATED_JOY_SHEET:reassuring?SEATED_MISS_SHEET:result?SEATED_RESULT_SHEET:SEATED_IDLE_SHEET;
-      const columns=arriving||result?5:wandPicking?6:4,rows=4;
+      const talking=this.pose==='talk',arriving=this.pose==='arrive',observing=this.pose==='observe',wandPicking=this.pose==='wand-pick',joyful=this.pose==='pair-joy',reassuring=this.pose==='gentle-miss',result=this.pose==='result-reaction',nodding=this.pose==='nod-yes';
+      const frame=talking?seatedTalkFrame(this.elapsed,this.duration,this.reduced.matches):arriving?seatedArriveFrame(this.elapsed,this.reduced.matches):observing?seatedObserveFrame(this.elapsed,this.reduced.matches):wandPicking?seatedWandFrame(this.elapsed,this.wandContactElapsed,this.reduced.matches):joyful?seatedJoyFrame(this.elapsed,this.duration,this.reduced.matches):reassuring?seatedMissFrame(this.elapsed,this.duration,this.reduced.matches):result?seatedResultFrame(this.elapsed,this.reduced.matches):nodding?seatedNodYesFrame(this.elapsed,this.reduced.matches):seatedIdleFrame(this.elapsed,this.reduced.matches);
+      const sheet=talking?'wall-talk':arriving?'wall-arrive':observing?`wall-observe-${this.observeVariant}`:wandPicking?`wall-wand-${this.wandVariant}`:joyful?'wall-pair-joy':reassuring?'wall-gentle-miss':result?'wall-result-reaction':nodding?'wall-nod-yes':'wall-idle-formal';
+      const source=talking?SEATED_TALK_SHEET:arriving?SEATED_ARRIVE_SHEET:observing?seatedObserveSource(this.observeVariant,frame):wandPicking?seatedWandSource(this.wandVariant):joyful?SEATED_JOY_SHEET:reassuring?SEATED_MISS_SHEET:result?SEATED_RESULT_SHEET:nodding?SEATED_NOD_YES_SHEET:SEATED_IDLE_SHEET;
+      const columns=arriving||result?5:wandPicking?6:4,rows=nodding?3:4;
       // Lip sync is independent from the body pose: Sparky also speaks while
       // celebrating, reassuring and holding the result pose. Reduced-motion
       // freezes large body movement but keeps these slower speech shapes.
-      const mouthActive=this.speechActive;
+      const mouthActive=this.speechActive&&!nodding;
       const speechTiming=mouthActive&&this.speechClock?this.speechClock():null;
       if(speechTiming&&Number.isFinite(speechTiming.durationMs)&&Math.abs(speechTiming.durationMs-this.mouthCueDuration)>1){
         this.mouthCueDuration=speechTiming.durationMs;this.mouthCues=buildMouthCues(this.mouthText,this.mouthCueDuration,this.mouthSilences);
@@ -324,8 +335,9 @@ export class Sparky {
     this.element.style.setProperty('background-position',`${frame%4/3*100}% ${Math.floor(frame/4)/2*100}%`,'important');
     this.element.dataset.sheet=sheet;this.element.dataset.frame=String(frame);
   }
-  set(pose,duration=0) {
-    this.pose=this.seated&&['talk','arrive','observe','wand-pick','pair-joy','gentle-miss','result-reaction'].includes(pose)?pose:SPARKY_CLIPS[pose]?pose:'idle';this.elapsed=0;this.duration=duration;
+  set(pose,duration=0,rate=1) {
+    this.pose=this.seated&&['talk','arrive','observe','wand-pick','pair-joy','gentle-miss','result-reaction','nod-yes'].includes(pose)?pose:SPARKY_CLIPS[pose]?pose:'idle';this.elapsed=0;this.duration=duration;
+    this.rate=rate;
     this.element.dataset.pose=this.pose;this.paint();
   }
   pause(value){this.paused=value;this.last=performance.now();}
@@ -336,17 +348,17 @@ export class Sparky {
   observe(variant='center'){
     if(!this.seated)return 0;
     this.observeVariant=OBSERVE_VARIANTS.includes(variant)?variant:'center';
-    this.set('observe',SEATED_OBSERVE_DURATION);return SEATED_OBSERVE_DURATION;
+    const rate=1.6;this.set('observe',SEATED_OBSERVE_DURATION,rate);return SEATED_OBSERVE_DURATION/rate;
   }
   startWandPick(variant='center'){
     if(!this.seated)return 0;
     this.wandVariant=OBSERVE_VARIANTS.includes(variant)?variant:'center';this.wandContactElapsed=null;
-    this.set('wand-pick');return SEATED_WAND_RELEASE_MS;
+    const rate=1.5;this.set('wand-pick',0,rate);return SEATED_WAND_RELEASE_MS/rate;
   }
   finishWandPick(){
     if(!this.seated||this.pose!=='wand-pick'||this.wandContactElapsed!==null)return 0;
     this.wandContactElapsed=this.elapsed;this.duration=this.elapsed+SEATED_WAND_RECOVERY_MS;this.paint();
-    return SEATED_WAND_RECOVERY_MS;
+    return SEATED_WAND_RECOVERY_MS/this.rate;
   }
   cancelWandPick(){if(this.pose==='wand-pick')this.set('idle');}
   pairJoy(){
@@ -361,6 +373,10 @@ export class Sparky {
   gentleMiss(){
     if(!this.seated)return 0;
     this.set('gentle-miss',SEATED_MISS_DURATION);return SEATED_MISS_DURATION;
+  }
+  nodYes(rate=1){
+    if(!this.seated||this.speechActive||this.pose==='wand-pick'||this.pose==='result-reaction')return 0;
+    this.set('nod-yes',SEATED_NOD_YES_DURATION,rate);return SEATED_NOD_YES_DURATION/rate;
   }
   holdGentleMiss(){if(this.seated&&this.pose==='gentle-miss')this.duration=Infinity;}
   finishGentleMiss(){

@@ -552,38 +552,58 @@ dialog#settings-dialog .primary-button{
 }
 
 #app[data-mode="result"] .result-view{
-  width:min(440px,calc(100vw - 38px));padding:36px 28px 36px;
+  position:relative;isolation:isolate;overflow:hidden;
+  width:min(382px,calc(100vw - 28px));padding:14px 18px 18px;
   border:3.5px solid #203975;border-radius:32px;
   background:rgba(255,252,244,0.98);box-shadow:0 8px 0 #8295cf,0 24px 50px rgba(28,48,102,0.38),inset 0 1.5px 0 #ffffff;
   backdrop-filter:blur(20px);font-family:var(--font-body);
 }
+#app[data-mode="result"] .result-view::before{
+  content:"";position:absolute;z-index:-1;inset:0 0 auto;height:158px;
+  background:linear-gradient(180deg,#e9f6ff 0%,#fffaf0 100%);
+}
 #app[data-mode="result"] .play-layout{
   inset:0;display:flex;align-items:center;justify-content:center;
   padding:max(18px,env(safe-area-inset-top)) 18px max(26px,env(safe-area-inset-bottom));
+  background:rgba(18,32,68,0.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
 }
-#app[data-mode="result"] .result-emblem{
-  display:inline-block;color:#ffca48;font-size:84px;line-height:1;
-  text-shadow:0 4px 0 #d99a38,0 8px 24px rgba(255,202,72,0.6);
-  animation:star-glow-pulse 2.4s ease-in-out infinite;margin-bottom:6px;
+body[data-theme="seasons"] #app[data-mode="result"] .play-layout{background:rgba(13,77,121,0.48)}
+body[data-theme="neon"] #app[data-mode="result"] .play-layout{background:rgba(2,8,23,0.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+#app[data-mode="result"] .result-character-space{
+  position:relative;display:block;height:142px;margin:-5px 0 8px;
 }
-@keyframes star-glow-pulse{
-  0%,100%{transform:scale(1) rotate(0deg)}
-  50%{transform:scale(1.12) rotate(8deg);filter:drop-shadow(0 0 16px #ffe47c)}
-}
-#app[data-mode="result"] .result-kicker{
-  font-family:var(--font-body);font-weight:700;font-size:13px;
-  letter-spacing:0.08em;text-transform:uppercase;color:#55689c;margin:0 0 8px;
+#app[data-mode="result"] .result-character-space .sparky-anchor{
+  position:absolute;left:50%;top:-8px;z-index:2;display:block;
+  width:clamp(132px,36vw,154px);aspect-ratio:1;translate:-50% 0;
+  pointer-events:none;
 }
 #app[data-mode="result"] .result-view h2{
-  font-family:var(--font-display);font-weight:900;font-size:clamp(32px,8vw,44px);
-  letter-spacing:-0.02em;color:#17326b;line-height:1.05;margin:0 0 10px;
+  max-width:300px;margin:0 auto 14px;font-family:var(--font-display);font-weight:700;
+  font-size:clamp(27px,7vw,32px);letter-spacing:-0.015em;color:#17326b;line-height:1.05;
 }
 #app[data-mode="result"] #result-score{
-  font-family:var(--font-display);font-weight:800;font-size:19px;
-  color:#243d78;background:#eef3ff;border:1.5px solid #b8cbfa;
-  border-radius:999px;padding:6px 20px;display:inline-block;margin:0 auto 26px;
-  box-shadow:0 3px 0 #9cb2ea;
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;justify-content:center;
+  width:max-content;min-width:180px;max-width:100%;margin:0 auto 17px;padding:7px 15px;
+  color:#243d78;background:#f2f5ff;
+  border:1.5px solid #cbd6ef;border-radius:16px;box-shadow:none;
+  font-family:var(--font-body);
 }
+#app[data-mode="result"] #result-score span{display:flex;flex-direction:column;align-items:center;gap:2px}
+#app[data-mode="result"] #result-score small{color:#62709b;font-size:11px;font-weight:700;line-height:1}
+#app[data-mode="result"] #result-score strong{color:#1d3977;font:700 25px/1 var(--font-display)}
+#app[data-mode="result"] #result-score i{width:1.5px;height:34px;background:#cbd4ee;border-radius:2px}
+#app[data-mode="result"] #result-score .result-score-total{grid-column:1/-1;flex-direction:row;justify-content:center;gap:9px}
+#app[data-mode="result"] .result-actions{
+  display:grid;gap:7px;padding:9px;border:1.5px solid #d4dcef;border-radius:25px;
+  background:#f3f6fc;
+}
+#app[data-mode="result"] .result-actions button{
+  display:grid;grid-template-columns:26px auto 26px;align-items:center;justify-content:center;
+  gap:9px;width:100%;min-height:56px;
+}
+#app[data-mode="result"] .result-actions button::after{content:"";width:26px}
+#app[data-mode="result"] .result-actions svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+#app[data-mode="result"] .primary-button{font-family:var(--font-display);font-size:19px;font-weight:700}
 #app[data-mode="result"] .result-view p{color:#5d6c9d}
 #app[data-mode="result"] .secondary-button,
 dialog#settings-dialog .secondary-button{
@@ -591,10 +611,24 @@ dialog#settings-dialog .secondary-button{
   color:#243d78;font-family:var(--font-display);font-weight:700;font-size:18px;
   box-shadow:0 4px 0 #95a7d6;cursor:pointer;transition:transform .16s ease,box-shadow .16s ease,background .16s ease;
 }
+#app[data-mode="result"] .result-actions .secondary-button{
+  min-height:47px;border:0;border-radius:16px;background:transparent;box-shadow:none;font-size:16px;
+}
+#app[data-mode="result"] .result-actions .secondary-button:hover{background:#e8eef9;box-shadow:none;transform:none}
+#app[data-mode="result"] .result-actions .secondary-button:active{background:#dfe8f6;box-shadow:none;transform:translateY(1px)}
 #app[data-mode="result"] .secondary-button:hover,
 dialog#settings-dialog .secondary-button:hover{transform:translateY(-2px);box-shadow:0 6px 0 #95a7d6;background:#f7f9ff}
 #app[data-mode="result"] .secondary-button:active,
 dialog#settings-dialog .secondary-button:active{transform:translateY(2px);box-shadow:0 2px 0 #95a7d6}
+@media(max-height:700px){
+  #app[data-mode="result"] .result-view{padding:14px 20px 19px}
+  #app[data-mode="result"] .result-character-space{height:108px;margin-top:-10px;margin-bottom:5px}
+  #app[data-mode="result"] .result-character-space .sparky-anchor{width:126px;top:-12px}
+  #app[data-mode="result"] .result-view h2{font-size:clamp(25px,6.8vw,30px);margin-bottom:10px}
+  #app[data-mode="result"] #result-score{margin-bottom:15px;padding-block:6px}
+  #app[data-mode="result"] .result-actions{gap:9px}
+  #app[data-mode="result"] .result-actions button{min-height:50px}
+}
 dialog#settings-dialog{
   width:min(390px,calc(100vw - 32px));max-width:390px;
   padding:28px 22px 24px;border:3.5px solid #203975;border-radius:32px;
@@ -717,6 +751,99 @@ dialog#settings-dialog>.settings-home .settings-home-icon{display:grid;place-ite
   #app[data-mode="match"] .speech-bubble{min-height:42px;padding:8px 44px 8px 13px}
   #app[data-mode="match"] .speech-bubble p{font-size:12px}
 }
+
+/* World switcher: one familiar interaction system, two distinct play worlds. */
+.theme-open{
+  position:absolute;top:max(18px,calc(env(safe-area-inset-top) + 12px));right:max(18px,calc(env(safe-area-inset-right) + 12px));z-index:8;
+  min-width:108px;height:54px;display:flex;align-items:center;gap:8px;padding:7px 11px 7px 8px;
+  border:2.5px solid #203975;border-radius:18px;background:#fffaf0;color:#203975;
+  box-shadow:0 4px 0 #7e93cf,0 8px 15px #2039752b;font:700 14px/1 var(--font-body);cursor:pointer;
+}
+.theme-open:active{transform:translateY(3px);box-shadow:0 1px 0 #7e93cf,0 4px 7px #20397525}
+.theme-open svg{width:16px;fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.theme-open-picture{position:relative;display:grid;grid-template-columns:repeat(2,10px);gap:2px;width:26px;height:26px;padding:2px;border-radius:8px;background:#dff4ff;overflow:hidden}
+.theme-open-picture i{display:block;border-radius:50%}
+.theme-open-picture i:nth-child(1){background:#8bdbff}.theme-open-picture i:nth-child(2){background:#ff7fa0}.theme-open-picture i:nth-child(3){background:#ffca45}.theme-open-picture i:nth-child(4){background:#7bce69}
+body[data-theme="dream"] .theme-open-picture{display:block;background:linear-gradient(#86cfff 0 52%,#fff2c4 53%)}
+body[data-theme="dream"] .theme-open-picture i{position:absolute;background:#fff}
+body[data-theme="dream"] .theme-open-picture i:nth-child(1){width:13px;height:8px;left:2px;bottom:5px}
+body[data-theme="dream"] .theme-open-picture i:nth-child(2){width:12px;height:12px;left:8px;bottom:5px}
+body[data-theme="dream"] .theme-open-picture i:nth-child(3){width:10px;height:7px;left:16px;bottom:5px}
+body[data-theme="dream"] .theme-open-picture i:nth-child(4){width:7px;height:7px;right:3px;top:3px;background:#ffd04b;clip-path:polygon(50% 0,62% 37%,100% 50%,62% 63%,50% 100%,38% 63%,0 50%,38% 37%)}
+
+dialog.theme-dialog{
+  width:min(650px,calc(100vw - 30px));max-height:min(790px,calc(100svh - 28px));padding:26px 26px 24px;
+  border:3px solid #203975;border-radius:34px;background:#fffaf0;color:#203975;
+  box-shadow:0 9px 0 #8195ce,0 24px 56px #162b6250;overflow:auto;
+}
+dialog.theme-dialog::backdrop{background:#52648d78;backdrop-filter:blur(8px)}
+.theme-dialog[open]{animation:level-pop-in .26s cubic-bezier(.34,1.56,.64,1)}
+.theme-dialog .dialog-close{position:absolute;right:18px;top:18px;width:48px;height:48px;border:2px solid #b9c5e4;border-radius:16px;background:#fff;color:#203975;font:700 31px/1 var(--font-body);cursor:pointer}
+.theme-dialog-kicker{margin:3px 0 4px;color:#7483b2;text-align:center;text-transform:uppercase;letter-spacing:.12em;font:700 12px/1.2 var(--font-body)}
+.theme-dialog h2{margin:0 58px 22px;color:#19356f;text-align:center;font:700 clamp(29px,5.5vw,40px)/1.05 var(--font-display);letter-spacing:-.02em;white-space:nowrap}
+.theme-choices{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.theme-choices>button{position:relative;display:flex;flex-direction:column;padding:10px 10px 17px;border:3px solid #203975;border-radius:25px;background:#fffdf8;box-shadow:0 6px 0 #8295ce;color:#203975;text-align:left;cursor:pointer;overflow:hidden}
+.theme-choices>button:hover:not(.is-locked){transform:translateY(-2px);box-shadow:0 8px 0 #8295ce}
+.theme-choices>button.is-active{outline:4px solid #ffd45d;outline-offset:3px}
+.theme-choices>button.is-locked{filter:saturate(.72);cursor:not-allowed}
+.theme-choices>button.needs-stars{animation:locked-nudge .36s ease}
+@keyframes locked-nudge{25%{transform:translateX(-5px)}50%{transform:translateX(5px)}75%{transform:translateX(-3px)}}
+.theme-picture{position:relative;display:block;width:100%;aspect-ratio:1.55;border-radius:17px;overflow:hidden}
+.theme-picture--dream{background:linear-gradient(#85c9fb 0 35%,#fff5ca 36% 100%)}
+.dream-moon{position:absolute;width:50px;height:50px;border-radius:50%;right:18px;top:13px;background:#ffd45c;box-shadow:0 0 0 7px #fff5b86b}
+.dream-cloud{position:absolute;height:33px;border-radius:999px;background:#fff;box-shadow:24px -13px 0 3px #fff,50px -3px 0 -2px #fff}
+.dream-cloud--one{width:75px;left:-8px;top:38px}.dream-cloud--two{width:70px;right:14px;bottom:17px;background:#dcd9ff;box-shadow:22px -13px 0 3px #eee6ff,47px -3px 0 -2px #dcd9ff}
+.dream-star{position:absolute;width:17px;height:17px;background:#ffc949;clip-path:polygon(50% 0,62% 37%,100% 50%,62% 63%,50% 100%,38% 63%,0 50%,38% 37%)}
+.dream-star--one{left:33%;top:18px}.dream-star--two{left:20%;bottom:17px;scale:.7}
+.theme-picture--seasons{background:linear-gradient(#29bbed 0 67%,#64ce5f 68%)}
+.theme-picture--seasons::before{content:"";position:absolute;inset:0 0 32%;opacity:.16;background:conic-gradient(from 90deg at 1px 1px,#fff 25%,transparent 0) 0 0/22px 22px}
+.season-sun{position:absolute;left:16px;top:14px;width:43px;height:43px;border:5px solid #203975;border-radius:50%;background:#ffd33f;box-shadow:0 0 0 7px #ffd33f55}
+.season-flower{position:absolute;left:22%;bottom:13px;width:26px;height:26px;border-radius:50%;background:#ffd03d;box-shadow:0 -15px #ff76a2,0 15px #ff76a2,15px 0 #ff76a2,-15px 0 #ff76a2}
+.season-leaf{position:absolute;right:28%;bottom:10px;width:36px;height:22px;border-radius:80% 0 80% 0;background:#f17d36;rotate:-24deg;border:3px solid #203975}
+.season-snow{position:absolute;right:18px;top:18px;width:45px;height:45px;background:linear-gradient(#fff,#d6f4ff);clip-path:polygon(45% 0,55% 0,56% 37%,82% 15%,88% 23%,61% 45%,100% 45%,100% 55%,62% 56%,88% 78%,81% 85%,55% 62%,55% 100%,45% 100%,44% 62%,18% 85%,12% 78%,39% 56%,0 55%,0 45%,38% 44%,12% 22%,19% 15%,44% 37%)}
+.theme-copy{display:flex;flex-direction:column;padding:13px 8px 0}.theme-copy strong{font:700 22px/1.05 var(--font-display)}.theme-copy small{margin-top:4px;color:#6e7dab;font:600 14px/1.2 var(--font-body)}.theme-status{align-self:flex-start;margin-top:12px;padding:6px 10px;border-radius:99px;background:#edf1ff;color:#536aab;font:700 12px/1 var(--font-body)}
+.theme-choices .is-active .theme-status{background:#fff0ae;color:#795918}.theme-check{display:none;position:absolute;right:17px;bottom:17px;width:28px;height:28px;place-items:center;border-radius:50%;background:#62c881;color:#fff;font-weight:900}.theme-choices .is-active .theme-check{display:grid}
+.theme-lock{display:none;position:absolute;right:18px;bottom:18px;width:27px;height:23px;border:3px solid #64749f;border-radius:6px;background:#eef1f8}.theme-lock i{position:absolute;left:5px;top:-15px;width:11px;height:15px;border:3px solid #64749f;border-bottom:0;border-radius:8px 8px 0 0}.theme-choices .is-locked .theme-lock{display:block}
+.theme-dialog-message{margin:20px 5px 0;color:#6d7aa4;text-align:center;font:600 14px/1.35 var(--font-body)}
+
+/* Season Parade is bright and graphic, while retaining the same card geometry,
+   navigation placement and interaction feedback as Dream Meadow. */
+body[data-theme="seasons"] .garden-background,
+body[data-theme="seasons"]:has(#app[data-mode="match"]) .garden-background{
+  background-image:url('assets/season-parade-bg-v2.webp')!important;
+  background-size:cover!important;background-position:center center!important;
+}
+body[data-theme="seasons"] .garden-background::before{display:none}
+body[data-theme="seasons"] #app[data-mode="setup"] .setup-view h2{color:#12528c!important;text-shadow:0 3px #fff}
+body[data-theme="seasons"] #app[data-mode="setup"] .setup-view h2 span{color:#ff8b2f}
+body[data-theme="seasons"] #app[data-mode="setup"] .setup-kicker{color:#25729a}
+body[data-theme="seasons"] #app[data-mode="setup"] .mode-choices button{background:#fff9e9;border-color:#17497e;box-shadow:0 6px 0 #ef9e3f,0 12px 22px #16487530;color:#17497e}
+body[data-theme="seasons"] #app[data-mode="setup"] .mode-choices button:nth-child(2){background:#fff9e9}
+body[data-theme="seasons"] #app[data-mode="match"] .card-back{border:0;background:transparent url('assets/season-card-back-v1.webp') center/contain no-repeat;box-shadow:none}
+body[data-theme="seasons"] #app[data-mode="match"] .card-emblem{display:none}
+@media(hover:hover){body[data-theme="seasons"] #app[data-mode="match"] .memory-card:not(:disabled):hover .card-back{box-shadow:none}}
+body[data-theme="seasons"] #app[data-mode="match"] .card-front,
+body[data-theme="seasons"] #app[data-mode="match"] .memory-card.is-matched .card-front{border:0;background:transparent url('assets/season-card-front-v1.webp') center/contain no-repeat;box-shadow:none;padding:15%}
+body[data-theme="seasons"] #app[data-mode="match"] .card-front img{filter:drop-shadow(0 3px 3px #17366c2e)}
+@media(hover:hover){body[data-theme="seasons"] #app[data-mode="match"] .memory-card:not(:disabled):hover .card-front{box-shadow:none}}
+body[data-theme="seasons"] #app[data-mode="match"] .card-front.is-loading::after,
+body[data-theme="seasons"] #app[data-mode="match"] .card-front.load-failed::after{background:conic-gradient(from 45deg,#ffd33f 0 25%,#ff7474 0 50%,#69cf67 0 75%,#a9eaff 0);border-radius:22%}
+body[data-theme="seasons"] #app[data-mode="match"] .pair-progress i.found{background:#ff8a3d}
+body[data-theme="seasons"] #app[data-mode="match"] .match-check{background:#50bd59;box-shadow:0 3px 0 #287f38,0 6px 12px #287f3855}
+body[data-theme="seasons"] .theme-open-picture{display:block;background:transparent url('assets/season-card-back-v1.webp') center/contain no-repeat}
+body[data-theme="seasons"] .theme-open-picture i{display:none}
+.theme-picture--seasons{background:url('assets/season-parade-bg-v2.webp') center/cover no-repeat}
+.theme-picture--seasons::before{inset:0;background:linear-gradient(90deg,#173b7333,transparent 25% 75%,#173b7333);opacity:1}
+.theme-picture--seasons::after{content:"";position:absolute;left:50%;top:52%;width:49%;aspect-ratio:1;translate:-50% -50%;background:url('assets/season-card-back-v1.webp') center/contain no-repeat;filter:drop-shadow(0 5px 5px #173b7345)}
+.theme-picture--seasons>i{display:none}
+
+@media(max-width:700px){
+  .theme-open{top:max(13px,calc(env(safe-area-inset-top) + 8px));right:max(13px,calc(env(safe-area-inset-right) + 8px));min-width:94px;height:47px;border-radius:15px;font-size:12px}
+  dialog.theme-dialog{padding:22px 16px 19px;border-radius:29px}.theme-dialog h2{font-size:29px;margin:0 48px 17px}.theme-dialog-kicker{font-size:11px}.theme-dialog .dialog-close{right:13px;top:13px;width:42px;height:42px}
+  .theme-choices{grid-template-columns:1fr;gap:12px}.theme-choices>button{display:grid;grid-template-columns:42% 1fr;padding:9px;min-height:124px}.theme-picture{height:100%;aspect-ratio:auto}.theme-copy{justify-content:center;padding:4px 10px}.theme-copy strong{font-size:20px}.theme-status{margin-top:8px}.theme-check,.theme-lock{right:16px;bottom:13px}
+}
+@media(max-height:620px){.theme-open{height:42px}.theme-open-picture{width:22px;height:22px}.theme-dialog-kicker{display:none}.theme-dialog h2{font-size:27px}.theme-choices>button{min-height:104px}.theme-dialog-message{margin-top:13px}}
+@media(prefers-reduced-motion:reduce){.theme-dialog[open],.theme-choices>button.needs-stars{animation:none}}
 @media(orientation:landscape) and (max-height:500px){
   body .garden-background,
   body:has(#app[data-mode="match"]) .garden-background{
@@ -988,8 +1115,8 @@ dialog#level-dialog[open]{animation:level-pop-in .26s cubic-bezier(0.34,1.56,0.6
   dialog#level-dialog[open]{animation:none}
   .difficulty-choices button{transition:none}
 }
-/* The cloud/character assembly is absolutely layered, so it never displaces
-   the board or result card. */
+/* The cloud/character assembly is absolutely layered during play. The result
+   screen docks the same assembly into its reserved character stage. */
 .play-layout > .sparky-anchor{display:none}
 /* Sparky's seated contact point aligns with the painted horizon in the scene. */
 #app[data-mode="match"] .play-layout > .sparky-anchor{
@@ -999,12 +1126,6 @@ dialog#level-dialog[open]{animation:level-pop-in .26s cubic-bezier(0.34,1.56,0.6
   pointer-events:none;
 }
 #app[data-mode="match"][data-sparky-ready="true"] .play-layout > .sparky-anchor{display:block}
-#app[data-mode="result"][data-sparky-ready="true"] .play-layout > .sparky-anchor{
-  position:absolute;left:50%;top:50%;z-index:7;
-  display:block;width:clamp(135px,38vw,190px);aspect-ratio:1;
-  translate:-50% calc(-50% - clamp(170px,18svh,250px));
-  pointer-events:none;
-}
 #app:is([data-mode="match"],[data-mode="result"]) .sparky-seat-cloud{
   position:absolute;left:50%;top:33%;z-index:0;
   display:block;width:118%;height:auto;translate:-50% 0;
@@ -1143,12 +1264,20 @@ dialog#level-dialog[open]{animation:level-pop-in .26s cubic-bezier(0.34,1.56,0.6
 #app[data-mode="match"] .memory-card{
   perspective:800px;cursor:pointer;position:relative;
 }
-#app[data-mode="match"] .memory-card:not(:disabled):hover .card-face{
-  transform:translateY(-3px);
-  box-shadow:0 8px 0 #7187c4,0 16px 24px rgba(32,54,110,0.28);
+/* Lift the whole button. Transforming an individual face would replace the
+   front face's rotateY(180deg), making it vanish while the pointer is over it. */
+@media(hover:hover){
+  #app[data-mode="match"] .memory-card:not(:disabled):hover{
+    transform:translateY(-3px) scale(1.02);
+  }
+  #app[data-mode="match"] .memory-card:not(:disabled):hover .card-face{
+    box-shadow:0 8px 0 #7187c4,0 16px 24px rgba(32,54,110,0.28);
+  }
+}
+#app[data-mode="match"] .memory-card:not(:disabled):active{
+  transform:translateY(3px) scale(0.98);
 }
 #app[data-mode="match"] .memory-card:not(:disabled):active .card-face{
-  transform:translateY(3px) scale(0.97);
   box-shadow:0 2px 0 #7187c4,0 4px 10px rgba(32,54,110,0.22);
 }
 #app[data-mode="match"] .card-face{
@@ -1289,4 +1418,567 @@ dialog#level-dialog[open]{animation:level-pop-in .26s cubic-bezier(0.34,1.56,0.6
   #app[data-mode="setup"] .setup-kicker{margin-bottom:20px}
   #app[data-mode="setup"] .mode-choices{gap:12px}
   #app[data-mode="setup"] .mode-choices button{min-height:91px;padding:12px 18px}
+}
+
+/* Seasonal modal material: the same sky, card-edge and garden palette as the
+   improved world art, while preserving the established modal structure. */
+body[data-theme="seasons"] dialog#level-dialog,
+body[data-theme="seasons"] dialog.theme-dialog{
+  border-color:#123f79;
+  box-shadow:0 8px 0 #f29a32,0 23px 50px #123f7952;
+}
+body[data-theme="seasons"] dialog#level-dialog{background:radial-gradient(circle at 50% -10%,#d5f5ff 0%,#fff9e9 60%)}
+body[data-theme="seasons"] dialog.theme-dialog{background:linear-gradient(180deg,#dff8ff 0 126px,#fff9e9 127px 100%)}
+body[data-theme="seasons"] dialog#level-dialog::before{display:none}
+body[data-theme="seasons"] dialog.theme-dialog::before{height:126px}
+body[data-theme="seasons"] dialog#level-dialog::backdrop,
+body[data-theme="seasons"] dialog.theme-dialog::backdrop{background:#0d4d7975;backdrop-filter:blur(7px) saturate(.9)}
+body[data-theme="seasons"] #level-dialog-title,
+body[data-theme="seasons"] .theme-dialog h2{color:#123f79;text-shadow:0 2px #fff}
+body[data-theme="seasons"] #level-mode-label,
+body[data-theme="seasons"] .theme-dialog-kicker{color:#176d99}
+body[data-theme="seasons"] #level-dialog .dialog-close,
+body[data-theme="seasons"] .theme-dialog .dialog-close{
+  border:2px solid #123f79;background:#fff9e9;color:#123f79;
+  box-shadow:0 3px 0 #f29a32;
+}
+body[data-theme="seasons"] .difficulty-choices button,
+body[data-theme="seasons"] .theme-choices>button{
+  border-color:#123f79;background:linear-gradient(145deg,#fffdf6,#fff5d9);
+  box-shadow:0 5px 0 #f29a32,0 10px 18px #123f7926;
+}
+body[data-theme="seasons"] .difficulty-choices button:hover,
+body[data-theme="seasons"] .theme-choices>button:hover:not(.is-locked){
+  box-shadow:0 7px 0 #f29a32,0 14px 23px #123f7930;
+}
+body[data-theme="seasons"] .difficulty-face{
+  padding:5px;border:2px solid #169cca;border-radius:16px;
+  background:linear-gradient(145deg,#e8fbff,#c9f2ff);
+  filter:drop-shadow(0 3px 0 #f2ba48);
+}
+body[data-theme="seasons"] .difficulty-copy strong,
+body[data-theme="seasons"] .difficulty-arrow{color:#123f79}
+body[data-theme="seasons"] .difficulty-copy small{color:#55749b}
+body[data-theme="seasons"] .theme-choices>button.is-active{outline-color:#62cc62}
+body[data-theme="seasons"] .theme-status{background:#dff7ff;color:#14698e}
+body[data-theme="seasons"] .theme-choices .is-active .theme-status{background:#e3f7c8;color:#34742c}
+body[data-theme="seasons"] .theme-dialog-message{color:#587398}
+body[data-theme="seasons"] dialog#settings-dialog{
+  border:3px solid #123f79;background:radial-gradient(circle at 50% -10%,#d5f5ff 0%,#fff9e9 60%);
+  box-shadow:0 8px 0 #f29a32,0 24px 52px #123f7952;color:#123f79;
+}
+body[data-theme="seasons"] dialog#settings-dialog::backdrop{background:#0d4d7975;backdrop-filter:blur(8px)}
+body[data-theme="seasons"] dialog#settings-dialog #settings-title{color:#123f79}
+body[data-theme="seasons"] dialog#settings-dialog .primary-button{
+  border:3px solid #123f79;background:linear-gradient(145deg,#ffe27b,#ffd04f);
+  box-shadow:0 5px 0 #e79a31,0 10px 17px #123f7924;color:#123f79;
+}
+body[data-theme="seasons"] dialog#settings-dialog .primary-button:hover{
+  box-shadow:0 7px 0 #e79a31,0 14px 22px rgba(18,63,121,0.25);
+}
+body[data-theme="seasons"] dialog#settings-dialog .primary-button:active{
+  box-shadow:0 2px 0 #e79a31;
+}
+body[data-theme="seasons"] dialog#settings-dialog .settings-row,
+body[data-theme="seasons"] dialog#settings-dialog .settings-home{border-color:#5b8ebc;background:#fffdf6;box-shadow:0 4px 0 #f0b04c}
+
+/* Seasonal results use the same cyan sky, warm paper and orange lift as the
+   world artwork. The character has its own stage, so celebration art never
+   competes with the result or the actions. */
+body[data-theme="seasons"] #app[data-mode="result"] .result-view{
+  border-color:#123f79;
+  background:#fff9e9;
+  box-shadow:0 7px 0 #f29a32,0 22px 48px #123f7948,inset 0 1.5px 0 #fff;
+}
+body[data-theme="seasons"] #app[data-mode="result"] .result-view::before{
+  height:160px;background:linear-gradient(180deg,#bdeeff 0%,#e9fbff 72%,#fff9e9 100%);
+}
+/* In-game cloud assets/season-sparky-cloud-v1.webp used for character seating (assets/season-result-stage-v1.webp retired) */
+body[data-theme="seasons"] #app[data-mode="result"] .result-view h2{color:#123f79}
+body[data-theme="seasons"] #app[data-mode="result"] #result-score{
+  border-color:#91c9dc;background:#e7f8fc;box-shadow:none;
+}
+body[data-theme="seasons"] #app[data-mode="result"] #result-score i{background:#9fd1e2}
+body[data-theme="seasons"] #app[data-mode="result"] .primary-button{
+  border-color:#123f79;background:linear-gradient(145deg,#ffe27b,#ffd04f);
+  box-shadow:0 5px 0 #e79a31,0 10px 17px #123f7924;color:#123f79;
+}
+body[data-theme="seasons"] #app[data-mode="result"] .secondary-button{
+  border-color:#477dab;background:#fffdf6;box-shadow:0 4px 0 #84afd0;color:#123f79;
+}
+body[data-theme="seasons"] #app[data-mode="result"] .result-actions{
+  border-color:#b9dbe5;background:#edf9fa;
+}
+body[data-theme="seasons"] #app[data-mode="result"] .result-actions .secondary-button{border:0;background:transparent;box-shadow:none}
+
+/* Neon Shape Lab: a dark, high-contrast third world based on luminous geometry.
+   It keeps every familiar control location while changing the material system. */
+.theme-picture--neon{background:#07162f url('assets/neon-shape-lab-bg-v2.webp') center/cover no-repeat}
+.theme-picture--neon::before{inset:0;background:linear-gradient(90deg,#04112788,transparent 30% 70%,#04112788);opacity:1}
+.theme-picture--neon::after{
+  content:"";position:absolute;left:50%;top:50%;width:42%;aspect-ratio:1;translate:-50% -50%;
+  background:url('assets/neon-card-back-v1.webp') center/contain no-repeat;
+  filter:drop-shadow(0 0 8px #22dfff88);
+}
+body[data-theme="neon"] .garden-background,
+body[data-theme="neon"]:has(#app[data-mode="match"]) .garden-background{
+  background-image:url('assets/neon-shape-lab-bg-v2.webp')!important;
+  background-size:cover!important;background-position:center!important;background-color:#06142d!important;
+}
+body[data-theme="neon"] .garden-background::before{display:none}
+body[data-theme="neon"] .theme-open{
+  border-color:#42e8ff;background:#081b3cee;color:#eafcff;
+  box-shadow:0 4px 0 #854ad3,0 0 18px #18dfff66;
+}
+body[data-theme="neon"] .theme-open-picture{display:block;background:transparent url('assets/neon-card-back-v1.webp') center/contain no-repeat}
+body[data-theme="neon"] .theme-open-picture i{display:none}
+body[data-theme="neon"] #app[data-mode="setup"] .setup-view h2{
+  color:#f5fbff!important;text-shadow:0 3px #273c91,0 0 15px #22dfff,0 0 28px #f637a3;
+}
+body[data-theme="neon"] #app[data-mode="setup"] .setup-view h2 span{color:#ffe43d;text-shadow:0 0 12px #ffe43d}
+body[data-theme="neon"] #app[data-mode="setup"] .setup-kicker{color:#a9f5ff;text-shadow:0 1px 8px #0bdfff}
+body[data-theme="neon"] #app[data-mode="setup"] .mode-choices button{
+  border-color:#3de7ff;background:linear-gradient(145deg,#102b58f2,#081a39f2);color:#f6fbff;
+  box-shadow:0 6px 0 #6935b2,0 0 18px #15ddff55,inset 0 1px #68efff66;
+}
+body[data-theme="neon"] #app[data-mode="setup"] .mode-choices button:nth-child(2){background:linear-gradient(145deg,#1d2454f2,#0c1838f2)}
+body[data-theme="neon"] #app[data-mode="setup"] .mode-choices button strong{
+  color:#f6fbff;text-shadow:0 0 10px #20ddff66;
+}
+body[data-theme="neon"] #app[data-mode="setup"] .mode-choices button strong i{
+  color:#ffe34d;filter:drop-shadow(0 0 6px #ffe34d88);
+}
+body[data-theme="neon"] #app[data-mode="setup"] .mode-choices button span{color:#bceef8}
+body[data-theme="neon"] #app[data-mode="setup"] .mode-choices button svg{color:#ffdc3d;filter:drop-shadow(0 0 5px #ffdc3d)}
+body[data-theme="neon"] #app[data-mode="match"] .card-back{
+  border:0;background:transparent url('assets/neon-card-back-v1.webp') center/contain no-repeat;box-shadow:none;
+}
+body[data-theme="neon"] #app[data-mode="match"] .card-emblem{display:none}
+body[data-theme="neon"] #app[data-mode="match"] .card-front,
+body[data-theme="neon"] #app[data-mode="match"] .memory-card.is-matched .card-front{
+  border:0;background:transparent url('assets/neon-card-front-v1.webp') center/contain no-repeat;box-shadow:none;padding:15%;
+}
+body[data-theme="neon"] #app[data-mode="match"] .card-front img{
+  filter:saturate(1.45) brightness(1.12) drop-shadow(0 0 4px #2ee8ff) drop-shadow(0 3px 3px #0008);
+}
+@media(hover:hover){
+  body[data-theme="neon"] #app[data-mode="match"] .memory-card:not(:disabled):hover .card-back,
+  body[data-theme="neon"] #app[data-mode="match"] .memory-card:not(:disabled):hover .card-front{box-shadow:none;filter:brightness(1.12) drop-shadow(0 0 9px #31e8ff)}
+}
+body[data-theme="neon"] #app[data-mode="match"] .turn-chip{
+  min-height:42px;padding:7px 16px 8px;border:2px solid #35ddf4;border-radius:999px;
+  background:linear-gradient(145deg,#102d5bf2,#071a39f2);
+  box-shadow:0 4px 0 #693bb0,0 0 16px #1fe3ff66,inset 0 1px #7cf5ff55;
+}
+body[data-theme="neon"] #app[data-mode="match"] .turn-chip strong,
+body[data-theme="neon"] #app[data-mode="match"] #match-score{color:#eefcff;text-shadow:0 0 8px #1ce1ff}
+body[data-theme="neon"] #app[data-mode="match"] .turn-chip strong{
+  font-size:clamp(22px,5.6vw,30px);line-height:1;text-shadow:0 0 8px #1ce1ff;
+}
+body[data-theme="neon"] #app[data-mode="match"] .turn-chip .turn-light{
+  width:12px;height:12px;margin-right:9px;border-color:#c9ffff;background:#70f0a8;
+  box-shadow:0 0 11px #70f0a8;
+}
+body[data-theme="neon"] #app[data-mode="match"] .turn-banner{gap:10px}
+body[data-theme="neon"] #app[data-mode="match"] #match-score{
+  padding:5px 15px;border:1.5px solid #35dff4;
+  background:linear-gradient(145deg,#102d5bf2,#071a39f2);
+  color:#f7ffff;text-shadow:none;
+  box-shadow:0 3px 0 #693bb0,0 0 12px #1fe3ff4d,inset 0 1px #7cf5ff42;
+  backdrop-filter:blur(5px);
+}
+body[data-theme="neon"] #app[data-mode="match"] .board-wrap{
+  padding:8px 0 12px;border:0;border-radius:0;
+  background:transparent;box-shadow:none;backdrop-filter:none;
+}
+body[data-theme="neon"] #app[data-mode="match"] .memory-card{aspect-ratio:1}
+body[data-theme="neon"] #app[data-mode="match"] .memory-board{gap:clamp(12px,3vw,20px)}
+body[data-theme="neon"] #app[data-mode="match"] .pair-progress i{border-color:#35dff6;background:#102653;box-shadow:0 0 6px #2ee8ff66}
+body[data-theme="neon"] #app[data-mode="match"] .pair-progress i.found{border-color:#ffe44b;background:#ff3ca6;box-shadow:0 0 9px #ff3ca6}
+body[data-theme="neon"] #app[data-mode="match"] .speech-bubble{
+  border-color:#3ce4f8;background:#071a3bea;box-shadow:0 4px #723fb9,0 0 18px #1ce5ff55;
+}
+body[data-theme="neon"] #app[data-mode="match"] .speech-bubble p,
+body[data-theme="neon"] #app[data-mode="match"] .speech-bubble button{color:#eafbff}
+body[data-theme="neon"] #app[data-mode="match"] .scene-controls .toy-button{
+  border-color:#3ce4f8;background:#071a3bee;box-shadow:0 5px 0 #6938ad,0 0 14px #22dfff44;
+}
+body[data-theme="neon"] #app[data-mode="match"] .scene-controls .toy-button svg{stroke:#eafcff}
+body[data-theme="neon"] #app[data-mode="match"] .match-check{background:#ff3ca6;box-shadow:0 3px 0 #942462,0 0 12px #ff3ca6}
+body[data-theme="neon"] dialog#level-dialog,
+body[data-theme="neon"] dialog.theme-dialog,
+body[data-theme="neon"] dialog#settings-dialog{
+  border-color:#3ce4f8;background:radial-gradient(circle at 50% -10%,#13386e 0%,#07172f 65%);color:#effcff;
+  box-shadow:0 7px 0 #6938ad,0 0 24px #21e4ff66,0 24px 55px #0009;
+}
+body[data-theme="neon"] dialog#level-dialog::before{display:none}
+body[data-theme="neon"] dialog.theme-dialog::before{display:none}
+body[data-theme="neon"] dialog#settings-dialog::before{display:none}
+body[data-theme="neon"] dialog#level-dialog::backdrop,
+body[data-theme="neon"] dialog.theme-dialog::backdrop,
+body[data-theme="neon"] dialog#settings-dialog::backdrop{background:#020817b8;backdrop-filter:blur(8px)}
+body[data-theme="neon"] #level-dialog-title,
+body[data-theme="neon"] .theme-dialog h2,
+body[data-theme="neon"] dialog#settings-dialog #settings-title{color:#f4fbff;text-shadow:0 0 10px #28e7ff}
+body[data-theme="neon"] #level-mode-label,
+body[data-theme="neon"] .theme-dialog-kicker,
+body[data-theme="neon"] .theme-dialog-message{color:#91eefa}
+body[data-theme="neon"] #level-dialog .dialog-close,
+body[data-theme="neon"] .theme-dialog .dialog-close,
+body[data-theme="neon"] dialog#settings-dialog>.dialog-close{
+  border-color:#42e8ff;background:#0b2146;color:#f4fbff;box-shadow:0 3px 0 #7341bc,0 0 10px rgba(34,223,255,0.3);
+}
+body[data-theme="neon"] .difficulty-choices button,
+body[data-theme="neon"] .theme-choices>button,
+body[data-theme="neon"] dialog#settings-dialog .settings-row,
+body[data-theme="neon"] dialog#settings-dialog .settings-home{
+  border-color:#32dff5;background:linear-gradient(145deg,#112b56,#071831);color:#effcff;
+  box-shadow:0 5px 0 #6434a8,0 0 13px #1fe1ff3d;
+}
+body[data-theme="neon"] dialog#settings-dialog .settings-row strong{color:#effcff;text-shadow:0 0 8px rgba(34,223,255,0.4)}
+body[data-theme="neon"] dialog#settings-dialog .setting-state{color:#91eefa}
+body[data-theme="neon"] dialog#settings-dialog .setting-icon{
+  background:#0b2247;border:1.5px solid #32dff5;box-shadow:0 2px 0 #6434a8;
+}
+body[data-theme="neon"] dialog#settings-dialog .setting-icon svg,
+body[data-theme="neon"] dialog#settings-dialog .settings-home-icon svg{stroke:#38e0f5}
+body[data-theme="neon"] dialog#settings-dialog .primary-button{
+  border:2.5px solid #35e3f7;background:#ffe046;box-shadow:0 5px 0 #b67b1d,0 0 16px rgba(255,224,70,0.45);color:#10265a;
+}
+body[data-theme="neon"] dialog#settings-dialog .primary-button:hover{
+  box-shadow:0 7px 0 #b67b1d,0 0 22px rgba(255,224,70,0.65);
+}
+body[data-theme="neon"] dialog#settings-dialog .primary-button:active{
+  box-shadow:0 2px 0 #b67b1d;
+}
+body[data-theme="neon"] button:focus-visible,
+body[data-theme="neon"] a:focus-visible{
+  outline-color:#35e3f7!important;
+}
+body[data-theme="neon"] .difficulty-copy strong,
+body[data-theme="neon"] .difficulty-arrow,
+body[data-theme="neon"] .theme-copy strong,
+body[data-theme="neon"] dialog#settings-dialog>.settings-home strong{color:#effcff}
+body[data-theme="neon"] .difficulty-copy small,
+body[data-theme="neon"] .theme-copy small{color:#9dddea}
+body[data-theme="neon"] .theme-status{background:#163967;color:#a9f4ff}
+body[data-theme="neon"] .theme-choices .is-active .theme-status{background:#672a7e;color:#ffd9f2}
+
+/* Every world tile is a truthful mini-preview: the real world background and
+   the real card design, with identical framing and no decorative stand-ins. */
+.theme-picture--dream{background:url('assets/dream-board-first-v1.png') center/cover no-repeat}
+.theme-picture--seasons{background:url('assets/season-parade-bg-v2.webp') center/cover no-repeat}
+.theme-picture--neon{background:#07162f url('assets/neon-shape-lab-bg-v2.webp') center/cover no-repeat}
+.theme-picture--dream::before,
+.theme-picture--seasons::before,
+.theme-picture--neon::before{
+  content:"";position:absolute;inset:0;opacity:1;
+  background:linear-gradient(90deg,#102a5b24,transparent 28% 72%,#102a5b24);
+}
+.theme-picture--dream::after,
+.theme-picture--seasons::after,
+.theme-picture--neon::after{
+  content:"";position:absolute;left:50%;top:50%;width:42%;height:76%;aspect-ratio:auto;
+  translate:-50% -50%;background-position:center;background-size:contain;background-repeat:no-repeat;
+  filter:drop-shadow(0 5px 5px #173b7350);
+}
+.theme-picture--dream::after{
+  width:42%;height:auto;aspect-ratio:.92;border:3px solid #203975;border-radius:18%;
+  background-color:#fffdf8;background-image:url('assets/dream-star-first-v1.png');background-size:72%;
+  box-shadow:0 4px 0 #8295cf;
+}
+.theme-picture--seasons::after{background-image:url('assets/season-card-back-v1.webp')}
+.theme-picture--neon::after{background-image:url('assets/neon-card-back-v1.webp');filter:drop-shadow(0 0 7px #22dfff88)}
+.theme-picture>i{display:none!important}
+
+/* The chooser header is a real layout region, not a painted percentage of the
+   dialog. Cards always begin after it, so the banner cannot overlap content. */
+dialog.theme-dialog{padding:0 26px 24px;background:#fffaf0}
+dialog.theme-dialog .dialog-close{z-index:3}
+.theme-dialog-heading{
+  position:relative;z-index:0;display:flex;min-height:112px;margin:0 -26px 20px;padding:20px 72px 16px;
+  flex-direction:column;align-items:center;justify-content:center;
+  border-bottom:1px solid #c9dfec;border-radius:30px 30px 0 0;
+  background:linear-gradient(180deg,#dff4ff,#edf9ff);
+}
+.theme-dialog-heading .theme-dialog-kicker{margin:0 0 5px}
+.theme-dialog-heading h2{margin:0;color:#19356f;font-size:clamp(29px,5.5vw,40px);line-height:1;white-space:nowrap}
+body[data-theme="seasons"] dialog.theme-dialog{background:#fff9e9}
+body[data-theme="seasons"] dialog.theme-dialog::before{display:none}
+body[data-theme="seasons"] .theme-dialog-heading{
+  border-bottom-color:#8cd1e5;
+  background:
+    linear-gradient(90deg,#16bdec24 50%,transparent 50%) 0 0/34px 34px,
+    linear-gradient(#16bdec24 50%,transparent 50%) 17px 17px/34px 34px,
+    linear-gradient(180deg,#c9f3ff,#e5faff);
+}
+body[data-theme="neon"] dialog.theme-dialog{background:#07172f}
+body[data-theme="neon"] dialog.theme-dialog::before{display:none}
+body[data-theme="neon"] .theme-dialog-heading{
+  border-bottom-color:#32dff5;
+  background:
+    linear-gradient(90deg,#24dcff12 50%,transparent 50%) 0 0/30px 30px,
+    linear-gradient(#24dcff12 50%,transparent 50%) 15px 15px/30px 30px,
+    linear-gradient(180deg,#123468,#0d2852);
+}
+body[data-theme="neon"] .theme-dialog-heading h2{color:#f4fbff;text-shadow:0 0 10px #28e7ff}
+@media(max-width:700px){
+  dialog.theme-dialog{padding:0 16px 19px}
+  .theme-dialog-heading{min-height:112px;margin:0 -16px 18px;padding:18px 58px 14px;border-radius:25px 25px 0 0}
+  .theme-dialog-heading h2{margin:0;font-size:29px}
+}
+
+/* A newly earned world gets one focused celebration. It uses the same honest
+   world-and-card preview as the permanent chooser, then gets out of the way. */
+dialog.theme-unlock-dialog{
+  width:min(390px,calc(100vw - 28px));max-height:calc(100svh - 24px);padding:0 20px 20px;
+  border:3px solid #173e78;border-radius:31px;background:#fffaf0;color:#173e78;
+  box-shadow:0 8px 0 #f0a13c,0 25px 55px #102c675c;overflow:auto;text-align:center;
+}
+dialog.theme-unlock-dialog::backdrop{background:#17375c8c;backdrop-filter:blur(8px)}
+dialog.theme-unlock-dialog[open]{animation:level-pop-in .28s cubic-bezier(.34,1.56,.64,1)}
+.theme-unlock-heading{
+  min-height:112px;margin:0 -20px 16px;padding:20px 24px 16px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  border-radius:27px 27px 0 0;border-bottom:1px solid #99d4e5;
+  background:linear-gradient(180deg,#c9f3ff,#e8fbff);
+}
+.theme-unlock-heading p{margin:0 0 5px;color:#187da7;text-transform:uppercase;letter-spacing:.11em;font:700 11px/1.1 var(--font-body)}
+.theme-unlock-heading h2{margin:0;color:#153d78;font:700 clamp(29px,8vw,38px)/1.02 var(--font-display);letter-spacing:-.02em}
+.theme-unlock-dialog>.theme-picture{width:min(100%,292px);margin:0 auto 14px;aspect-ratio:1.75;border:2px solid #173e78;box-shadow:0 4px 0 #efaa47}
+.theme-unlock-dialog>#theme-unlock-message{margin:0 0 15px;color:#587199;font:700 14px/1.3 var(--font-body)}
+.theme-unlock-actions{display:grid;gap:8px}
+.theme-unlock-actions button{width:100%;min-height:53px;border-radius:18px;cursor:pointer;font:700 17px/1 var(--font-display)}
+.theme-unlock-actions .primary-button{border:2.5px solid #173e78;background:#ffd75f;color:#173e78;box-shadow:0 4px 0 #d79b38}
+.theme-unlock-actions .secondary-button{border:1.5px solid #88a3c5;background:#fff;color:#29497d;box-shadow:none}
+.theme-unlock-actions button:active{translate:0 2px;box-shadow:none}
+.theme-unlock-note{display:block;margin:13px 8px 0;color:#7180a2;font:600 11px/1.35 var(--font-body)}
+.theme-unlock-dialog[data-theme="neon"]{border-color:#39e2f6;background:#07172f;color:#effcff;box-shadow:0 7px 0 #6839ae,0 0 24px #21e4ff66,0 25px 55px #0009}
+.theme-unlock-dialog[data-theme="neon"] .theme-unlock-heading{border-bottom-color:#35dff5;background:linear-gradient(180deg,#14386d,#0c2852)}
+.theme-unlock-dialog[data-theme="neon"] .theme-unlock-heading p{color:#8deefa}
+.theme-unlock-dialog[data-theme="neon"] .theme-unlock-heading h2{color:#f5fbff;text-shadow:0 0 10px #22dfff}
+.theme-unlock-dialog[data-theme="neon"]>#theme-unlock-message,.theme-unlock-dialog[data-theme="neon"] .theme-unlock-note{color:#9dddea}
+.theme-unlock-dialog[data-theme="neon"]>.theme-picture{border-color:#39e2f6;box-shadow:0 4px 0 #6839ae,0 0 14px #20ddff66}
+.theme-unlock-dialog[data-theme="neon"] .primary-button{border-color:#3ce4f8;background:#ffe046;box-shadow:0 4px 0 #ad761e;color:#10265a}
+.theme-unlock-dialog[data-theme="neon"] .secondary-button{border-color:#35dff5;background:#10284f;color:#effcff}
+@media(max-height:650px){
+  dialog.theme-unlock-dialog{padding:0 16px 15px}
+  .theme-unlock-heading{min-height:84px;margin:0 -16px 11px;padding:12px 20px 9px}
+  .theme-unlock-heading h2{font-size:27px}.theme-unlock-dialog>.theme-picture{width:230px;margin-bottom:9px}
+  .theme-unlock-dialog>#theme-unlock-message{margin-bottom:10px}.theme-unlock-actions button{min-height:46px}.theme-unlock-note{margin-top:9px}
+}
+
+/* Result modal architecture -------------------------------------------------
+   One calm hierarchy is shared by every world: character stage, outcome,
+   score and two complete actions. Themes change materials, never structure. */
+#app[data-mode="result"] .result-view{
+  --result-surface:#fffaf1;
+  --result-border:#203975;
+  --result-lift:#8295cf;
+  --result-ink:#17326b;
+  --result-muted:#5a6e9f;
+  --result-stage-border:#c9dded;
+  --result-score-bg:linear-gradient(145deg,#f0f4ff,#e6edff);
+  --result-score-border:#b8cbef;
+  --result-score-lift:#9bb3df;
+  --result-primary:linear-gradient(150deg,#ffe07a 0%,#ffcf4d 60%,#ffbe2b 100%);
+  --result-primary-lift:#c8952a;
+  --result-secondary:#ffffff;
+  --result-secondary-border:#7186be;
+  --result-secondary-lift:#95a7d6;
+  width:min(390px,calc(100vw - 24px));max-height:calc(100svh - 24px);
+  padding:0 20px 22px;overflow:auto;
+  border:3.5px solid var(--result-border);border-radius:32px;
+  background:var(--result-surface);
+  box-shadow:0 8px 0 var(--result-lift),0 26px 54px rgba(18,32,68,0.42),inset 0 1.5px 0 #ffffff;
+  color:var(--result-ink);text-align:center;backdrop-filter:none;
+  animation:level-pop-in .28s cubic-bezier(.34,1.56,.64,1);
+}
+#app[data-mode="result"] .result-view::before{display:none}
+#app[data-mode="result"] .result-character-space{
+  position:relative;display:block;height:180px;margin:0 -20px 18px;overflow:hidden;
+  border-bottom:2px solid var(--result-stage-border);border-radius:28px 28px 0 0;
+  background:
+    radial-gradient(circle at 50% 68%,#ffffff 0%,rgba(255,255,255,0.72) 28%,transparent 62%),
+    radial-gradient(circle at 18% 30%,#ffd75f 0 2px,transparent 3px),
+    radial-gradient(circle at 82% 24%,#ffd75f 0 2.5px,transparent 3.5px),
+    radial-gradient(circle at 24% 64%,#ffe885 0 1.5px,transparent 2.5px),
+    radial-gradient(circle at 76% 68%,#ffe885 0 1.5px,transparent 2.5px),
+    linear-gradient(180deg,#cbe6ff 0%,#e1f2ff 58%,#fffaf1 100%);
+}
+#app[data-mode="result"] .result-character-space::before{content:none!important}
+#app[data-mode="result"] .result-character-space .sparky-anchor{
+  position:absolute;left:50%;top:-4px;z-index:2;display:block;
+  width:clamp(148px,40vw,174px);aspect-ratio:1;translate:-50% 0;
+  pointer-events:none;filter:drop-shadow(0 8px 12px rgba(38,61,117,0.35));
+}
+#app[data-mode="result"] .result-view h2{
+  max-width:330px;margin:0 auto 14px;color:var(--result-ink);
+  font:800 clamp(28px,7.4vw,34px)/1.06 var(--font-display);
+  letter-spacing:-.02em;text-shadow:none;
+}
+#app[data-mode="result"] #result-score{
+  display:inline-flex;flex-direction:row;align-items:center;justify-content:center;
+  width:max-content;min-width:180px;max-width:100%;min-height:52px;
+  margin:0 auto 20px;padding:7px 22px;
+  border:2px solid var(--result-score-border);border-radius:999px;
+  background:var(--result-score-bg);
+  box-shadow:0 3px 0 var(--result-score-lift),inset 0 1px 0 rgba(255,255,255,0.6);
+  color:var(--result-ink);font-family:var(--font-display);
+}
+#app[data-mode="result"] #result-score .result-score-total{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+}
+#app[data-mode="result"] #result-score .result-score-total::before{
+  content:"✦";font-size:16px;color:#ffca48;margin-right:2px;
+  filter:drop-shadow(0 1px 0 rgba(217,154,56,0.8));
+}
+#app[data-mode="result"] #result-score strong{
+  color:var(--result-ink);font:800 28px/1 var(--font-display);
+  letter-spacing:-.02em;
+}
+#app[data-mode="result"] #result-score small{
+  color:var(--result-muted);font:700 13px/1 var(--font-display);
+  text-transform:uppercase;letter-spacing:.05em;
+}
+#app[data-mode="result"] #result-score span:not(.result-score-total){
+  display:flex;flex-direction:column;align-items:center;gap:3px;min-width:58px;
+}
+#app[data-mode="result"] #result-score span:not(.result-score-total) small{font-size:11px}
+#app[data-mode="result"] #result-score span:not(.result-score-total) strong{font-size:26px}
+#app[data-mode="result"] #result-score i{
+  width:2px;height:28px;margin:0 12px;background:var(--result-score-border);border-radius:2px;
+}
+#app[data-mode="result"] .result-actions{
+  display:grid;gap:12px;padding:0;border:0;border-radius:0;background:transparent;width:100%;
+}
+#app[data-mode="result"] .result-actions button{
+  display:flex;align-items:center;justify-content:center;
+  gap:10px;width:100%;cursor:pointer;
+  transition:transform .16s ease,box-shadow .16s ease,filter .16s ease;
+}
+#app[data-mode="result"] .result-actions button::after{content:none}
+#app[data-mode="result"] .result-actions svg{
+  width:22px;height:22px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;
+}
+#app[data-mode="result"] .result-actions .primary-button{
+  min-height:58px;border:3px solid var(--result-border);border-radius:22px;
+  background:var(--result-primary);box-shadow:0 5px 0 var(--result-primary-lift),0 10px 18px rgba(32,54,110,0.18),inset 0 1.5px 0 rgba(255,255,255,0.5);
+  color:var(--result-ink);font:800 20px/1 var(--font-display);
+}
+#app[data-mode="result"] .result-actions .secondary-button{
+  min-height:52px;border:2.5px solid var(--result-secondary-border);border-radius:20px;
+  background:var(--result-secondary);box-shadow:0 4px 0 var(--result-secondary-lift);
+  color:var(--result-ink);font:800 17px/1 var(--font-display);
+}
+@media(hover:hover){
+  #app[data-mode="result"] .result-actions button:hover{transform:translateY(-2px);filter:brightness(1.02)}
+  #app[data-mode="result"] .result-actions .primary-button:hover{box-shadow:0 7px 0 var(--result-primary-lift),0 14px 22px rgba(32,54,110,0.24)}
+  #app[data-mode="result"] .result-actions .secondary-button:hover{box-shadow:0 6px 0 var(--result-secondary-lift)}
+}
+#app[data-mode="result"] .result-actions button:active{
+  transform:translateY(3px);box-shadow:0 1px 0 var(--result-primary-lift);filter:none;
+}
+#app[data-mode="result"] .result-actions .secondary-button:active{
+  box-shadow:0 1px 0 var(--result-secondary-lift);
+}
+
+/* Season Parade uses the same geometry with its own sky-paper material and
+   authored seasonal celebration stage. */
+body[data-theme="seasons"] #app[data-mode="result"] .result-view{
+  --result-surface:#fff9e9;--result-border:#123f79;--result-lift:#f29a32;
+  --result-ink:#123f79;--result-muted:#4b749f;--result-stage-border:#8cd1e5;
+  --result-score-bg:linear-gradient(145deg,#e8f9fd,#d8f2f9);
+  --result-score-border:#8ecce0;--result-score-lift:#7abfd6;
+  --result-primary:linear-gradient(145deg,#ffe27b,#ffd04f);--result-primary-lift:#e79a31;
+  --result-secondary:#fffdf6;--result-secondary-border:#5b8ebc;--result-secondary-lift:#f0b04c;
+}
+body[data-theme="seasons"] #app[data-mode="result"] .result-character-space{
+  background:
+    radial-gradient(circle at 50% 68%,#ffffff 0%,rgba(255,255,255,0.78) 28%,transparent 62%),
+    radial-gradient(circle at 18% 30%,#ffd75f 0 2px,transparent 3px),
+    radial-gradient(circle at 82% 24%,#ffd75f 0 2.5px,transparent 3.5px),
+    radial-gradient(circle at 24% 64%,#ffe885 0 1.5px,transparent 2.5px),
+    radial-gradient(circle at 76% 68%,#ffe885 0 1.5px,transparent 2.5px),
+    linear-gradient(180deg,#bceeff 0%,#e7faff 76%,#fff9e9 100%);
+}
+body[data-theme="seasons"] #app[data-mode="result"] .result-character-space .sparky-anchor{
+  top:-4px;width:clamp(148px,40vw,174px);
+  filter:drop-shadow(0 8px 12px rgba(18,63,121,0.28));
+}
+body[data-theme="seasons"] #app[data-mode="result"] #result-score .result-score-total::before{
+  color:#f29a32;filter:drop-shadow(0 1px 0 rgba(231,154,49,0.8));
+}
+body[data-theme="seasons"] #app[data-mode="result"] .result-actions{padding:0;border:0;background:transparent}
+body[data-theme="seasons"] #app[data-mode="result"] .result-actions .primary-button{
+  border:3px solid #123f79;background:var(--result-primary);
+  box-shadow:0 5px 0 var(--result-primary-lift),0 10px 18px rgba(18,63,121,0.2),inset 0 1.5px 0 #fff5b8;
+  color:#123f79;
+}
+body[data-theme="seasons"] #app[data-mode="result"] .result-actions .secondary-button{
+  border:2.5px solid var(--result-secondary-border);background:var(--result-secondary);
+  box-shadow:0 4px 0 var(--result-secondary-lift);color:#123f79;
+}
+
+/* Neon keeps the exact modal architecture while replacing paper with a quiet
+   luminous lab panel. */
+body[data-theme="neon"] #app[data-mode="result"] .result-view{
+  --result-surface:#07172f;--result-border:#39e2f6;--result-lift:#6938ad;
+  --result-ink:#f4fcff;--result-muted:#8fe7f4;--result-stage-border:#2edcf2;
+  --result-score-bg:linear-gradient(145deg,#0e244d,#081a38);
+  --result-score-border:#35dff4;--result-score-lift:#6434a8;
+  --result-primary:#ffe046;--result-primary-lift:#b67b1d;
+  --result-secondary:linear-gradient(145deg,#112b56,#071831);
+  --result-secondary-border:#32dff5;--result-secondary-lift:#6434a8;
+  box-shadow:0 8px 0 var(--result-lift),0 0 24px #21e4ff55,0 26px 54px #0009,inset 0 1.5px 0 #83f5ff42;
+}
+body[data-theme="neon"] #app[data-mode="result"] .result-character-space{
+  background:
+    radial-gradient(circle at 50% 62%,rgba(34,223,255,0.35) 0%,rgba(255,60,166,0.12) 36%,transparent 65%),
+    linear-gradient(90deg,rgba(35,220,255,0.08) 50%,transparent 50%) 0 0/28px 28px,
+    linear-gradient(rgba(35,220,255,0.08) 50%,transparent 50%) 14px 14px/28px 28px,
+    linear-gradient(180deg,#12366d 0%,#081d3e 100%);
+}
+body[data-theme="neon"] #app[data-mode="result"] .result-character-space .sparky-anchor{
+  filter:drop-shadow(0 0 18px rgba(32,228,255,0.7));
+}
+body[data-theme="neon"] #app[data-mode="result"] .result-view h2{
+  color:var(--result-ink);text-shadow:0 0 12px rgba(34,223,255,0.75);
+}
+body[data-theme="neon"] #app[data-mode="result"] #result-score{
+  color:var(--result-ink);box-shadow:0 0 14px rgba(35,223,244,0.3),inset 0 1px 0 rgba(255,255,255,0.15);
+}
+body[data-theme="neon"] #app[data-mode="result"] #result-score small{color:var(--result-muted)}
+body[data-theme="neon"] #app[data-mode="result"] #result-score strong{color:var(--result-ink)}
+body[data-theme="neon"] #app[data-mode="result"] #result-score .result-score-total::before{
+  color:#ffe046;filter:drop-shadow(0 0 6px #ffe046);
+}
+body[data-theme="neon"] #app[data-mode="result"] .result-actions .primary-button{
+  border:2.5px solid #35e3f7;background:#ffe046;box-shadow:0 5px 0 #b67b1d,0 0 16px rgba(255,224,70,0.45);color:#10265a;
+}
+@media(hover:hover){
+  body[data-theme="neon"] #app[data-mode="result"] .result-actions .primary-button:hover{
+    box-shadow:0 7px 0 #b67b1d,0 0 22px rgba(255,224,70,0.65);
+  }
+}
+body[data-theme="neon"] #app[data-mode="result"] .result-actions .secondary-button{
+  border:2px solid #32dff5;background:linear-gradient(145deg,#112b56,#071831);
+  box-shadow:0 4px 0 #6434a8,0 0 12px rgba(31,225,255,0.25);
+  color:#effcff;
+}
+@media(hover:hover){
+  body[data-theme="neon"] #app[data-mode="result"] .result-actions .secondary-button:hover{
+    box-shadow:0 6px 0 #6434a8,0 0 18px rgba(31,225,255,0.45);background:linear-gradient(145deg,#153569,#0a2143);
+  }
+}
+
+@media(max-height:700px){
+  #app[data-mode="result"] .result-view{width:min(372px,calc(100vw - 20px));padding:0 16px 16px;border-radius:28px}
+  #app[data-mode="result"] .result-character-space{height:116px;margin:0 -16px 10px;border-radius:24px 24px 0 0}
+  #app[data-mode="result"] .result-character-space .sparky-anchor{top:-8px;width:126px}
+  #app[data-mode="result"] .result-view h2{font-size:clamp(24px,6.8vw,29px);margin-bottom:10px}
+  #app[data-mode="result"] #result-score{min-height:45px;margin-bottom:13px;padding:5px 14px;border-radius:15px}
+  #app[data-mode="result"] #result-score strong{font-size:23px}
+  #app[data-mode="result"] .result-actions{gap:8px}
+  #app[data-mode="result"] .result-actions .primary-button{min-height:50px;font-size:18px;border-radius:18px}
+  #app[data-mode="result"] .result-actions .secondary-button{min-height:44px;font-size:15px;border-radius:16px}
 }

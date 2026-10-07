@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {SPARKY_CLIPS,SEATED_IDLE_FRAMES,SEATED_IDLE_SHEET,SEATED_TALK_FRAMES,SEATED_TALK_SHEET,SEATED_ARRIVE_FRAMES,SEATED_ARRIVE_SHEET,SEATED_ARRIVE_DURATION,SEATED_OBSERVE_FRAMES,SEATED_OBSERVE_DURATION,SEATED_OBSERVE_HANDOFF_MS,SEATED_WAND_FRAMES,SEATED_WAND_RELEASE_MS,SEATED_WAND_RECOVERY_MS,SEATED_JOY_FRAMES,SEATED_JOY_SHEET,SEATED_JOY_DURATION,SEATED_JOY_RECOVERY_MS,SEATED_MISS_FRAMES,SEATED_MISS_SHEET,SEATED_MISS_DURATION,SEATED_MISS_RECOVERY_MS,SEATED_RESULT_FRAMES,SEATED_RESULT_SHEET,SEATED_RESULT_HOLD_MS,MOUTH_VISEMES,MOUTH_VISEME_SHEET,MOUTH_CLEANUP_SHEET,spriteFrame,seatedIdleFrame,seatedTalkFrame,seatedArriveFrame,seatedObserveFrame,seatedObserveDirection,seatedObserveSource,seatedWandFrame,seatedWandSource,seatedWandTip,seatedJoyFrame,seatedJoyEndTime,seatedMissFrame,seatedMissEndTime,seatedResultFrame,seatedTalkEndTime,seatedMouthViseme,buildMouthCues,mouthVisemeAt,mouthVisemePosition} from '../shape-friends/sparky.js';
+import {SPARKY_CLIPS,SEATED_IDLE_FRAMES,SEATED_IDLE_SHEET,SEATED_TALK_FRAMES,SEATED_TALK_SHEET,SEATED_ARRIVE_FRAMES,SEATED_ARRIVE_SHEET,SEATED_ARRIVE_DURATION,SEATED_OBSERVE_FRAMES,SEATED_OBSERVE_DURATION,SEATED_OBSERVE_HANDOFF_MS,SEATED_WAND_FRAMES,SEATED_WAND_RELEASE_MS,SEATED_WAND_RECOVERY_MS,SEATED_JOY_FRAMES,SEATED_JOY_SHEET,SEATED_JOY_DURATION,SEATED_JOY_RECOVERY_MS,SEATED_MISS_FRAMES,SEATED_MISS_SHEET,SEATED_MISS_DURATION,SEATED_MISS_RECOVERY_MS,SEATED_RESULT_FRAMES,SEATED_RESULT_SHEET,SEATED_RESULT_HOLD_MS,SEATED_NOD_YES_SHEET,SEATED_NOD_YES_FRAMES,SEATED_NOD_YES_DURATION,MOUTH_VISEMES,MOUTH_VISEME_SHEET,MOUTH_CLEANUP_SHEET,spriteFrame,seatedIdleFrame,seatedTalkFrame,seatedArriveFrame,seatedObserveFrame,seatedObserveDirection,seatedObserveSource,seatedWandFrame,seatedWandSource,seatedWandTip,seatedJoyFrame,seatedJoyEndTime,seatedMissFrame,seatedMissEndTime,seatedResultFrame,seatedNodYesFrame,seatedTalkEndTime,seatedMouthViseme,buildMouthCues,mouthVisemeAt,mouthVisemePosition} from '../shape-friends/sparky.js';
 
 test('Sparky plays the supplied kimono peeking, pointing and celebration frames',()=>{
   assert.deepEqual(spriteFrame('idle',0),{sheet:'peek',frame:11});
@@ -91,12 +91,12 @@ test('voice completion releases the speaking hold into authored recovery',()=>{
   assert(earlyEnd>2000,'an early clip still gets the complete intro and recovery');
   assert.equal(seatedTalkFrame(1070,earlyEnd),8,'an early clip shows a brief complete invitation pose');
 });
-test('Sparky cloud assembly is absolutely layered in match and result modes',async()=>{
+test('Sparky cloud assembly is layered in play and docked in the result stage',async()=>{
   const css=await readFile(new URL('../shape-friends/prototype.css',import.meta.url),'utf8');
   assert.match(css,/\.play-layout > \.sparky-anchor\{display:none\}/);
   assert.match(css,/#app\[data-mode="result"\] \.play-layout\{[\s\S]*?align-items:center;justify-content:center/);
   assert.match(css,/#app\[data-mode="match"\]\[data-sparky-ready="true"\] \.play-layout > \.sparky-anchor\{display:block\}/);
-  assert.match(css,/#app\[data-mode="result"\]\[data-sparky-ready="true"\] \.play-layout > \.sparky-anchor\{/);
+  assert.match(css,/#app\[data-mode="result"\] \.result-character-space \.sparky-anchor\{/);
   assert.match(css,/\.cast-star\{display:none\}/,'the gameplay star cannot leak into the top-left of the menu');
 });
 test('wall arrival uses all supplied 5 by 4 atlas frames before idle handoff',async()=>{
@@ -210,4 +210,30 @@ test('all outcomes use the supplied result intro and permanent friendly hold',as
   const atlas=await readFile(new URL(`../shape-friends/${SEATED_RESULT_SHEET}`,import.meta.url));
   assert.equal(atlas.toString('ascii',1,4),'PNG');
   assert.equal(atlas.readUInt32BE(16),2560);assert.equal(atlas.readUInt32BE(20),2048);
+});
+test('approving nod yes atlas uses its supplied timing and completes neutral handoff',async()=>{
+  assert.equal(SEATED_NOD_YES_SHEET,'assets/new_sparky_sheets/sparky_wall_nod_yes/atlas.png');
+  assert.equal(SEATED_NOD_YES_FRAMES.frames.length,12);
+  assert.equal(SEATED_NOD_YES_DURATION,976);
+  assert.equal(seatedNodYesFrame(0),0);
+  assert.equal(seatedNodYesFrame(119),0);
+  assert.equal(seatedNodYesFrame(120),1);
+  assert.equal(seatedNodYesFrame(321),4,'Frame 004 is YES_BEAT');
+  assert.equal(seatedNodYesFrame(650),8,'Frame 008 is YES_HOLD');
+  assert.equal(seatedNodYesFrame(975),11,'Frame 011 is NEUTRAL_HANDOFF');
+  assert.equal(seatedNodYesFrame(1000),11);
+  assert.equal(seatedNodYesFrame(0,true),0,'reduced motion freezes neutral frame');
+  const atlas=await readFile(new URL(`../shape-friends/${SEATED_NOD_YES_SHEET}`,import.meta.url));
+  assert.equal(atlas.toString('ascii',1,4),'PNG');
+  assert.equal(atlas.readUInt32BE(16),2048);
+  assert.equal(atlas.readUInt32BE(20),1536);
+});
+test('future quiet no animation has complete production prompt without premature runtime wiring',async()=>{
+  const prompts=await readFile(new URL('../shape-friends/SPARKY_WALL_ANIMATION_PROMPTS.md',import.meta.url),'utf8');
+  assert.match(prompts,/## Prompt 11 — Quiet approving nod[\s\S]*?`sparky_wall_nod_yes`/);
+  assert.match(prompts,/## Prompt 12 — Quiet gentle “not yet” head shake[\s\S]*?`sparky_wall_nod_no`/);
+  assert.match(prompts,/NO_BEAT/);
+  assert.match(prompts,/2048×1536/);
+  const runtime=await readFile(new URL('../shape-friends/sparky.js',import.meta.url),'utf8');
+  assert.doesNotMatch(runtime,/sparky_wall_nod_no/,'runtime must wait for approved no spritesheet');
 });

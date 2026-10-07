@@ -1,6 +1,6 @@
 # Sparky wall-seat animation prompts
 
-This file contains ten independent prompts. Copy one complete prompt at a time. For every request, attach the original approved Sparky reference image. Starting with Prompt 2, also attach Frame 000 produced and approved from Prompt 1 as the wall-seat registration reference. Do not use the turquoise-overalls atlas as a costume reference.
+This file contains twelve independent prompts. Copy one complete prompt at a time. For every request, attach the original approved Sparky reference image. Starting with Prompt 2, also attach Frame 000 produced and approved from Prompt 1 as the wall-seat registration reference. Do not use the turquoise-overalls atlas as a costume reference.
 
 ---
 
@@ -523,3 +523,89 @@ Create these named shapes: `REST` closed friendly smile; `MBP` gently pressed li
 Keep the mouth child-friendly and simple. Do not add realistic gums, detailed tongue texture, detached teeth, lipstick, beard, nose, sticker border, white rectangle or shadow. The surrounding transparent pixels must not cover the eyes or face shading.
 
 Deliver 17 individually named transparent PNGs, one labeled review atlas, overlays tested on idle Frames 000, 005 and 014, a speaking preview returning to `REST`, and a manifest with measured `mouthAnchor`, bounds and recommended transitions. Reject pivot movement, different line thickness, face-colored halos, mismatched smile width or any mouth that looks pasted on.
+
+---
+
+## Prompt 11 — Quiet approving nod
+
+Create a production-ready animation package named `sparky_wall_nod_yes`. Attach the original approved Sparky identity image and the approved wall-idle Frame 000. Frame 000 of this package must be copied from that approved idle frame, not redrawn.
+
+Preserve exactly the same yellow/orange/red flame head, eyes, brows, closed smile proportions, cobalt-blue kimono, cream V collar, gold sash and clasp, dark-blue lower garment, blue-and-cream shoes, white four-finger gloves, and short brown wand with a gold five-point star. No overalls, costume substitutions or identity changes.
+
+This is a quick silent acknowledgement used during ordinary gameplay when spoken praise would be repetitive. It should communicate “yes”, “I saw that” or “good choice” through one clear, gentle head nod. Sparky does not talk. Keep the mouth closed and registered in every frame so no viseme overlay is required.
+
+Create 12 transparent 512×512 sRGB PNG frames with straight alpha. Sparky remains seated on the same invisible wall at `y=300`; draw no wall. Keep the exact approved `seatAnchor`, scale and camera. Hips and thighs never move. Legs hang in front without kicking. The viewer-left hand keeps the wand secure at the neutral angle. The viewer-right glove stays planted on the invisible ledge. Only the eyes, brows, head, upper neck/shoulder connection and tiny delayed flame-tip motion may change.
+
+Frame plan and default durations:
+
+1. `000`, 120 ms: pixel-identical approved wall neutral.
+2. `001`, 67 ms: eyes warmly acknowledge the child; brows brighten by at most 1 px.
+3. `002`, 67 ms: chin begins moving downward; head rotation no more than 1.5 degrees.
+4. `003`, 67 ms: head continues into the nod; flame base follows without deforming.
+5. `004`, 100 ms: nod reaches a restrained 4-degree downward peak; mark `YES_BEAT`.
+6. `005`, 67 ms: head begins returning toward center.
+7. `006`, 67 ms: head passes center with a natural upward recovery of at most 1 degree.
+8. `007`, 67 ms: one much smaller confirming dip, no more than 2 degrees.
+9. `008`, 100 ms: warm approving eyes and closed smile; mark `YES_HOLD`.
+10. `009`, 67 ms: head returns to exact center; flame tips follow with a tiny delay.
+11. `010`, 67 ms: shoulders and brows settle; wand, gloves, legs and seat remain unchanged.
+12. `011`, 120 ms: pixel-identical to Frame 000; mark `NEUTRAL_HANDOFF`.
+
+The complete action should read clearly at a rendered character height of 90–120 CSS px and should finish in about one second. Use connected drawings with smooth ease-in/ease-out, not translated copies of one image. The head must rotate naturally around the neck pivot; never move the entire character up and down.
+
+Do not add speech, open-mouth drawings, a large bow, hand gesture, thumbs-up, pointing, wand casting, travelling star, sparkles, card art, words, wall, cloud, platform, shadow or background. Do not let the chin collide with the collar. Do not squash the face, move the pupils outside the eyes, change the flame silhouette, slide the hips or alter the costume.
+
+Deliver:
+
+1. Twelve individually numbered transparent PNGs named `sparky_wall_nod_yes_000.png` through `sparky_wall_nod_yes_011.png`.
+2. One exact 4×3 runtime atlas, 2048×1536, with twelve 512×512 cells, no spacing, labels, border or background.
+3. A labelled 4×3 review contact sheet.
+4. A transparent one-shot preview.
+5. An idle→nod yes→idle preview composited over a temporary wall.
+6. A 100 px game-size preview.
+7. `animation-manifest.json` containing per-frame durations, `YES_BEAT`, `YES_HOLD`, `NEUTRAL_HANDOFF`, canvas and atlas dimensions, straight-alpha declaration, and measured per-frame `seatAnchor`, `mouthAnchor`, `headPivot`, `wandHandPivot`, `wandTip`, glove anchors, shoe anchors and character bounds.
+
+Reject the package if Frames 000 and 011 are not pixel-identical, any frame changes the mouth pivot, the motion resembles a bow, the nod is too subtle to read at game size, the full body bobs, the seat drifts, the wand changes, a glove gains or loses a finger, the costume changes, the character is cropped, or the atlas cells are not exactly 512×512.
+
+---
+
+## Prompt 12 — Quiet gentle “not yet” head shake
+
+Create a production-ready animation package named `sparky_wall_nod_no`. Attach the original approved Sparky identity image and approved wall-idle Frame 000. Frame 000 of this package must be copied from the approved idle frame, not redrawn.
+
+Preserve exactly the same yellow/orange/red flame identity, large black eyes, short red brows, closed smile proportions, cobalt-blue kimono, cream V collar, gold sash and clasp, dark-blue lower garment, blue-and-cream shoes, white four-finger gloves, and short brown gold-star wand. No overalls and no costume substitutions.
+
+This is a quick silent “not this pair yet” reaction for a game played by very young children. It must feel gentle, helpful and emotionally safe—never scolding, disappointed or mocking. Sparky makes one small side-to-side head shake and immediately returns to warm encouragement. He does not talk. Draw a closed neutral-to-kind mouth in every frame so no viseme overlay is required.
+
+Create 12 transparent 512×512 sRGB PNG frames with straight alpha. Sparky remains seated on the same invisible wall at `y=300`; do not draw it. Preserve the exact approved `seatAnchor`, scale, camera and body registration. Hips, thighs, legs, shoes, planted viewer-right glove, wand hand and wand remain fixed. Motion is limited to pupils, brows, a small horizontal head rotation and tiny delayed flame-tip follow-through.
+
+Frame plan and default durations:
+
+1. `000`, 120 ms: pixel-identical approved wall neutral.
+2. `001`, 67 ms: eyes register the two non-matching cards; brows lift softly, never frown.
+3. `002`, 67 ms: head begins turning 2 degrees toward viewer-left.
+4. `003`, 83 ms: head reaches a maximum 4-degree viewer-left turn.
+5. `004`, 67 ms: head passes smoothly back through center.
+6. `005`, 83 ms: head reaches a maximum 4-degree viewer-right turn.
+7. `006`, 100 ms: brief gentle `NO_BEAT`; eyes remain warm and open.
+8. `007`, 67 ms: head begins returning from viewer-right.
+9. `008`, 67 ms: head passes center into a final tiny 1.5-degree viewer-left echo.
+10. `009`, 100 ms: exact centered encouraging expression; mark `TRY_AGAIN_HOLD`.
+11. `010`, 67 ms: brows, pupils and flame tips settle without changing the smile.
+12. `011`, 120 ms: pixel-identical to Frame 000; mark `NEUTRAL_HANDOFF`.
+
+The complete action should finish in about one second and remain readable at 90–120 CSS px character height. Rotate the head around the measured neck pivot. Pupils may lead each turn by one frame, while flame tips follow by one frame. Use smooth connected motion with restrained ease-in/ease-out. Do not translate the entire head or body sideways.
+
+No tears, frown, lowered ashamed gaze, angry brows, eye roll, face covering, shrug, finger wag, hand movement, pointing, open mouth, speech, wand casting, magical effect, card, text, wall, cloud, platform, shadow or background. The action must mean “not yet—try again”, not “you are wrong”.
+
+Deliver:
+
+1. Twelve individually numbered transparent PNGs named `sparky_wall_nod_no_000.png` through `sparky_wall_nod_no_011.png`.
+2. One exact 4×3 runtime atlas, 2048×1536, with twelve 512×512 cells, no spacing, labels, border or background.
+3. A labelled 4×3 review contact sheet.
+4. A transparent one-shot preview.
+5. An idle→nod no→idle preview composited over a temporary wall.
+6. A 100 px game-size preview.
+7. `animation-manifest.json` containing per-frame durations, `NO_BEAT`, `TRY_AGAIN_HOLD`, `NEUTRAL_HANDOFF`, canvas and atlas dimensions, straight-alpha declaration, and measured per-frame `seatAnchor`, `mouthAnchor`, `headPivot`, `wandHandPivot`, `wandTip`, glove anchors, shoe anchors and character bounds.
+
+Reject the package if Frames 000 and 011 are not pixel-identical, the expression reads as angry or sad, the shake is too large or too subtle, the whole body slides, the head translates rather than rotates, the mouth opens, the mouth pivot moves, the costume or flame identity changes, glove anatomy changes, the wand moves, the character is cropped, or any runtime atlas cell is not exactly 512×512.

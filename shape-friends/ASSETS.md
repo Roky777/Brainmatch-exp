@@ -192,3 +192,34 @@ The local Garden font is reused from `../assets/garden.woff2`, under the existin
 The current play screen uses the user's `assets/animations /Sparky-idle-blink-ambient-v2/` 12-frame transparent sequence and its `animation-manifest.json`. The cropped 4 × 3 runtime atlas is `assets/sparky/idle-blink-ambient-v2.webp`; its frame durations in `sparky.js` follow the manifest (2.5-second neutral hold, blink, then 750 ms open-eye hold). The 14-frame `Sparky-speaking-loop-fullframes-v1` remains a **review draft**, not a runtime asset: its intermediate drawings change body, face and wand registration. Voice playback therefore holds the clean seated idle instead of showing a popping gesture. The source package's `QA_NOTES.md` calls for corrected frame registration and measured mouth anchors. The original source folders include a trailing space in their name; runtime assets use stable paths. Sparky sits on `assets/score-perch-v2.webp`. A small code-drawn placeholder star travels from the wand tip to the selected card and triggers its flip. A full wand-cast animation and mouth sync still require future assets. The older floating face/hand crops and separated reaching-arm crops remain in the asset directory for provenance but are not rendered.
 
 The source dimensions do not divide evenly into 7 × 2 cells, and several frames touch their cell's right/bottom edge. Re-export with integer-sized, consistently padded frames to avoid possible atlas bleed or cut-off details; see [sparkysheet.md](sparkysheet.md).
+
+## Season Parade world (2026-10-06)
+
+The second playable world uses two production raster assets generated with the built-in image-generation tool, plus sixteen original SVG object illustrations. The supplied “Which Season?” image was a style and energy reference only; its branding, text, card layout, mascot and composition are not copied.
+
+| Runtime asset | Generated source |
+| --- | --- |
+| `assets/season-parade-bg-v1.webp` | `exec-3283a910-8ca1-4009-b0f2-95e787cee4e3.png` |
+| `assets/season-parade-bg-v2.webp` | `exec-9fa1afd6-e949-4152-acae-90af55b9fc3b.png` |
+| `assets/season-card-back-v1.webp` | `exec-dcd73b1c-601b-42c4-a71f-3457441c27ac.png` |
+| `assets/season-card-front-v1.webp` | `exec-cd0baaba-afac-402d-8c6b-13a4e4336c07.png` |
+| `assets/season-sparky-cloud-v1.webp` | `exec-9958d60a-4dce-4d68-8302-30ed0278df48.png` |
+| `assets/season-result-stage-v1.webp` | `exec-c6e2e721-2e14-41af-b168-643a83055f3a.png` |
+
+Background brief: original vertical children’s-game scene with a turquoise checker sky, edge clouds and weather doodles, broad quiet butter-cream play field, and lush rounded grass/flowers at the lower edge. Version 2 replaces the flat yellow center with layered low-contrast ivory, peach-gold and pale-mint gouache bands while preserving every edge element and the empty UI zone. No text, branding, cards, UI or characters. Card-back brief: one transparent, front-facing tactile tile with a navy outline, golden raised edge, cyan checker face and a four-season snowflake/flower/sun/leaf emblem, readable at game size. Card-front brief: the exact same physical tile and padding with a calm blank ivory center for live object art. Sitting-cloud brief: retain the wide low seat geometry needed by Sparky while redrawing it with crisp navy contours, white/cyan volume, glossy highlights and a subtle golden underside accent. The result-stage brief adds a wide seasonal cloud amphitheatre, calm blue halo and restrained flower/leaf/snowflake/sun accents around an empty central character-safe area. No text, logo, embedded character or UI.
+
+The sixteen original SVG card illustrations live in `assets/items-seasons/`: snowman, snowflake, mitten, sled, flower, umbrella, rain boots, butterfly, sun, ice pop, sunglasses, palm tree, leaf, pumpkin, acorn and scarf. World selection and progress remain live interface/state in `app.js` and `save.js`: Season Parade opens after three completed Dream rounds, and Neon Shape Lab opens after five completed rounds total. No screenshot is used as an interactive substitute.
+
+## Neon Shape Lab world (2026-10-07)
+
+The third playable world uses four original raster assets generated with the built-in image-generation tool. The supplied dark “BrainMatch: Shapes” image was used only as a palette and mood reference; its branding, wording, grid and card compositions are not reproduced.
+
+| Runtime asset | Generated source |
+| --- | --- |
+| `assets/neon-shape-lab-bg-v1.webp` | `exec-39148873-4a91-4e55-8e29-b6db4dd04a1d.png` |
+| `assets/neon-shape-lab-bg-v2.webp` | `exec-3f7af8af-82cf-49b9-bd31-52d8cc3f50a1.png` |
+| `assets/neon-card-back-v1.webp` | `exec-a3bf8991-1163-409d-8207-31db3f7d4d6f.png` |
+| `assets/neon-card-front-v1.webp` | `exec-cea347b9-47a6-45ef-99d8-b3faff4d85ce.png` |
+| `assets/neon-sparky-cloud-v1.webp` | `exec-d6af334d-d54d-4fb1-833e-6dc6a628e95d.png` |
+
+Background brief: an original portrait midnight play lab with cyan circuit curves and softly glowing pink, aqua, yellow, violet, mint and orange geometry. Version 2 rebuilds the composition for play: a calm character zone, a genuinely quiet central card field with all bright motifs restricted to narrow edge gutters, and a layered neon discovery-garden floor that gives the lower screen a finished destination instead of an empty void. Card brief: one tactile midnight tile with a controlled cyan edge glow and a compact four-shape emblem, plus an exactly matched blank face-up frame. Sitting-cloud brief: a wide low cobalt vapor cushion with cyan contour, violet/pink reflections and a warm central glow. All assets contain no text, branding, UI or copied layout.

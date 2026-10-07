@@ -1,0 +1,23 @@
+{
+  "decodedRuntimePngs": 12,
+  "canvas": [
+    512,
+    512
+  ],
+  "atlas": [
+    2048,
+    1536
+  ],
+  "atlasCellComparisons": 12,
+  "startAndEndFileBytesMatchApprovedIdle": true,
+  "allMeasuredAnchorsIdentical": true,
+  "allPixelsBelow211IdenticalToMaster": true,
+  "mouthPatchWandHandsFeetLocked": true,
+  "minimumPaddingPx": 27,
+  "durationMs": 976,
+  "actualGameTested": false,
+  "rigLimit": "Pitch is a local projected drawing-rig parameter; not measured3D rigid-neck rotation. Pinned mouth makes rigid-neck rotation impossible.",
+  "generatedPoseStudyUsedAsRuntimeReplacement": false,
+  "allZeroAlphaPixelsHaveZeroRgb": true,
+  "runtimePngCount": 12
+}

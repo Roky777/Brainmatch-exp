@@ -24,62 +24,26 @@ export const PACK = {
   ],
 };
 
-// World two keeps the same memory rules, but changes what the child is
-// noticing: two different pictures belong to the same season.
+// All worlds share the exact same shape matching data and learning objective.
+// Theme changes the visual world, scenery and cards while preserving the curriculum.
 export const SEASON_PACK = {
   id: 'season-parade-grade-1', version: 1, title: 'Season Parade',
-  subtitle: 'Which season are they from?', grade: 1,
-  objective: 'Find two things that belong to the same season.',
-  rounds: [
-    { id: '1', title: 'Four happy seasons', subtitle: 'Find friends from the same season.', pairs: [
-      ['winter', 'snowman', 'snowflake'], ['spring', 'flower', 'umbrella'],
-      ['summer', 'sun', 'popsicle'], ['autumn', 'leaf', 'pumpkin'],
-    ] },
-    { id: '2', title: 'Weather and play', subtitle: 'What belongs together?', pairs: [
-      ['winter', 'mitten', 'sled'], ['spring', 'rainboots', 'butterfly'],
-      ['summer', 'sunglasses', 'palm'], ['autumn', 'acorn', 'scarf'],
-    ] },
-    { id: '3', title: 'Season mix-up', subtitle: 'Look closely and make a pair.', pairs: [
-      ['winter', 'snowman', 'mitten'], ['spring', 'flower', 'butterfly'],
-      ['summer', 'sun', 'sunglasses'], ['autumn', 'leaf', 'acorn'],
-    ] },
-    { id: '4', title: 'Season celebration', subtitle: 'Bring every season together.', pairs: [
-      ['winter', 'snowflake', 'sled'], ['spring', 'umbrella', 'rainboots'],
-      ['summer', 'popsicle', 'palm'], ['autumn', 'pumpkin', 'scarf'],
-    ] },
-  ],
+  subtitle: 'Different things. Friendly shapes.', grade: 1,
+  objective: 'Find two things with the same overall shape.',
+  rounds: PACK.rounds,
 };
 
-// World three revisits familiar shape families inside a high-contrast neon
-// play lab. The learning rule stays identical, so only the visual world is new.
 export const NEON_PACK = {
   id: 'neon-shape-lab-grade-1', version: 1, title: 'Neon Shape Lab',
-  subtitle: 'Match the glowing shapes', grade: 1,
+  subtitle: 'Different things. Friendly shapes.', grade: 1,
   objective: 'Find two things with the same overall shape.',
-  rounds: [
-    { id: '1', title: 'Lights on!', subtitle: 'Find shapes that glow together.', pairs: [
-      ['round', 'football', 'orange'], ['box', 'matchbox', 'book'],
-      ['cone', 'birthdaycap', 'funnel'], ['cylinder', 'glass', 'waterbottle'],
-    ] },
-    { id: '2', title: 'Color circuits', subtitle: 'Follow the shape, not the color.', pairs: [
-      ['round', 'beachball', 'watermelon'], ['box', 'pencilbox', 'notebook'],
-      ['cone', 'papercone', 'icecream'], ['cylinder', 'tumbler', 'bottle'],
-    ] },
-    { id: '3', title: 'Shape signals', subtitle: 'Look closely and connect a pair.', pairs: [
-      ['round', 'ball', 'football'], ['box', 'shoebox', 'matchbox'],
-      ['cone', 'funnel', 'birthdaycap'], ['cylinder', 'waterbottle', 'glass'],
-    ] },
-    { id: '4', title: 'Glow celebration', subtitle: 'Bring every shape light together.', pairs: [
-      ['round', 'orange', 'beachball'], ['box', 'book', 'pencilbox'],
-      ['cone', 'icecream', 'papercone'], ['cylinder', 'bottle', 'tumbler'],
-    ] },
-  ],
+  rounds: PACK.rounds,
 };
 
 export const THEMES = Object.freeze({
   dream: { id: 'dream', title: 'Dream Meadow', shortTitle: 'Dream', pack: PACK },
-  seasons: { id: 'seasons', title: 'Season Parade', shortTitle: 'Seasons', pack: PACK },
-  neon: { id: 'neon', title: 'Neon Shape Lab', shortTitle: 'Neon', pack: PACK },
+  seasons: { id: 'seasons', title: 'Season Parade', shortTitle: 'Seasons', pack: SEASON_PACK },
+  neon: { id: 'neon', title: 'Neon Shape Lab', shortTitle: 'Neon', pack: NEON_PACK },
 });
 
 export const ITEMS = {

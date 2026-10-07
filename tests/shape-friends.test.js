@@ -29,12 +29,12 @@ test('All 18 object IDs resolve to shipped, compact WebP art', async () => {
 });
 
 test('Season Parade is a complete second world with four visual seasons', async () => {
-  assert.equal(getTheme('seasons').pack, PACK);
+  assert.equal(getTheme('seasons').pack, SEASON_PACK);
   assert.equal(SEASON_PACK.rounds.length, 4);
   for (const round of SEASON_PACK.rounds) {
     const cards=cardsFor(round);
     assert.equal(cards.length,8);
-    assert.deepEqual(round.pairs.map(pair=>pair[0]),['winter','spring','summer','autumn']);
+    assert.deepEqual(round.pairs.map(pair=>pair[0]),['round','box','cone','cylinder']);
     assert.equal(new Set(cards.map(card=>card.item)).size,8);
   }
   assert.equal(Object.keys(SEASON_ITEMS).length,16);
@@ -54,7 +54,7 @@ test('Season Parade is a complete second world with four visual seasons', async 
 });
 
 test('Neon Shape Lab is a complete third world with production artwork',async()=>{
-  assert.equal(getTheme('neon').pack,PACK);
+  assert.equal(getTheme('neon').pack,NEON_PACK);
   assert.equal(NEON_PACK.rounds.length,4);
   for(const round of NEON_PACK.rounds){
     const cards=cardsFor(round);

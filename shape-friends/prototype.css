@@ -2115,14 +2115,15 @@ dialog#settings-dialog > .secondary-button{
   right:max(18px,calc((100vw - 480px)/2 + 18px));
   bottom:max(18px,calc(env(safe-area-inset-bottom) + 12px));
   align-items:center;justify-content:center;gap:7px;
-  width:94px;height:52px;padding:8px 13px;border:2.5px solid #203975;border-radius:18px;
+  width:auto;min-width:94px;height:52px;padding:8px 13px;border:2.5px solid #203975;border-radius:18px;
   background:#fffaf0;box-shadow:0 4px 0 #8295ce,0 8px 14px #2039752e;
   color:#203975;font:800 15px/1 var(--font-body);pointer-events:auto;
 }
 #app[data-mode="match"] #hint svg{width:28px;height:28px;flex:0 0 auto}
+#app[data-mode="match"] #hint span{white-space:nowrap}
 #app[data-mode="match"] #hint:disabled{opacity:.48;filter:saturate(.55);box-shadow:0 2px 0 #aeb8d4}
 @media(max-height:700px){
-  #app[data-mode="match"] #hint{width:84px;height:46px;font-size:14px;bottom:max(12px,env(safe-area-inset-bottom))}
+  #app[data-mode="match"] #hint{min-width:84px;height:46px;font-size:14px;bottom:max(12px,env(safe-area-inset-bottom))}
   #app[data-mode="match"] #hint svg{width:24px;height:24px}
 }
 
@@ -2147,7 +2148,7 @@ dialog#settings-dialog > .secondary-button{
   dialog#level-dialog{width:calc(100vw - 20px);padding-inline:13px}
   .difficulty-choices button{grid-template-columns:52px minmax(0,1fr) 20px;padding-inline:9px 12px}
   .difficulty-face{width:50px;height:42px}
-  #app[data-mode="match"] #hint{right:12px;width:78px;height:44px;padding-inline:10px}
+  #app[data-mode="match"] #hint{right:12px;min-width:78px;height:44px;padding-inline:10px}
   #app[data-mode="result"] .result-view{width:calc(100vw - 18px)}
 }
 @media(prefers-contrast:more){

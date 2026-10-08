@@ -26,6 +26,7 @@ result before moving on.
 - [x] Pass 9 — Honest board readiness states
 - [x] Pass 10 — Challenge score readability
 - [x] Pass 11 — Motion and performance regression
+- [x] Pass 12 — Resilient hint control sizing
 
 ## Pass 1 — Entry screen hierarchy and interaction clarity
 
@@ -135,3 +136,11 @@ the existing reduced-motion rules.
 
 **Upgrade:** Extended reduced-motion handling across hint pulses, turn lights,
 progress pops, loading indicators, card transitions, and control transitions.
+
+## Pass 12 — Resilient hint control sizing
+
+**Finding:** The hint control was sized for the original one-word label, so its
+new instructional states could wrap or crowd the icon on compact screens.
+
+**Upgrade:** Made the control grow with its content, kept every hint state on one
+line, and retained the existing compact-screen minimum size and touch target.

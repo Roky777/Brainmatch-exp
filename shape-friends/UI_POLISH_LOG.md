@@ -21,6 +21,11 @@ result before moving on.
 - [x] Pass 4 — Pause and results experience
 - [x] Pass 5 — Responsive and accessibility finishing pass
 - [x] Pass 6 — Final regression review
+- [x] Pass 7 — Learning objective at the decision point
+- [x] Pass 8 — Actionable hint feedback
+- [x] Pass 9 — Honest board readiness states
+- [x] Pass 10 — Challenge score readability
+- [x] Pass 11 — Motion and performance regression
 
 ## Pass 1 — Entry screen hierarchy and interaction clarity
 
@@ -88,3 +93,45 @@ fallback where it does not. Added explicit
 asset versions to the page entry point so the finished CSS and module runtime
 arrive together after deployment. The live recheck also caught module-graph
 caching, so the Sparky dependency itself now carries the release version.
+
+## Pass 7 — Learning objective at the decision point
+
+**Finding:** The board chooser explained card counts but not the learning goal,
+so difficulty could be chosen without understanding the task.
+
+**Upgrade:** Added the active world’s learning objective to the level dialog,
+connected it through `aria-describedby`, and update it from the current content
+pack whenever the world changes.
+
+## Pass 8 — Actionable hint feedback
+
+**Finding:** A hint could highlight cards, but the control itself still said only
+“Hint,” making it easy to miss where the help appeared.
+
+**Upgrade:** The control now changes to “Look here” when Sparky remembers a card
+and the suggested cards receive a warm, high-contrast glow. When Sparky needs
+more information, the control says “Try one” and explains the next step.
+
+## Pass 9 — Honest board readiness states
+
+**Finding:** During Sparky’s arrival and welcome, the board said “Your turn!”
+while every card was still disabled.
+
+**Upgrade:** The board now exposes an `aria-busy` state and displays “Getting
+ready…” until the welcome finishes and the cards are truly interactive.
+
+## Pass 10 — Challenge score readability
+
+**Finding:** The challenge score compressed both players into one text string,
+so ownership and changing numbers were hard to scan.
+
+**Upgrade:** Rebuilt it as a compact two-sided scoreboard with distinct player
+labels, larger numbers, a separator, and one concise accessible score label.
+
+## Pass 11 — Motion and performance regression
+
+**Finding:** The latest card feedback added motion to surfaces not covered by
+the existing reduced-motion rules.
+
+**Upgrade:** Extended reduced-motion handling across hint pulses, turn lights,
+progress pops, loading indicators, card transitions, and control transitions.

@@ -66,6 +66,7 @@ function applyTheme() {
   const kickers={dream:'A little shape adventure',seasons:'Find friends from every season',neon:'Match the glowing shapes'};
   $('setup-title').innerHTML = `${titles[theme.id]}<span aria-hidden="true">✦</span>`;
   document.querySelector('.setup-kicker').textContent = kickers[theme.id];
+  $('level-objective').textContent = pack.objective;
   $('theme-open').setAttribute('aria-label', `Change world. Current world: ${theme.title}`);
   $('theme-open-label').textContent = 'Worlds';
   document.querySelectorAll('[data-theme-choice]').forEach(button => {
@@ -157,9 +158,17 @@ function clearPointer() {
   $('cast-star').classList.remove('visible', 'contact');
   $('cards').querySelectorAll('.targeted').forEach(node => node.classList.remove('targeted'));
 }
+function resetHintFeedback() {
+  $('cards').querySelectorAll('.hinted').forEach(node => node.classList.remove('hinted'));
+  const button = $('hint');
+  button.classList.remove('is-helping', 'needs-more');
+  button.querySelector('span').textContent = 'Hint';
+  button.setAttribute('aria-label', 'Help me remember');
+}
 function clearEffects() {
   clearPointer(); $('effects-layer').replaceChildren(); $('pair-celebration').hidden = true;
-  $('cards').querySelectorAll('.hinted, .just-matched').forEach(node => node.classList.remove('hinted', 'just-matched'));
+  resetHintFeedback();
+  $('cards').querySelectorAll('.just-matched').forEach(node => node.classList.remove('just-matched'));
 }
 function burstAtCard(index, matched = false) {
   if (reduced.matches) return;
@@ -250,6 +259,7 @@ function startRound(id) {
 }
 function renderBoard() {
   const canPlay = board.actor === 'child' && board.phase === 'ready' && !busy && mode === 'match';
+  const gettingReady = busy && board.actor === 'child' && board.phase === 'ready' && !board.history.length;
   board.snapshot().forEach(({ index, matched, visible, card }) => {
     const button = $('cards').children[index], front = button.querySelector('.card-front');
     button.classList.toggle('is-open', visible); button.classList.toggle('is-matched', matched);
@@ -277,13 +287,22 @@ function renderBoard() {
     }
   });
   $('turn-chip').dataset.actor = board.actor;
+  $('turn-chip').classList.toggle('is-waiting', gettingReady);
+  $('cards').setAttribute('aria-busy', String(gettingReady));
   const bonus = board.mode === 'challenge' && board.history.at(-1)?.match;
-  $('turn-chip').querySelector('strong').textContent = board.phase === 'complete' ? 'We did it!' : board.actor === 'child' ? (bonus ? 'You go again!' : 'Your turn!') : (bonus ? 'Sparky goes again!' : 'Sparky’s turn!');
+  $('turn-chip').querySelector('strong').textContent = gettingReady ? 'Getting ready…' : board.phase === 'complete' ? 'We did it!' : board.actor === 'child' ? (bonus ? 'You go again!' : 'Your turn!') : (bonus ? 'Sparky goes again!' : 'Sparky’s turn!');
   $('pair-progress').innerHTML = Array.from({ length: board.pairCount }, (_, i) => `<i class="${i < board.matched.size ? 'found' : ''}"></i>`).join('');
   $('pair-progress').setAttribute('aria-label', `${board.matched.size} of ${board.pairCount} pairs found`);
   $('pair-progress').hidden = options.mode === 'challenge';
   $('match-score').hidden = options.mode !== 'challenge';
-  $('match-score').textContent = `You ${board.scores.child} · Sparky ${board.scores.sparky}`;
+  if (options.mode === 'challenge') {
+    const { child, sparky: sparkyScore } = board.scores;
+    $('match-score').innerHTML = `<span><small>You</small><strong>${child}</strong></span><i aria-hidden="true"></i><span><small>Sparky</small><strong>${sparkyScore}</strong></span>`;
+    $('match-score').setAttribute('aria-label', `Score: You ${child}, Sparky ${sparkyScore}`);
+  } else {
+    $('match-score').replaceChildren();
+    $('match-score').removeAttribute('aria-label');
+  }
   $('hint').disabled = !canPlay;
   $('visit-picnic').hidden = theme.id !== 'dream' || !save.discoveries.some(id=>ITEMS[id]) || mode !== 'match';
   $('visit-picnic').disabled = !canPlay;
@@ -306,8 +325,8 @@ function reveal(index, actor) {
 async function childFlip(index) {
   if (busy || timeline.paused || mode !== 'match' || board.actor !== 'child') return;
   activateAudio();
+  resetHintFeedback();
   const observation = reveal(index, 'child'); if (!observation) return;
-  $('cards').querySelectorAll('.hinted').forEach(node => node.classList.remove('hinted'));
   if (board.open.length !== 1) {
     busy = true; renderBoard(); await resolveTurn(run,{settleMs:CARD_REVEAL_HOLD_MS});
   }
@@ -552,9 +571,18 @@ function hint() {
   activateAudio();
   const selected = board.snapshot().find(card => card.visible && !card.matched);
   const result = guideMemory.hint(board.available(), selected ? { ...selected.card, index: selected.index } : null);
-  if (result.type === 'none') say('I’m still learning too. Let’s turn another card.');
+  resetHintFeedback();
+  if (result.type === 'none') {
+    $('hint').classList.add('needs-more');
+    $('hint').querySelector('span').textContent = 'Try one';
+    $('hint').setAttribute('aria-label', 'Turn another card so Sparky can learn it');
+    say('I’m still learning too. Let’s turn another card.');
+  }
   else {
     result.cards.forEach(card => $('cards').children[card.index].classList.add('hinted'));
+    $('hint').classList.add('is-helping');
+    $('hint').querySelector('span').textContent = 'Look here';
+    $('hint').setAttribute('aria-label', 'Hint shown. Look at the glowing cards');
     say(result.type === 'pair' || result.type === 'mate' ? 'I remember seeing those two. Try them!' : 'I’m still learning too. Let’s turn another card.');
   }
 }

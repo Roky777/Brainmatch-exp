@@ -1982,3 +1982,70 @@ body[data-theme="neon"] #app[data-mode="result"] .result-actions .secondary-butt
   #app[data-mode="result"] .result-actions .primary-button{min-height:50px;font-size:18px;border-radius:18px}
   #app[data-mode="result"] .result-actions .secondary-button{min-height:44px;font-size:15px;border-radius:16px}
 }
+
+/* Keep every interactive row on the same alignment grid.  Several legacy
+   theme rules style these controls, so this final layer owns geometry only. */
+#app[data-mode="setup"] .mode-choices button{
+  width:100%;
+  box-sizing:border-box;
+  align-items:stretch;
+}
+#app[data-mode="setup"] .mode-choices strong{
+  width:100%;
+  min-width:0;
+  line-height:1.08;
+}
+#app[data-mode="setup"] .mode-choices strong i{
+  flex:0 0 auto;
+  margin-left:16px;
+  line-height:1;
+}
+#app[data-mode="setup"] .mode-choices button > span{
+  display:block;
+  width:100%;
+  line-height:1.25;
+}
+
+.difficulty-choices button{
+  box-sizing:border-box;
+}
+.difficulty-face{
+  justify-self:center;
+}
+.difficulty-copy{
+  min-width:0;
+  justify-self:stretch;
+}
+.difficulty-copy strong,
+.difficulty-copy small{
+  line-height:1.15;
+}
+.difficulty-arrow{
+  align-self:center;
+  justify-self:center;
+}
+
+#app[data-mode="match"] .scene-controls{
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  align-items:start;
+  gap:12px;
+}
+#app[data-mode="match"] .scene-controls .home-button{grid-column:1}
+#app[data-mode="match"] .scene-controls .picnic-shortcut{grid-column:2;justify-self:start}
+#app[data-mode="match"] .scene-controls .pause-button{grid-column:3;margin-left:0}
+#app[data-mode="match"] .scene-controls .toy-button{
+  box-sizing:border-box;
+  align-items:center;
+  justify-items:center;
+}
+
+#app[data-mode="result"] .result-actions button,
+.theme-unlock-actions button,
+dialog#settings-dialog > .primary-button,
+dialog#settings-dialog > .secondary-button{
+  box-sizing:border-box;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+}

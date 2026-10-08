@@ -278,11 +278,17 @@ export function sparkyArt(){return '<span class="sparky-mini-frame" aria-hidden=
 export class Sparky {
   constructor(element, { seated = false } = {}) {
     this.element=element;this.seated=seated;this.reduced=matchMedia('(prefers-reduced-motion: reduce)');
-    this.elapsed=0;this.duration=0;this.rate=1;this.paused=false;this.last=performance.now();this.drawn='';this.speechActive=false;
+    this.elapsed=0;this.duration=0;this.rate=1;this.paused=false;this.last=performance.now();this.drawn='';this.speechActive=false;this.nodAvailable=false;
     const observeSources=OBSERVE_VARIANTS.map(seatedObserveSource);
     const wandSources=OBSERVE_VARIANTS.map(seatedWandSource);
-    const sources=seated?[SEATED_IDLE_SHEET,SEATED_TALK_SHEET,SEATED_ARRIVE_SHEET,SEATED_JOY_SHEET,SEATED_MISS_SHEET,SEATED_RESULT_SHEET,SEATED_NOD_YES_SHEET,MOUTH_VISEME_SHEET,MOUTH_CLEANUP_SHEET,...observeSources,...wandSources]:['peek','expressions','reach','reactions'].map(sheet=>`assets/sparky/kimono-${sheet}-v1.webp`);
+    const sources=seated?[SEATED_IDLE_SHEET,SEATED_TALK_SHEET,SEATED_ARRIVE_SHEET,SEATED_JOY_SHEET,SEATED_MISS_SHEET,SEATED_RESULT_SHEET,MOUTH_VISEME_SHEET,MOUTH_CLEANUP_SHEET,...observeSources,...wandSources]:['peek','expressions','reach','reactions'].map(sheet=>`assets/sparky/kimono-${sheet}-v1.webp`);
     this.images=sources.map(src=>{const image=new Image();image.src=src;return image;});
+    if(seated){
+      const nodImage=new Image();
+      nodImage.onload=()=>{this.nodAvailable=true;};
+      nodImage.onerror=()=>{this.nodAvailable=false;};
+      nodImage.src=SEATED_NOD_YES_SHEET;this.images.push(nodImage);
+    }
     element.replaceChildren();
     if(seated){
       const cleanup=document.createElement('span');cleanup.className='sparky-mouth-cleanup';cleanup.setAttribute('aria-hidden','true');
@@ -376,7 +382,10 @@ export class Sparky {
   }
   nodYes(rate=1){
     if(!this.seated||this.speechActive||this.pose==='wand-pick'||this.pose==='result-reaction')return 0;
-    this.set('nod-yes',SEATED_NOD_YES_DURATION,rate);return SEATED_NOD_YES_DURATION/rate;
+    if(this.nodAvailable){this.set('nod-yes',SEATED_NOD_YES_DURATION,rate);return SEATED_NOD_YES_DURATION/rate;}
+    // Lightweight builds may omit the optional nod atlas. Reuse the complete
+    // positive-reaction clip instead of leaving Sparky on an empty frame.
+    this.set('pair-joy',SEATED_JOY_DURATION,rate);return SEATED_JOY_DURATION/rate;
   }
   holdGentleMiss(){if(this.seated&&this.pose==='gentle-miss')this.duration=Infinity;}
   finishGentleMiss(){

@@ -947,6 +947,11 @@ body:has(#app[data-mode="match"]) .garden-background{
   text-align:center;
 }
 #app[data-mode="setup"] .mode-choices{gap:18px}
+#app[data-mode="setup"] .mode-prompt{
+  width:max-content;margin:0 auto 15px;padding:6px 12px;color:#3f538b;
+  border:1px solid #c8d0e7;border-radius:999px;background:#fffdf5b8;
+  font:700 13px/1.2 var(--font-body);letter-spacing:.09em;text-transform:uppercase;
+}
 #app[data-mode="setup"] .mode-choices button{
   position:relative;
   min-height:106px;
@@ -2048,4 +2053,79 @@ dialog#settings-dialog > .secondary-button{
   align-items:center;
   justify-content:center;
   text-align:center;
+}
+
+/* Pass 2: dialogs use one unmistakable exit control and status treatment. */
+:is(.theme-dialog,#level-dialog,#settings-dialog) .dialog-close{
+  display:grid;place-items:center;box-sizing:border-box;
+  min-width:44px;min-height:44px;border:2px solid #aebadb;
+  background:#fffdf8;color:#29447f;box-shadow:0 2px 0 #c6cee4;
+  line-height:1;transition:transform .16s ease,background .16s ease,box-shadow .16s ease;
+}
+@media(hover:hover){
+  :is(.theme-dialog,#level-dialog,#settings-dialog) .dialog-close:hover{
+    transform:translateY(-1px);background:#f2f5ff;box-shadow:0 3px 0 #b5c0dc;
+  }
+}
+.theme-dialog-message{
+  width:fit-content;max-width:100%;margin:22px auto 0;padding:8px 14px;
+  border:1px solid #d5dbee;border-radius:999px;background:#f6f8ff;
+  color:#516597;
+}
+.theme-choices>button.is-locked{opacity:.88}
+
+/* Pass 3: restore the functional memory aid hidden by the legacy painted
+   theme, and anchor it safely inside the centered game viewport. */
+#app[data-mode="match"] #hint{
+  display:flex!important;position:fixed;
+  right:max(18px,calc((100vw - 480px)/2 + 18px));
+  bottom:max(18px,calc(env(safe-area-inset-bottom) + 12px));
+  align-items:center;justify-content:center;gap:7px;
+  width:94px;height:52px;padding:8px 13px;border:2.5px solid #203975;border-radius:18px;
+  background:#fffaf0;box-shadow:0 4px 0 #8295ce,0 8px 14px #2039752e;
+  color:#203975;font:800 15px/1 var(--font-body);pointer-events:auto;
+}
+#app[data-mode="match"] #hint svg{width:28px;height:28px;flex:0 0 auto}
+#app[data-mode="match"] #hint:disabled{opacity:.48;filter:saturate(.55);box-shadow:0 2px 0 #aeb8d4}
+@media(max-height:700px){
+  #app[data-mode="match"] #hint{width:84px;height:46px;font-size:14px;bottom:max(12px,env(safe-area-inset-bottom))}
+  #app[data-mode="match"] #hint svg{width:24px;height:24px}
+}
+
+/* Pass 4: make the result feel earned, not merely counted. */
+#app[data-mode="result"] .result-message{
+  max-width:310px;margin:-5px auto 14px;color:var(--result-muted);
+  font:600 15px/1.35 var(--font-body);
+}
+#app[data-mode="result"] .result-character-space .sparky-anchor{
+  width:clamp(172px,45vw,205px);top:-7px;
+}
+@media(max-height:700px){
+  #app[data-mode="result"] .result-character-space{height:124px}
+  #app[data-mode="result"] .result-character-space .sparky-anchor{width:150px;top:-14px}
+  #app[data-mode="result"] .result-message{margin:-3px auto 10px;font-size:13px}
+}
+
+/* Pass 5: resilient compact layouts and explicit high-contrast states. */
+@media(max-width:360px){
+  #app[data-mode="setup"] .mode-prompt{margin-bottom:11px;padding:5px 10px;font-size:11px}
+  #app[data-mode="setup"] .mode-choices strong i{margin-left:10px}
+  dialog#level-dialog{width:calc(100vw - 20px);padding-inline:13px}
+  .difficulty-choices button{grid-template-columns:52px minmax(0,1fr) 20px;padding-inline:9px 12px}
+  .difficulty-face{width:50px;height:42px}
+  #app[data-mode="match"] #hint{right:12px;width:78px;height:44px;padding-inline:10px}
+  #app[data-mode="result"] .result-view{width:calc(100vw - 18px)}
+}
+@media(prefers-contrast:more){
+  :root{--game-ink:#0d285f;--game-blue:#102f6c}
+  :is(.theme-dialog,#level-dialog,#settings-dialog),
+  #app[data-mode="result"] .result-view{border-width:4px}
+  button:focus-visible,a:focus-visible{outline-width:5px!important;outline-color:#142f70!important}
+  .theme-choices>button.is-locked{opacity:1;filter:grayscale(.2)}
+  #app[data-mode="match"] .pair-progress i{border-color:#40568f}
+}
+@media(forced-colors:active){
+  button,a{forced-color-adjust:auto}
+  .theme-picture,.theme-open-picture{border:1px solid CanvasText}
+  #app[data-mode="match"] .pair-progress i.found{background:Highlight}
 }

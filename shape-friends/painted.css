@@ -42,7 +42,7 @@
 .level-choices{border:0;padding:0;display:flex;gap:15px;width:100%;margin:4px 0}.level-choices legend{margin:auto;padding:0 0 15px;font-size:20px}.level-choices button{padding:14px 10px}.level-choices strong{font-size:18px}
 #level-description{font-family:'Trebuchet MS',sans-serif;font-size:15px;min-height:19px}
 #app[data-mode=setup] .scene-controls,#app[data-mode=setup] .rotate-tip{display:none}
-#discovery-strip,#hint,#visit-picnic{display:none!important}
+#discovery-strip,#visit-picnic{display:none!important}
 .rotate-tip{display:none!important}
 .memory-board{grid-template-columns:repeat(var(--columns,4),minmax(0,1fr))}
 .companion{margin-top:14px;height:clamp(105px,14cqw,185px)}

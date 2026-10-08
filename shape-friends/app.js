@@ -5,7 +5,7 @@ import { Timeline } from './timeline.js';
 import { readSave, writeSave, discover } from './save.js';
 import { GameAudio } from './audio.js';
 import { MusicLoop } from './music.js';
-import { Sparky, sparkyArt, seatedObserveDirection, seatedWandTip } from './sparky.js';
+import { Sparky, sparkyArt, seatedObserveDirection, seatedWandTip } from './sparky.js?v=3';
 import { LivingGarden } from './garden.js';
 import { Picnic } from './picnic.js';
 import { icon } from '../art.js';
@@ -16,7 +16,7 @@ import { CloudReveal } from './cloud-reveal.js';
 const $ = id => document.getElementById(id);
 // Board, rim controls and collection drawer form one responsive play object.
 document.querySelector('.match-area').append($('discovery-strip'));
-$('discovery-strip').append($('hint'));
+$('app').append($('hint'));
 const save = readSave();
 let theme = getTheme(save.theme), pack = theme.pack;
 // The child-facing Music control is the single master switch for all non-voice audio.
@@ -495,6 +495,12 @@ function finishRound() {
   document.querySelector('.match-area').hidden = true; $('result-view').hidden = false;
   const outcome = resultFor(board);
   $('result-title').textContent = { practice:'Every pair found!', win:'You found more!', lose:'Sparky found more!', tie:'You found the same!' }[outcome];
+  $('result-message').textContent = {
+    practice:'You remembered every shape friend.',
+    win:'Wonderful remembering — you led the way!',
+    lose:'Great teamwork — every pair was discovered.',
+    tie:'Perfect teamwork — you matched them together!'
+  }[outcome];
   const score = $('result-score');
   $('result-view').classList.remove('has-theme-unlock');
   if(openedTheme){

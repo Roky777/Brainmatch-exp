@@ -85,7 +85,7 @@ test('world chooser is visual, persistent and keeps later worlds behind complete
  assert.match(css,/body\[data-theme="seasons"\] dialog#level-dialog/,'difficulty modal follows the active world');
  assert.match(css,/body\[data-theme="seasons"\] dialog\.theme-dialog/,'world modal follows the active world');
  assert.match(css,/body\[data-theme="neon"\]/);
- assert.match(css,/neon-shape-lab-bg-v2\.webp/);
+ assert.match(css,/neon-space-bg-v3\.webp/);
  assert.match(css,/neon-card-back-v1\.webp/);
  assert.match(css,/neon-card-front-v1\.webp/);
  assert.match(css,/body\[data-theme="neon"\] #app\[data-mode="match"\] \.board-wrap\{[\s\S]*?border:0;[\s\S]*?background:transparent;box-shadow:none/,'Neon artwork provides the play field without an extra board panel');

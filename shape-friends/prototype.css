@@ -1552,7 +1552,7 @@ body[data-theme="seasons"] #app[data-mode="result"] .result-actions .secondary-b
 
 /* Neon Shape Lab: a dark, high-contrast third world based on luminous geometry.
    It keeps every familiar control location while changing the material system. */
-.theme-picture--neon{background:#07162f url('assets/neon-shape-lab-bg-v2.webp') center/cover no-repeat}
+.theme-picture--neon{background:#03050c url('assets/neon-space-bg-v3.webp') center/cover no-repeat}
 .theme-picture--neon::before{inset:0;background:linear-gradient(90deg,#04112788,transparent 30% 70%,#04112788);opacity:1}
 .theme-picture--neon::after{
   content:"";position:absolute;left:50%;top:50%;width:42%;aspect-ratio:1;translate:-50% -50%;
@@ -1561,7 +1561,7 @@ body[data-theme="seasons"] #app[data-mode="result"] .result-actions .secondary-b
 }
 body[data-theme="neon"] .garden-background,
 body[data-theme="neon"]:has(#app[data-mode="match"]) .garden-background{
-  background-image:url('assets/neon-shape-lab-bg-v2.webp')!important;
+  background-image:url('assets/neon-space-bg-v3.webp')!important;
   background-size:cover!important;background-position:center!important;background-color:#06142d!important;
 }
 body[data-theme="neon"] .garden-background::before{display:none}
@@ -1707,7 +1707,7 @@ body[data-theme="neon"] .theme-choices .is-active .theme-status{background:#672a
    the real card design, with identical framing and no decorative stand-ins. */
 .theme-picture--dream{background:url('assets/dream-board-first-v1.png') center/cover no-repeat}
 .theme-picture--seasons{background:url('assets/season-parade-bg-v2.webp') center/cover no-repeat}
-.theme-picture--neon{background:#07162f url('assets/neon-shape-lab-bg-v2.webp') center/cover no-repeat}
+.theme-picture--neon{background:#03050c url('assets/neon-space-bg-v3.webp') center/cover no-repeat}
 .theme-picture--dream::before,
 .theme-picture--seasons::before,
 .theme-picture--neon::before{
@@ -2164,3 +2164,98 @@ dialog#settings-dialog > .secondary-button{
   .theme-picture,.theme-open-picture{border:1px solid CanvasText}
   #app[data-mode="match"] .pair-progress i.found{background:Highlight}
 }
+
+/* Neon Space Lab refresh: match the reference's near-black, graphic glow
+   language instead of the earlier bright blue fantasy-landscape treatment. */
+body[data-theme="neon"] .garden-background,
+body[data-theme="neon"]:has(#app[data-mode="match"]) .garden-background{
+  background:#03050c url('assets/neon-space-bg-v3.webp') center/cover no-repeat!important;
+  filter:none;transform:none;
+}
+body[data-theme="neon"] .garden-background::before{
+  content:"";display:block;position:absolute;inset:0;
+  background:radial-gradient(circle at 50% 42%,transparent 0 42%,rgba(0,0,8,.28) 78%,rgba(0,0,5,.62) 100%);
+  pointer-events:none;
+}
+body[data-theme="neon"] #app[data-mode="setup"] .setup-view h2{
+  color:#dfff42!important;letter-spacing:-.045em;
+  text-shadow:0 0 5px #dfff42,0 0 14px #a8ff1f,0 3px 0 #18320a;
+}
+body[data-theme="neon"] #app[data-mode="setup"] .setup-view h2 span{
+  color:#ff42a8;text-shadow:0 0 5px #ff42a8,0 0 14px #ff168c;
+}
+body[data-theme="neon"] #app[data-mode="setup"] .setup-kicker{
+  color:#7cf6ff;text-transform:uppercase;letter-spacing:.12em;
+  text-shadow:0 0 7px #00ddff,0 0 15px #00a8ff;
+}
+body[data-theme="neon"] #app[data-mode="setup"] .mode-prompt{
+  border-color:#28ddf5;background:#040811d9;color:#cbfbff;
+  box-shadow:0 0 12px rgba(20,224,255,.3);letter-spacing:.11em;
+}
+body[data-theme="neon"] #app[data-mode="setup"] .mode-choices button{
+  border:2px solid #29e7ff;background:linear-gradient(145deg,rgba(8,12,24,.96),rgba(2,5,13,.96));
+  box-shadow:0 0 0 1px rgba(82,237,255,.16) inset,0 0 12px rgba(18,222,255,.42),0 5px 0 #062b3b;
+}
+body[data-theme="neon"] #app[data-mode="setup"] .mode-choices button:nth-child(2){
+  background:linear-gradient(145deg,rgba(12,8,24,.96),rgba(3,5,14,.96));
+}
+body[data-theme="neon"] #app[data-mode="setup"] .mode-choices button strong{
+  color:#f7ffff;text-shadow:0 0 7px #19dcff;
+}
+body[data-theme="neon"] #app[data-mode="setup"] .mode-choices button > span{color:#9cdce4}
+body[data-theme="neon"] .theme-open,
+body[data-theme="neon"] #app[data-mode="match"] .scene-controls .toy-button,
+body[data-theme="neon"] #app[data-mode="match"] #hint{
+  border-color:#2be4fb;background:#040912ed;color:#eaffff;
+  box-shadow:0 0 0 1px rgba(89,241,255,.14) inset,0 0 12px rgba(18,223,255,.42),0 4px 0 #073044;
+}
+body[data-theme="neon"] #app[data-mode="match"] .turn-chip,
+body[data-theme="neon"] #app[data-mode="match"] #match-score{
+  border-color:#2be4fb;background:rgba(3,7,15,.9);
+  box-shadow:0 0 0 1px rgba(89,241,255,.12) inset,0 0 12px rgba(18,223,255,.36);
+}
+body[data-theme="neon"] #app[data-mode="match"] .card-back,
+body[data-theme="neon"] #app[data-mode="match"] .card-front,
+body[data-theme="neon"] #app[data-mode="match"] .memory-card.is-matched .card-front{
+  filter:contrast(1.08) saturate(1.12) drop-shadow(0 0 8px rgba(24,225,255,.5));
+}
+body[data-theme="neon"] #app[data-mode="match"] .card-front img{
+  filter:saturate(1.7) brightness(1.12) contrast(1.08) drop-shadow(0 0 5px #22e7ff) drop-shadow(0 3px 3px #000c);
+}
+body[data-theme="neon"] #app[data-mode="match"] .pair-progress i{
+  border-color:#24e7ff;background:#030711;box-shadow:0 0 7px #16dfff;
+}
+body[data-theme="neon"] #app[data-mode="match"] .pair-progress i.found{
+  border-color:#e8ff45;background:#ff2b9c;box-shadow:0 0 8px #ff2b9c,0 0 14px #e8ff45;
+}
+body[data-theme="neon"] #app[data-mode="match"] .speech-bubble{
+  border-color:#2be4fb;background:rgba(3,7,15,.94);
+  box-shadow:0 0 0 1px rgba(89,241,255,.12) inset,0 0 14px rgba(18,223,255,.38);
+}
+body[data-theme="neon"] :is(dialog#level-dialog,dialog.theme-dialog,dialog#settings-dialog){
+  border-color:#2be4fb;background:radial-gradient(circle at 50% -15%,#11182c 0%,#030711 62%);
+  box-shadow:0 0 0 1px rgba(89,241,255,.14) inset,0 0 20px rgba(21,225,255,.48),0 22px 50px #000d;
+}
+body[data-theme="neon"] .level-objective{
+  border-color:#1b8fa3;background:#070c18;color:#a9e8ef;
+  box-shadow:0 0 9px rgba(20,224,255,.18);
+}
+body[data-theme="neon"] .difficulty-choices button,
+body[data-theme="neon"] .theme-choices>button,
+body[data-theme="neon"] dialog#settings-dialog .settings-row,
+body[data-theme="neon"] dialog#settings-dialog .settings-home{
+  border-color:#22dff7;background:linear-gradient(145deg,#090e1b,#02050c);
+  box-shadow:0 0 9px rgba(18,223,255,.32),0 4px 0 #062a3a;
+}
+body[data-theme="neon"] #app[data-mode="result"] .result-view{
+  --result-surface:#030711;--result-border:#2be4fb;--result-lift:#06364a;
+  --result-ink:#f5ffff;--result-muted:#9cdce4;
+  box-shadow:0 0 0 1px rgba(89,241,255,.14) inset,0 0 22px rgba(21,225,255,.48),0 24px 52px #000d;
+}
+body[data-theme="neon"] #app[data-mode="result"] .result-character-space{
+  background:radial-gradient(circle at 50% 45%,rgba(31,222,255,.16),transparent 64%),#02050b;
+}
+@media(prefers-reduced-motion:no-preference){
+  body[data-theme="neon"] .garden-background{animation:neon-space-drift 22s ease-in-out infinite alternate}
+}
+@keyframes neon-space-drift{to{background-position:50% 46%}}

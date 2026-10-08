@@ -144,3 +144,15 @@ new instructional states could wrap or crowd the icon on compact screens.
 
 **Upgrade:** Made the control grow with its content, kept every hint state on one
 line, and retained the existing compact-screen minimum size and touch target.
+
+## Neon theme art-direction refresh
+
+**Finding:** Neon Shape Lab used a bright blue fantasy landscape and chunky
+purple depth effects, while the supplied reference was darker, flatter, and
+more graphic.
+
+**Upgrade:** Introduced a new optimized space backdrop with a calm central play
+area, sparse stars, cyan orbital lines, and neon geometry around the perimeter.
+Reworked menus, status chips, dialogs, controls, and result surfaces toward a
+near-black material system with cyan outlines, lime title glow, and restrained
+pink/yellow accents inspired by the reference.

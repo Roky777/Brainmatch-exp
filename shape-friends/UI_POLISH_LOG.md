@@ -156,3 +156,14 @@ area, sparse stars, cyan orbital lines, and neon geometry around the perimeter.
 Reworked menus, status chips, dialogs, controls, and result surfaces toward a
 near-black material system with cyan outlines, lime title glow, and restrained
 pink/yellow accents inspired by the reference.
+
+## Season background control-safe refresh
+
+**Finding:** Large clouds, the sun, flowers, and leaves sat directly beneath the
+Home, Pause, Worlds, and Hint controls. The controls were aligned correctly,
+but the background made them feel crowded and visually overlapped.
+
+**Upgrade:** Re-edited the seasonal background with calm turquoise sky in both
+top corners and a quieter green area behind Hint. Seasonal details now sit away
+from the fixed controls while the rolling hills, palette, and card art remain
+unchanged.

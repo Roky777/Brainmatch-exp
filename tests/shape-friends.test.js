@@ -42,7 +42,7 @@ test('Season Parade is a complete second world with four visual seasons', async 
     const url=new URL(assetURL(id));await access(url);
     assert.match(await (await import('node:fs/promises')).readFile(url,'utf8'),/^<svg/);
   }
-  for(const file of ['season-parade-bg-v1.webp','season-parade-bg-v2.webp','season-card-back-v1.webp','season-card-front-v1.webp','season-sparky-cloud-v1.webp']){
+  for(const file of ['season-parade-bg-v1.webp','season-parade-bg-v2.webp','season-parade-bg-v3.webp','season-card-back-v1.webp','season-card-front-v1.webp','season-sparky-cloud-v1.webp']){
     const url=new URL(`../shape-friends/assets/${file}`,import.meta.url);await access(url);
     assert((await stat(url)).size>20000,`${file} must be authored artwork, not a placeholder`);
     assert((await stat(url)).size<180000,`${file} exceeds the runtime image budget`);

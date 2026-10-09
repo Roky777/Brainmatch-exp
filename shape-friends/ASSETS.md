@@ -201,6 +201,7 @@ The second playable world uses two production raster assets generated with the b
 | --- | --- |
 | `assets/season-parade-bg-v1.webp` | `exec-3283a910-8ca1-4009-b0f2-95e787cee4e3.png` |
 | `assets/season-parade-bg-v2.webp` | `exec-9fa1afd6-e949-4152-acae-90af55b9fc3b.png` |
+| `assets/season-parade-bg-v3.webp` | `exec-b8dcc74d-8d1a-4083-bd8c-29c4f1c46cf6.png` |
 | `assets/season-card-back-v1.webp` | `exec-dcd73b1c-601b-42c4-a71f-3457441c27ac.png` |
 | `assets/season-card-front-v1.webp` | `exec-cd0baaba-afac-402d-8c6b-13a4e4336c07.png` |
 | `assets/season-sparky-cloud-v1.webp` | `exec-9958d60a-4dce-4d68-8302-30ed0278df48.png` |

@@ -18,6 +18,9 @@ const $ = id => document.getElementById(id);
 // Board, rim controls and collection drawer form one responsive play object.
 document.querySelector('.match-area').append($('discovery-strip'));
 $('app').append($('hint'));
+// Keep the compact XP HUD anchored to the stage, outside the transformed
+// menu-content block that would otherwise pull it over the title.
+$('setup-view').append($('xp-meter'));
 const save = readSave();
 let theme = getWorld(save.theme), pack = theme.pack;
 // The child-facing Music control is the single master switch for all non-voice audio.

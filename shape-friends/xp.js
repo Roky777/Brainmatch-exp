@@ -1,8 +1,10 @@
+import { GAME_CONTENT, PACK, WORLDS } from './content.js';
+
 export const XP_LIMIT = 200;
-export const XP_REWARDS = Object.freeze({ practice: 10, challenge: 6 });
-export const XP_JOURNEY_BONUS = 8;
-export const XP_WORLD_IDS = Object.freeze(['dream','seasons','neon']);
-export const XP_ROUND_IDS = Object.freeze(['1','2','3','4']);
+export const XP_REWARDS = Object.freeze(GAME_CONTENT.progression?.xp?.rewards||{ practice: 10, challenge: 6 });
+export const XP_JOURNEY_BONUS = GAME_CONTENT.progression?.xp?.completionBonus??8;
+export const XP_WORLD_IDS = Object.freeze(Object.keys(WORLDS));
+export const XP_ROUND_IDS = Object.freeze(PACK.rounds.map(round=>round.id));
 export const XP_ACTIVITY_COUNT = XP_WORLD_IDS.length * XP_ROUND_IDS.length * Object.keys(XP_REWARDS).length;
 
 export function xpActivityKey({ worldId, roundId, mode }) {

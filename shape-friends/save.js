@@ -1,6 +1,6 @@
-import { PACK, SEASON_PACK, NEON_PACK, hasItem } from './content.js';
-import { normalizeXPClaims, XP_ACTIVITY_COUNT } from './xp.js';
-export const SAVE_KEY = 'brainmatch:shape-friends:v1';
+import { PACK, SEASON_PACK, NEON_PACK, VARIANT, hasItem } from './content.js';
+import { normalizeXPClaims, XP_ACTIVITY_COUNT, XP_JOURNEY_BONUS, XP_LIMIT, XP_REWARDS } from './xp.js';
+export const SAVE_KEY = `brainmatch:${VARIANT.id}:v1`;
 export const emptySave = () => ({ version: 5, discoveries: [], completed: [], seasonCompleted: [], dreamStars: [], seasonStars: [], neonStars: [], theme: 'dream', voice: true, effects: true, music: true, activeRound: '1', gardenWater: 0, xp: 0, xpClaims: [], xpJourneyBonus: false });
 export function sanitizeSave(raw) {
   const save = emptySave();
@@ -26,8 +26,8 @@ export function sanitizeSave(raw) {
   save.xpJourneyBonus=raw.xpJourneyBonus===true&&save.xpClaims.length===XP_ACTIVITY_COUNT;
   const restoredXP=Number.isInteger(raw.xp)
     ? raw.xp
-    : save.xpClaims.reduce((total,key)=>total+(key.endsWith(':practice')?10:6),0)+(save.xpJourneyBonus?8:0);
-  save.xp=Math.max(0,Math.min(200,restoredXP));
+    : save.xpClaims.reduce((total,key)=>total+(key.endsWith(':practice')?XP_REWARDS.practice:XP_REWARDS.challenge),0)+(save.xpJourneyBonus?XP_JOURNEY_BONUS:0);
+  save.xp=Math.max(0,Math.min(XP_LIMIT,restoredXP));
   const neonUnlocked=save.dreamStars.length+save.seasonStars.length>=5;
   const seasonsUnlocked=save.dreamStars.length>=3;
   save.theme = raw.theme === 'neon' && neonUnlocked

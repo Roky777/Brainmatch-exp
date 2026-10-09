@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "variant": {
+    "id": "number-friends",
+    "title": "Number Friends",
+    "subtitle": "A playful counting adventure",
+    "grade": 1,
+    "objective": "Match two cards that show the same number.",
+    "assetBase": "./assets/cards/",
+    "menuGreeting": "Hi, friend! Ready to match numbers in different ways?",
+    "matchPrompt": "Now find two cards that show the same number!",
+    "resultMessage": "You matched every number friend."
+  },
+  "play": { "fixedPairs": false },
+  "features": { "picnic": false },
+  "progression": { "xp": { "rewards": { "practice": 6, "challenge": 3 }, "completionBonus": 11 } },
+  "worlds": {
+    "dream": { "id": "dream", "name": "Number Meadow", "shortName": "Meadow", "description": "Count and match", "skin": "meadow", "menuTitleLines": ["Number", "Friends"], "menuKicker": "A playful counting adventure", "cloudAsset": "sparky-seat-cloud-v1.webp", "unlockMessage": "More number friends are ready!" },
+    "seasons": { "id": "seasons", "name": "Counting Parade", "shortName": "Parade", "description": "Picture quantities", "skin": "parade", "menuTitleLines": ["Counting", "Parade"], "menuKicker": "Numbers can look many ways", "cloudAsset": "season-sparky-cloud-v1.webp", "unlockMessage": "The Counting Parade is ready!" },
+    "neon": { "id": "neon", "name": "Number Lab", "shortName": "Lab", "description": "Master number matches", "skin": "space-lab", "menuTitleLines": ["Number", "Lab"], "menuKicker": "Different pictures, equal amounts", "cloudAsset": "neon-sparky-cloud-v1.webp", "unlockMessage": "The Number Lab is ready!" }
+  },
+  "categories": {
+    "number_1": { "name": "1", "detail": "Both cards show one.", "color": "#ffb84d" },
+    "number_2": { "name": "2", "detail": "Both cards show two.", "color": "#55b7e8" },
+    "number_3": { "name": "3", "detail": "Both cards show three.", "color": "#ff7f83" },
+    "number_4": { "name": "4", "detail": "Both cards show four.", "color": "#78c96f" },
+    "number_5": { "name": "5", "detail": "Both cards show five.", "color": "#a884e8" },
+    "number_6": { "name": "6", "detail": "Both cards show six.", "color": "#ff9360" },
+    "number_7": { "name": "7", "detail": "Both cards show seven.", "color": "#50c6bd" },
+    "number_8": { "name": "8", "detail": "Both cards show eight.", "color": "#ee75b5" }
+  },
+  "items": {
+    "numeral_1": { "name": "1", "asset": "numeral-1.svg" },
+    "numeral_2": { "name": "2", "asset": "numeral-2.svg" },
+    "numeral_3": { "name": "3", "asset": "numeral-3.svg" },
+    "numeral_4": { "name": "4", "asset": "numeral-4.svg" },
+    "numeral_5": { "name": "5", "asset": "numeral-5.svg" },
+    "numeral_6": { "name": "6", "asset": "numeral-6.svg" },
+    "numeral_7": { "name": "7", "asset": "numeral-7.svg" },
+    "numeral_8": { "name": "8", "asset": "numeral-8.svg" },
+    "dots_1": { "name": "1 dot", "asset": "dots-1.svg" },
+    "dots_2": { "name": "2 dots", "asset": "dots-2.svg" },
+    "dots_3": { "name": "3 dots", "asset": "dots-3.svg" },
+    "dots_4": { "name": "4 dots", "asset": "dots-4.svg" },
+    "dots_8": { "name": "8 dots", "asset": "dots-8.svg" },
+    "fingers_1": { "name": "1 finger", "asset": "fingers-1.png" },
+    "fingers_2": { "name": "2 fingers", "asset": "fingers-2.png" },
+    "fingers_3": { "name": "3 fingers", "asset": "fingers-3.png" },
+    "fingers_4": { "name": "4 fingers", "asset": "fingers-4.png" },
+    "fingers_5": { "name": "5 fingers", "asset": "fingers-5.png" },
+    "sun_1": { "name": "1 sun", "asset": "sun-1.svg" },
+    "apples_2": { "name": "2 apples", "asset": "apples-2.svg" },
+    "apples_3": { "name": "3 apples", "asset": "apples-3.svg" },
+    "apples_4": { "name": "4 apples", "asset": "apples-4.svg" },
+    "apples_6": { "name": "6 apples", "asset": "apples-6.svg" },
+    "birds_4": { "name": "4 birds", "asset": "birds-4.svg" },
+    "birds_6": { "name": "6 birds", "asset": "birds-6.svg" },
+    "flowers_5": { "name": "5 flowers", "asset": "flowers-5.svg" },
+    "flowers_8": { "name": "8 flowers", "asset": "flowers-8.svg" },
+    "balls_6": { "name": "6 balls", "asset": "balls-6.svg" },
+    "stars_7": { "name": "7 stars", "asset": "stars-7.svg" }
+  },
+  "rounds": [
+    { "id": "1", "title": "Numbers and dots", "subtitle": "Numbers 1–4", "pairs": [["number_1","numeral_1","dots_1"],["number_2","numeral_2","dots_2"],["number_3","numeral_3","dots_3"],["number_4","numeral_4","dots_4"]] },
+    { "id": "2", "title": "Numbers and fingers", "subtitle": "Numbers 2–5", "pairs": [["number_2","numeral_2","fingers_2"],["number_3","numeral_3","fingers_3"],["number_4","numeral_4","fingers_4"],["number_5","numeral_5","fingers_5"]] },
+    { "id": "3", "title": "Fingers and dots", "subtitle": "Numbers 1–4", "pairs": [["number_1","fingers_1","dots_1"],["number_2","fingers_2","dots_2"],["number_3","fingers_3","dots_3"],["number_4","fingers_4","dots_4"]] },
+    { "id": "4", "title": "Count the objects", "subtitle": "Numbers 3–6", "pairs": [["number_3","numeral_3","apples_3"],["number_4","numeral_4","birds_4"],["number_5","numeral_5","flowers_5"],["number_6","numeral_6","balls_6"]] },
+    { "id": "5", "title": "Big counting board", "subtitle": "Numbers 1–8", "pairs": [["number_1","numeral_1","sun_1"],["number_2","numeral_2","apples_2"],["number_3","numeral_3","dots_3"],["number_4","numeral_4","fingers_4"],["number_5","numeral_5","flowers_5"],["number_6","numeral_6","balls_6"],["number_7","numeral_7","stars_7"],["number_8","numeral_8","dots_8"]] },
+    { "id": "6", "title": "Mixed number friends", "subtitle": "Look carefully", "pairs": [["number_2","numeral_2","fingers_2"],["number_4","numeral_4","dots_4"],["number_6","numeral_6","apples_6"],["number_7","numeral_7","stars_7"]] },
+    { "id": "7", "title": "Pictures match pictures", "subtitle": "No numeral clues", "pairs": [["number_2","fingers_2","dots_2"],["number_4","fingers_4","apples_4"],["number_6","birds_6","balls_6"],["number_8","flowers_8","dots_8"]] }
+  ]
+}

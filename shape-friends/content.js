@@ -1,4 +1,15 @@
-import manifest from './game-content.json' with { type: 'json' };
+import defaultManifest from './game-content.json' with { type: 'json' };
+
+const configuredManifest = typeof document === 'undefined' ? '' : document.documentElement.dataset.contentManifest;
+const manifestURL = configuredManifest
+  ? new URL(configuredManifest, globalThis.location?.href || import.meta.url)
+  : new URL('./game-content.json', import.meta.url);
+const manifest = configuredManifest
+  ? await fetch(manifestURL).then(response => {
+      if(!response.ok)throw new Error(`Could not load game content (${response.status}).`);
+      return response.json();
+    })
+  : defaultManifest;
 
 export function validateContentManifest(input) {
   if(!input||typeof input!=='object')throw new Error('Game content must be a JSON object.');
@@ -76,7 +87,8 @@ export function hasItem(id) { return Boolean(itemFor(id)); }
 export function assetURL(id) {
   const item=itemFor(id);
   if(!item)throw new Error(`Unknown card item: ${id}`);
-  return new URL(`./assets/${item.asset}`,import.meta.url).href;
+  const assetBase=new URL(manifest.variant.assetBase||'./assets/',manifestURL);
+  return new URL(item.asset,assetBase).href;
 }
 export function roundById(id, pack = PACK) { return pack.rounds.find(round => round.id === String(id)); }
 export function cardsFor(round) {

@@ -1,4 +1,4 @@
-import { ITEMS, CATEGORIES, assetURL, cardsFor, roundById, getWorld, itemFor } from './content.js';
+import { ITEMS, CATEGORIES, GAME_CONTENT, VARIANT, assetURL, cardsFor, roundById, getWorld, itemFor } from './content.js';
 import { MatchBoard } from './engine.js';
 import { CompanionMemory } from './companion.js';
 import { Timeline } from './timeline.js';
@@ -12,7 +12,7 @@ import { icon } from './art.js';
 import { LEVELS, playOptions, resultFor } from './play-options.js';
 import { Dialogue } from './dialogue.js';
 import { CloudReveal } from './cloud-reveal.js';
-import { awardXP, XP_LIMIT } from './xp.js';
+import { awardXP, XP_LIMIT, XP_REWARDS } from './xp.js';
 
 const $ = id => document.getElementById(id);
 // Board, rim controls and collection drawer form one responsive play object.
@@ -77,11 +77,15 @@ function applyTheme() {
   theme = getWorld(save.theme); pack = theme.pack;
   document.body.dataset.theme = theme.id; $('app').dataset.theme = theme.id;
   document.title = `${pack.title} · Dream Brainmatch`;
+  document.body.dataset.variant = VARIANT.id;
   document.querySelector('#app > h1').textContent = pack.title;
   document.querySelector('.sparky-seat-cloud').src = new URL(`./assets/${theme.cloudAsset}`, import.meta.url).href;
   $('setup-title').innerHTML = `${theme.menuTitleLines.join('<br>')}<span aria-hidden="true">✦</span>`;
   document.querySelector('.setup-kicker').textContent = theme.menuKicker;
   $('level-objective').textContent = pack.objective;
+  $('menu-caption').textContent = VARIANT.menuGreeting||'Welcome, friend! Let’s find matching pairs together.';
+  document.querySelector('.xp-rules').textContent=`First clear in each mode · Practice ${XP_REWARDS.practice} · Beat Sparky ${XP_REWARDS.challenge}`;
+  $('play-again').querySelector('span').textContent=GAME_CONTENT.play?.fixedPairs?'Next level':'Play again';
   $('theme-open').setAttribute('aria-label', `Change world. Current world: ${theme.title}`);
   $('theme-open-label').textContent = 'Worlds';
   document.querySelectorAll('[data-theme-choice]').forEach(button => {
@@ -237,22 +241,27 @@ function startRound(id) {
   if (!roundById(id, pack) || !unlocked(id)) id = '1';
   run++; timeline.cancel(); audio.stop(); clearEffects(); picnic.cancelDrag();
   round = roundById(id, pack);
-  const level = LEVELS[options.level];
-  board = new MatchBoard(cardsFor({ pairs: round.pairs.slice(0, level.pairs) }), { mode: options.mode });
+  const fixedPairs=GAME_CONTENT.play?.fixedPairs===true;
+  const level = fixedPairs
+    ? {pairs:round.pairs.length,capacity:Math.max(2,Math.ceil(round.pairs.length*.6)),accuracy:.44}
+    : LEVELS[options.level];
+  const activePairs=round.pairs.slice(0, level.pairs);
+  board = new MatchBoard(cardsFor({ pairs: activePairs }), { mode: options.mode });
   memory = new CompanionMemory({ capacity: level.capacity, accuracy: level.accuracy }); guideMemory = new CompanionMemory();
   // Decode all possible round art away from the DOM. Hidden card positions and
   // identities remain private, but a selected card never opens onto white.
-  const artReady=Promise.all([...new Set(cardsFor({pairs:round.pairs.slice(0,level.pairs)}).map(card=>card.item))].map(preloadArt));
+  const artReady=Promise.all([...new Set(cardsFor({pairs:activePairs}).map(card=>card.item))].map(preloadArt));
   mode = 'match'; busy = enteringPlay; previewing=false; voiceMoments={}; matchCount=0; missCount=0; save.activeRound = id; persist();
   dockSparkyAtBoard();
   $('setup-view').hidden = true; $('result-view').hidden = true;
   document.querySelector('.match-area').hidden = false;
   $('app').dataset.playMode = options.mode;
   $('app').dataset.theme = theme.id;
-  $('app').dataset.level = options.level;
+  $('app').dataset.level = fixedPairs?'clever':options.level;
+  $('app').dataset.pairs = String(level.pairs);
   $('cards').style.setProperty('--columns', level.pairs === 3 ? '3' : level.pairs === 2 ? '2' : '4');
   $('cards').setAttribute('aria-label', `${board.size} memory cards. ${pack.objective}`);
-  $('app').dataset.mode = mode; $('play-layout').hidden = false; $('discovery-strip').hidden = theme.id !== 'dream';
+  $('app').dataset.mode = mode; $('play-layout').hidden = false; $('discovery-strip').hidden = GAME_CONTENT.features?.picnic===false||theme.id !== 'dream';
   $('explore-view').hidden = true; $('chapter-number').textContent = id.padStart(2, '0');
   $('chapter-title').textContent = round.title;
   $('cards').innerHTML = Array.from({ length: board.size }, (_, index) => `<button class="memory-card" type="button" data-index="${index}" aria-label="Hidden card ${index + 1}"><span class="card-inner"><span class="card-face card-back" aria-hidden="true"><span class="card-emblem"><svg viewBox="0 0 60 60"><path d="M30 9c4 11 12 15 20 17-10 4-17 10-20 24-4-12-10-20-20-24 11-3 17-9 20-17Z"/><circle cx="46" cy="10" r="3"/><circle cx="11" cy="46" r="2"/></svg></span></span><span class="card-face card-front" aria-hidden="true"></span></span><span class="match-check" hidden aria-hidden="true">✓</span></button>`).join('');
@@ -272,7 +281,7 @@ function startRound(id) {
       if(ticket!==run||mode!=='match')return;
       previewing=true;$('caption').textContent='Take a good look!';renderBoard();
       if(!await wait(BOARD_PREVIEW_HOLD_MS,ticket)||mode!=='match')return;
-      previewing=false;$('caption').textContent='Now find the matching shapes!';renderBoard();
+      previewing=false;$('caption').textContent=VARIANT.matchPrompt||'Now find the matching pairs!';renderBoard();
       if(!await wait(reduced.matches?0:CARD_CLOSE_MS,ticket)||mode!=='match')return;
       busy=false;renderBoard();
     })();
@@ -542,7 +551,7 @@ function finishRound() {
   const outcome = resultFor(board);
   $('result-title').textContent = { practice:'Every pair found!', win:'You found more!', lose:'Sparky found more!', tie:'You found the same!' }[outcome];
   $('result-message').textContent = {
-    practice:'You remembered every shape friend.',
+    practice:VARIANT.resultMessage||'You remembered every friend.',
     win:'Wonderful remembering — you led the way!',
     lose:'Great teamwork — every pair was discovered.',
     tie:'Perfect teamwork — you matched them together!'
@@ -680,6 +689,17 @@ function showSetup() {
 function showLevels(playMode) {
   options = playOptions(playMode, options.level); setupUI();
   $('level-mode-label').textContent = options.mode === 'practice' ? 'Practice' : 'Beat Sparky';
+  if(GAME_CONTENT.play?.fixedPairs){
+    $('level-dialog-title').textContent='Pick a level';
+    const choices=document.querySelector('.difficulty-choices');
+    choices.innerHTML=pack.rounds.map(item=>{
+      const available=unlocked(item.id);
+      return `<button type="button" data-round-choice="${item.id}" ${available?'':'disabled'} aria-label="Level ${item.id}, ${item.title}, ${item.pairs.length*2} cards"><span class="difficulty-face number-level-face" aria-hidden="true">${item.id}</span><span class="difficulty-copy"><strong>Level ${item.id}</strong><small>${item.title} · ${item.pairs.length*2} cards</small></span><span class="difficulty-arrow" aria-hidden="true">›</span></button>`;
+    }).join('');
+    choices.querySelectorAll('[data-round-choice]').forEach(button=>button.addEventListener('click',()=>{
+      $('level-dialog').close();activateAudio();startRound(button.dataset.roundChoice);
+    }));
+  }
   if(!$('level-dialog').open)$('level-dialog').showModal();
   $('level-dialog').tabIndex=-1;
   $('level-dialog').focus({preventScroll:true});
@@ -688,7 +708,7 @@ document.querySelectorAll('button[data-play-mode]').forEach(button => button.add
 $('level-close').addEventListener('click',()=>$('level-dialog').close());
 $('menu-sparky').addEventListener('click',()=>{
   activateAudio();menuSparky.nodYes();
-  $('menu-caption').textContent=theme.id === 'seasons' ? 'Let’s find which season each picture belongs to!' : theme.id==='neon' ? 'Let’s light up shapes that belong together!' : 'Hi, friend! Ready to find some shape pairs?';
+  $('menu-caption').textContent=VARIANT.menuGreeting||(theme.id === 'seasons' ? 'Let’s find which season each picture belongs to!' : theme.id==='neon' ? 'Let’s light up shapes that belong together!' : 'Hi, friend! Ready to find some shape pairs?');
   audio.say($('menu-caption').textContent,{onStart:meta=>{music.setDucked(true);menuSparky.speak($('menu-caption').textContent,meta.durationMs,meta.clock,meta.silences);},onEnd:()=>{menuSparky.finishSpeaking();music.setDucked(false);}});
 });
 document.querySelectorAll('button[data-level]').forEach(button => button.addEventListener('click', () => {

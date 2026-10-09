@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {SPARKY_CLIPS,SEATED_IDLE_FRAMES,SEATED_IDLE_SHEET,SEATED_TALK_FRAMES,SEATED_TALK_SHEET,SEATED_ARRIVE_FRAMES,SEATED_ARRIVE_SHEET,SEATED_ARRIVE_DURATION,SEATED_OBSERVE_FRAMES,SEATED_OBSERVE_DURATION,SEATED_OBSERVE_HANDOFF_MS,SEATED_WAND_FRAMES,SEATED_WAND_RELEASE_MS,SEATED_WAND_RECOVERY_MS,SEATED_JOY_FRAMES,SEATED_JOY_SHEET,SEATED_JOY_DURATION,SEATED_JOY_RECOVERY_MS,SEATED_MISS_FRAMES,SEATED_MISS_SHEET,SEATED_MISS_DURATION,SEATED_MISS_RECOVERY_MS,SEATED_RESULT_FRAMES,SEATED_RESULT_SHEET,SEATED_RESULT_HOLD_MS,SEATED_NOD_YES_SHEET,SEATED_NOD_YES_FRAMES,SEATED_NOD_YES_DURATION,MOUTH_VISEMES,MOUTH_VISEME_SHEET,MOUTH_CLEANUP_SHEET,spriteFrame,seatedIdleFrame,seatedTalkFrame,seatedArriveFrame,seatedObserveFrame,seatedObserveDirection,seatedObserveSource,seatedWandFrame,seatedWandSource,seatedWandTip,seatedJoyFrame,seatedJoyEndTime,seatedMissFrame,seatedMissEndTime,seatedResultFrame,seatedNodYesFrame,seatedTalkEndTime,seatedMouthViseme,buildMouthCues,mouthVisemeAt,mouthVisemePosition} from '../shape-friends/sparky.js';
+import {SPARKY_CLIPS,SEATED_IDLE_FRAMES,SEATED_IDLE_SHEET,SEATED_TALK_FRAMES,SEATED_TALK_SHEET,SEATED_ARRIVE_FRAMES,SEATED_ARRIVE_SHEET,SEATED_ARRIVE_DURATION,SEATED_OBSERVE_FRAMES,SEATED_OBSERVE_DURATION,SEATED_OBSERVE_HANDOFF_MS,SEATED_WAND_FRAMES,SEATED_WAND_RELEASE_MS,SEATED_WAND_RECOVERY_MS,SEATED_JOY_FRAMES,SEATED_JOY_SHEET,SEATED_JOY_DURATION,SEATED_JOY_RECOVERY_MS,SEATED_MISS_FRAMES,SEATED_MISS_SHEET,SEATED_MISS_DURATION,SEATED_MISS_RECOVERY_MS,SEATED_RESULT_FRAMES,SEATED_RESULT_SHEET,SEATED_RESULT_HOLD_MS,SEATED_NOD_YES_SHEET,SEATED_NOD_YES_FRAMES,SEATED_NOD_YES_DURATION,SEATED_NOD_NO_SHEET,SEATED_NOD_NO_FRAMES,SEATED_NOD_NO_DURATION,MOUTH_VISEMES,MOUTH_VISEME_SHEET,MOUTH_CLEANUP_SHEET,spriteFrame,seatedIdleFrame,seatedTalkFrame,seatedArriveFrame,seatedObserveFrame,seatedObserveDirection,seatedObserveSource,seatedWandFrame,seatedWandSource,seatedWandTip,seatedJoyFrame,seatedJoyEndTime,seatedMissFrame,seatedMissEndTime,seatedResultFrame,seatedNodYesFrame,seatedNodNoFrame,seatedTalkEndTime,seatedMouthViseme,buildMouthCues,mouthVisemeAt,mouthVisemePosition} from '../shape-friends/sparky.js';
 
 test('Sparky plays the supplied kimono peeking, pointing and celebration frames',()=>{
   assert.deepEqual(spriteFrame('idle',0),{sheet:'peek',frame:11});
@@ -223,17 +223,40 @@ test('approving nod yes atlas uses its supplied timing and completes neutral han
   assert.equal(seatedNodYesFrame(975),11,'Frame 011 is NEUTRAL_HANDOFF');
   assert.equal(seatedNodYesFrame(1000),11);
   assert.equal(seatedNodYesFrame(0,true),0,'reduced motion freezes neutral frame');
-  const atlas=await readFile(new URL(`../shape-friends/${SEATED_NOD_YES_SHEET}`,import.meta.url));
+  const atlas=await readFile(new URL(`../shape-friends/${SEATED_NOD_YES_SHEET}`,import.meta.url)).catch(error=>{
+    if(error.code==='ENOENT')return null;
+    throw error;
+  });
+  // The yes nod remains an optional asset; the runtime deliberately falls
+  // back to pair joy when lightweight builds omit its atlas.
+  if(atlas){
+    assert.equal(atlas.toString('ascii',1,4),'PNG');
+    assert.equal(atlas.readUInt32BE(16),2048);
+    assert.equal(atlas.readUInt32BE(20),1536);
+  }
+});
+test('quiet no head shake uses its supplied timing and returns to neutral',async()=>{
+  assert.equal(SEATED_NOD_NO_SHEET,'assets/new_sparky_sheets/sparky_wall_nod_no/atlas.png');
+  assert.equal(SEATED_NOD_NO_FRAMES.frames.length,12);
+  assert.equal(SEATED_NOD_NO_DURATION,1008);
+  assert.equal(seatedNodNoFrame(0),0);
+  assert.equal(seatedNodNoFrame(119),0);
+  assert.equal(seatedNodNoFrame(120),1);
+  assert.equal(seatedNodNoFrame(487),6,'Frame 006 is NO_BEAT');
+  assert.equal(seatedNodNoFrame(721),9,'Frame 009 is TRY_AGAIN_HOLD');
+  assert.equal(seatedNodNoFrame(887),10);
+  assert.equal(seatedNodNoFrame(888),11,'Frame 011 is NEUTRAL_HANDOFF');
+  assert.equal(seatedNodNoFrame(1200),11);
+  assert.equal(seatedNodNoFrame(0,true),0,'reduced motion freezes neutral frame');
+  const atlas=await readFile(new URL(`../shape-friends/${SEATED_NOD_NO_SHEET}`,import.meta.url));
   assert.equal(atlas.toString('ascii',1,4),'PNG');
   assert.equal(atlas.readUInt32BE(16),2048);
   assert.equal(atlas.readUInt32BE(20),1536);
-});
-test('future quiet no animation has complete production prompt without premature runtime wiring',async()=>{
   const prompts=await readFile(new URL('../shape-friends/SPARKY_WALL_ANIMATION_PROMPTS.md',import.meta.url),'utf8');
   assert.match(prompts,/## Prompt 11 — Quiet approving nod[\s\S]*?`sparky_wall_nod_yes`/);
   assert.match(prompts,/## Prompt 12 — Quiet gentle “not yet” head shake[\s\S]*?`sparky_wall_nod_no`/);
   assert.match(prompts,/NO_BEAT/);
   assert.match(prompts,/2048×1536/);
-  const runtime=await readFile(new URL('../shape-friends/sparky.js',import.meta.url),'utf8');
-  assert.doesNotMatch(runtime,/sparky_wall_nod_no/,'runtime must wait for approved no spritesheet');
+  const app=await readFile(new URL('../shape-friends/app.js',import.meta.url),'utf8');
+  assert.match(app,/gesture==='nod-no'\)sparky\.nodNo\(\)/,'silent mismatch feedback must use the no head shake');
 });

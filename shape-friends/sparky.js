@@ -25,6 +25,12 @@ export const SEATED_NOD_YES_FRAMES = Object.freeze({
   times:[120,67,67,67,100,67,67,67,100,67,67,120],
 });
 export const SEATED_NOD_YES_DURATION=SEATED_NOD_YES_FRAMES.times.reduce((sum,time)=>sum+time,0);
+export const SEATED_NOD_NO_SHEET = 'assets/new_sparky_sheets/sparky_wall_nod_no/atlas.png';
+export const SEATED_NOD_NO_FRAMES = Object.freeze({
+  frames:[0,1,2,3,4,5,6,7,8,9,10,11],
+  times:[120,67,67,83,67,83,100,67,67,100,67,120],
+});
+export const SEATED_NOD_NO_DURATION=SEATED_NOD_NO_FRAMES.times.reduce((sum,time)=>sum+time,0);
 export const MOUTH_VISEME_ROOT = 'assets/new_sparky_sheets/sparky_wall_mouth_visemes';
 export const MOUTH_VISEME_SHEET = `${MOUTH_VISEME_ROOT}/mouth_runtime_atlas.png`;
 export const MOUTH_CLEANUP_SHEET = `${MOUTH_VISEME_ROOT}/integration/base_mouth_cleanup.png`;
@@ -157,6 +163,11 @@ export function seatedNodYesFrame(elapsed,reduced=false) {
   if(elapsed>=SEATED_NOD_YES_DURATION)return 11;
   return timedFrame(SEATED_NOD_YES_FRAMES,elapsed);
 }
+export function seatedNodNoFrame(elapsed,reduced=false) {
+  if(reduced)return 0;
+  if(elapsed>=SEATED_NOD_NO_DURATION)return 11;
+  return timedFrame(SEATED_NOD_NO_FRAMES,elapsed);
+}
 export function seatedTalkFrame(elapsed, duration=3042, reduced=false) {
   if(reduced)return 0;
   const intro={frames:SEATED_TALK_FRAMES.frames.slice(0,8),times:SEATED_TALK_FRAMES.times.slice(0,8)};
@@ -278,16 +289,20 @@ export function sparkyArt(){return '<span class="sparky-mini-frame" aria-hidden=
 export class Sparky {
   constructor(element, { seated = false } = {}) {
     this.element=element;this.seated=seated;this.reduced=matchMedia('(prefers-reduced-motion: reduce)');
-    this.elapsed=0;this.duration=0;this.rate=1;this.paused=false;this.last=performance.now();this.drawn='';this.speechActive=false;this.nodAvailable=false;
+    this.elapsed=0;this.duration=0;this.rate=1;this.paused=false;this.last=performance.now();this.drawn='';this.speechActive=false;this.nodYesAvailable=false;this.nodNoAvailable=false;
     const observeSources=OBSERVE_VARIANTS.map(seatedObserveSource);
     const wandSources=OBSERVE_VARIANTS.map(seatedWandSource);
     const sources=seated?[SEATED_IDLE_SHEET,SEATED_TALK_SHEET,SEATED_ARRIVE_SHEET,SEATED_JOY_SHEET,SEATED_MISS_SHEET,SEATED_RESULT_SHEET,MOUTH_VISEME_SHEET,MOUTH_CLEANUP_SHEET,...observeSources,...wandSources]:['peek','expressions','reach','reactions'].map(sheet=>`assets/sparky/kimono-${sheet}-v1.webp`);
     this.images=sources.map(src=>{const image=new Image();image.src=src;return image;});
     if(seated){
-      const nodImage=new Image();
-      nodImage.onload=()=>{this.nodAvailable=true;};
-      nodImage.onerror=()=>{this.nodAvailable=false;};
-      nodImage.src=SEATED_NOD_YES_SHEET;this.images.push(nodImage);
+      const yesNodImage=new Image();
+      yesNodImage.onload=()=>{this.nodYesAvailable=true;};
+      yesNodImage.onerror=()=>{this.nodYesAvailable=false;};
+      yesNodImage.src=SEATED_NOD_YES_SHEET;this.images.push(yesNodImage);
+      const noNodImage=new Image();
+      noNodImage.onload=()=>{this.nodNoAvailable=true;};
+      noNodImage.onerror=()=>{this.nodNoAvailable=false;};
+      noNodImage.src=SEATED_NOD_NO_SHEET;this.images.push(noNodImage);
     }
     element.replaceChildren();
     if(seated){
@@ -309,10 +324,10 @@ export class Sparky {
   }
   paint() {
     if(this.seated){
-      const talking=this.pose==='talk',arriving=this.pose==='arrive',observing=this.pose==='observe',wandPicking=this.pose==='wand-pick',joyful=this.pose==='pair-joy',reassuring=this.pose==='gentle-miss',result=this.pose==='result-reaction',nodding=this.pose==='nod-yes';
-      const frame=talking?seatedTalkFrame(this.elapsed,this.duration,this.reduced.matches):arriving?seatedArriveFrame(this.elapsed,this.reduced.matches):observing?seatedObserveFrame(this.elapsed,this.reduced.matches):wandPicking?seatedWandFrame(this.elapsed,this.wandContactElapsed,this.reduced.matches):joyful?seatedJoyFrame(this.elapsed,this.duration,this.reduced.matches):reassuring?seatedMissFrame(this.elapsed,this.duration,this.reduced.matches):result?seatedResultFrame(this.elapsed,this.reduced.matches):nodding?seatedNodYesFrame(this.elapsed,this.reduced.matches):seatedIdleFrame(this.elapsed,this.reduced.matches);
-      const sheet=talking?'wall-talk':arriving?'wall-arrive':observing?`wall-observe-${this.observeVariant}`:wandPicking?`wall-wand-${this.wandVariant}`:joyful?'wall-pair-joy':reassuring?'wall-gentle-miss':result?'wall-result-reaction':nodding?'wall-nod-yes':'wall-idle-formal';
-      const source=talking?SEATED_TALK_SHEET:arriving?SEATED_ARRIVE_SHEET:observing?seatedObserveSource(this.observeVariant,frame):wandPicking?seatedWandSource(this.wandVariant):joyful?SEATED_JOY_SHEET:reassuring?SEATED_MISS_SHEET:result?SEATED_RESULT_SHEET:nodding?SEATED_NOD_YES_SHEET:SEATED_IDLE_SHEET;
+      const talking=this.pose==='talk',arriving=this.pose==='arrive',observing=this.pose==='observe',wandPicking=this.pose==='wand-pick',joyful=this.pose==='pair-joy',reassuring=this.pose==='gentle-miss',result=this.pose==='result-reaction',noddingYes=this.pose==='nod-yes',noddingNo=this.pose==='nod-no',nodding=noddingYes||noddingNo;
+      const frame=talking?seatedTalkFrame(this.elapsed,this.duration,this.reduced.matches):arriving?seatedArriveFrame(this.elapsed,this.reduced.matches):observing?seatedObserveFrame(this.elapsed,this.reduced.matches):wandPicking?seatedWandFrame(this.elapsed,this.wandContactElapsed,this.reduced.matches):joyful?seatedJoyFrame(this.elapsed,this.duration,this.reduced.matches):reassuring?seatedMissFrame(this.elapsed,this.duration,this.reduced.matches):result?seatedResultFrame(this.elapsed,this.reduced.matches):noddingYes?seatedNodYesFrame(this.elapsed,this.reduced.matches):noddingNo?seatedNodNoFrame(this.elapsed,this.reduced.matches):seatedIdleFrame(this.elapsed,this.reduced.matches);
+      const sheet=talking?'wall-talk':arriving?'wall-arrive':observing?`wall-observe-${this.observeVariant}`:wandPicking?`wall-wand-${this.wandVariant}`:joyful?'wall-pair-joy':reassuring?'wall-gentle-miss':result?'wall-result-reaction':noddingYes?'wall-nod-yes':noddingNo?'wall-nod-no':'wall-idle-formal';
+      const source=talking?SEATED_TALK_SHEET:arriving?SEATED_ARRIVE_SHEET:observing?seatedObserveSource(this.observeVariant,frame):wandPicking?seatedWandSource(this.wandVariant):joyful?SEATED_JOY_SHEET:reassuring?SEATED_MISS_SHEET:result?SEATED_RESULT_SHEET:noddingYes?SEATED_NOD_YES_SHEET:noddingNo?SEATED_NOD_NO_SHEET:SEATED_IDLE_SHEET;
       const columns=arriving||result?5:wandPicking?6:4,rows=nodding?3:4;
       // Lip sync is independent from the body pose: Sparky also speaks while
       // celebrating, reassuring and holding the result pose. Reduced-motion
@@ -342,7 +357,7 @@ export class Sparky {
     this.element.dataset.sheet=sheet;this.element.dataset.frame=String(frame);
   }
   set(pose,duration=0,rate=1) {
-    this.pose=this.seated&&['talk','arrive','observe','wand-pick','pair-joy','gentle-miss','result-reaction','nod-yes'].includes(pose)?pose:SPARKY_CLIPS[pose]?pose:'idle';this.elapsed=0;this.duration=duration;
+    this.pose=this.seated&&['talk','arrive','observe','wand-pick','pair-joy','gentle-miss','result-reaction','nod-yes','nod-no'].includes(pose)?pose:SPARKY_CLIPS[pose]?pose:'idle';this.elapsed=0;this.duration=duration;
     this.rate=rate;
     this.element.dataset.pose=this.pose;this.paint();
   }
@@ -382,10 +397,16 @@ export class Sparky {
   }
   nodYes(rate=1){
     if(!this.seated||this.speechActive||this.pose==='wand-pick'||this.pose==='result-reaction')return 0;
-    if(this.nodAvailable){this.set('nod-yes',SEATED_NOD_YES_DURATION,rate);return SEATED_NOD_YES_DURATION/rate;}
+    if(this.nodYesAvailable){this.set('nod-yes',SEATED_NOD_YES_DURATION,rate);return SEATED_NOD_YES_DURATION/rate;}
     // Lightweight builds may omit the optional nod atlas. Reuse the complete
     // positive-reaction clip instead of leaving Sparky on an empty frame.
     this.set('pair-joy',SEATED_JOY_DURATION,rate);return SEATED_JOY_DURATION/rate;
+  }
+  nodNo(rate=1){
+    if(!this.seated||this.speechActive||this.pose==='wand-pick'||this.pose==='result-reaction')return 0;
+    if(this.nodNoAvailable){this.set('nod-no',SEATED_NOD_NO_DURATION,rate);return SEATED_NOD_NO_DURATION/rate;}
+    // Keep feedback visible if the optional atlas has not loaded yet.
+    this.set('gentle-miss',SEATED_MISS_DURATION,rate);return SEATED_MISS_DURATION/rate;
   }
   holdGentleMiss(){if(this.seated&&this.pose==='gentle-miss')this.duration=Infinity;}
   finishGentleMiss(){

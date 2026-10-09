@@ -1,0 +1,42 @@
+{
+  "seatAnchor": [
+    256,
+    300
+  ],
+  "mouthAnchor": [
+    261.4842,
+    180.6842
+  ],
+  "headPivot": [
+    265.9192,
+    215.5253
+  ],
+  "wandHandPivot": [
+    187.3477,
+    229.4663
+  ],
+  "wandTip": [
+    163.3326,
+    183.3725
+  ],
+  "gloveAnchors": {
+    "viewerLeft": [
+      187.3477,
+      229.4663
+    ],
+    "viewerRight": [
+      340.073,
+      288.927
+    ]
+  },
+  "shoeAnchors": {
+    "viewerLeft": [
+      198.6286,
+      353.7465
+    ],
+    "viewerRight": [
+      275.5956,
+      361.8036
+    ]
+  }
+}

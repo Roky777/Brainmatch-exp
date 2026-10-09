@@ -5,7 +5,7 @@ import { Timeline } from './timeline.js';
 import { readSave, writeSave, discover } from './save.js';
 import { GameAudio } from './audio.js';
 import { MusicLoop } from './music.js';
-import { Sparky, sparkyArt, seatedObserveDirection, seatedWandTip } from './sparky.js?v=3';
+import { Sparky, sparkyArt, seatedObserveDirection, seatedWandTip } from './sparky.js?v=4';
 import { LivingGarden } from './garden.js';
 import { Picnic } from './picnic.js';
 import { icon } from '../art.js';
@@ -120,7 +120,7 @@ function celebratePair(text,voiced=true,gesture='joy') {
 function reassureMiss(text,voiced=true,gesture='miss') {
   $('caption').textContent=text;
   if(!voiced||!started||!save.voice){
-    if(gesture==='nod')sparky.nodYes();
+    if(gesture==='nod-no')sparky.nodNo();
     else sparky.gentleMiss();
     return Promise.resolve({started:false,reason:'silent'});
   }
@@ -370,9 +370,9 @@ async function resolveTurn(ticket,{settleMs=CARD_REVEAL_HOLD_MS}={}) {
     const voiced=reactionVoiced=result.actor==='child'
       ? (narrateNow('child-miss',{first:1}) || missSpoken)
       : false;
-    // On subsequent non-matches, nod gently as friendly acknowledgement
+    // On subsequent non-matches, gently shake “not yet” as acknowledgement
     // without repeating speech or holding the board.
-    const gesture=gestureUsed=result.actor==='child' ? (voiced ? 'miss' : 'nod') : 'miss';
+    const gesture=gestureUsed=result.actor==='child' ? (voiced ? 'miss' : 'nod-no') : 'miss';
     reassureMiss(voiced?dialogue.next(event):(result.actor==='child'?'Try another pair.':'Sparky will try again later.'),voiced,gesture);
   }
   renderBoard();

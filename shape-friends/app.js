@@ -12,6 +12,7 @@ import { icon } from './art.js';
 import { LEVELS, playOptions, resultFor } from './play-options.js';
 import { Dialogue } from './dialogue.js';
 import { CloudReveal } from './cloud-reveal.js';
+import { awardXP, XP_LIMIT } from './xp.js';
 
 const $ = id => document.getElementById(id);
 // Board, rim controls and collection drawer form one responsive play object.
@@ -45,6 +46,19 @@ const picnic = new Picnic($('picnic'), {
 });
 
 function persist() { $('save-notice').hidden = writeSave(save); }
+function renderXP(award=null) {
+  const total=Math.max(0,Math.min(XP_LIMIT,save.xp||0));
+  $('xp-value').textContent=String(total);
+  $('xp-progress').style.width=`${total/XP_LIMIT*100}%`;
+  $('xp-meter').setAttribute('aria-label',`${total} of ${XP_LIMIT} XP earned`);
+  if(!award)return;
+  $('result-xp').classList.toggle('is-complete',award.complete);
+  $('result-xp-earned').textContent=award.earned ? `+${award.earned} XP` : '200 XP reached!';
+  $('result-xp-total').textContent=String(award.total);
+  $('result-xp').setAttribute('aria-label',award.earned
+    ? `${award.earned} XP earned. ${award.total} of ${XP_LIMIT} total XP.`
+    : `XP journey complete. ${XP_LIMIT} of ${XP_LIMIT} total XP.`);
+}
 function themeProgress(id = theme.id) { return id === 'neon' ? save.neonStars : id === 'seasons' ? save.seasonStars : save.dreamStars; }
 function themeUnlocked(id) {
   if(id==='dream')return true;
@@ -513,7 +527,9 @@ function finishRound() {
   if (theme.id === 'neon') save.neonStars = completed;
   else if (theme.id === 'seasons') save.seasonStars = completed;
   else save.dreamStars = completed;
+  const xpAward=awardXP(save,options.mode);
   persist(); audio.effect('finish');
+  renderXP(xpAward);
   applyTheme();
   const openedTheme=!seasonsWereUnlocked&&themeUnlocked('seasons')?'seasons':!neonWasUnlocked&&themeUnlocked('neon')?'neon':null;
   mode = 'result'; $('app').dataset.mode = mode;
@@ -656,7 +672,7 @@ function showSetup() {
   $('setup-view').hidden = false; $('play-layout').hidden = true; $('explore-view').hidden = true;
   $('result-view').hidden = true; $('discovery-strip').hidden = true;
   $('setup-view').dataset.step = 'menu'; $('mode-panel').hidden = false;
-  applyTheme(); setupUI(); updatePause(); menuSparky.nodYes();
+  applyTheme(); renderXP(); setupUI(); updatePause(); menuSparky.nodYes();
   document.querySelector('button[data-play-mode="practice"]').focus({ preventScroll:true });
 }
 function showLevels(playMode) {
@@ -700,4 +716,4 @@ $('unlock-visit').addEventListener('click',()=>{
 });
 $('unlock-later').addEventListener('click',()=>{$('theme-unlock-dialog').close();$('play-again').focus({preventScroll:true});});
 document.querySelector('.home-button').addEventListener('click', event => { event.preventDefault(); if ($('settings-dialog').open) $('settings-dialog').close(); showSetup(); });
-applyTheme(); settingsUI(); startRound(save.activeRound); showSetup();
+applyTheme(); renderXP(); settingsUI(); startRound(save.activeRound); showSetup();

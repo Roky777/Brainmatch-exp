@@ -7,7 +7,8 @@ export function shuffle(cards, rng = Math.random) {
   return result;
 }
 
-// The renderer and companion never receive a hidden card's identity.
+// Normal play snapshots never reveal a hidden card's identity. The explicit
+// preview snapshot is only for the child-facing study moment before play.
 export class MatchBoard {
   #cards;
   constructor(cards, { rng = Math.random, shuffled = true, mode = 'challenge' } = {}) {
@@ -61,5 +62,9 @@ export class MatchBoard {
       const matched = this.matched.has(card.pairId), visible = matched || this.open.includes(index);
       return { index, matched, visible, card: visible ? { ...card } : null };
     });
+  }
+  previewSnapshot() {
+    if(this.history.length||this.open.length||this.phase!=='ready')return this.snapshot();
+    return this.#cards.map((card,index)=>({index,matched:false,visible:false,card:{...card}}));
   }
 }

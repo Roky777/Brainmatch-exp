@@ -28,11 +28,11 @@ const menuSparky = new Sparky($('menu-sparky'), { seated: true });
 document.querySelector('.mini-sparky').innerHTML = sparkyArt('picnic-sparky');
 const garden = new LivingGarden($('living-garden'), { speak: text => say(text), effect: kind => audio.effect(kind), discovered: save.discoveries.filter(id=>ITEMS[id]).length / 2 });
 const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-let board, memory, round, mode = 'match', busy = false, run = 0, started = false, voiceMoments = {};
+let board, memory, round, mode = 'match', busy = false, previewing = false, run = 0, started = false, voiceMoments = {};
 let matchCount = 0, missCount = 0;
 let tapAnimation = null, tapGeometry = null;
 // Keep choices readable without turning each reveal into a blocking cutscene.
-const CARD_REVEAL_HOLD_MS=650, SPARKY_REVEAL_HOLD_MS=480, STAR_TRAVEL_MS=500, RESULT_READ_MS=620, CARD_CLOSE_MS=300, BETWEEN_ACTIONS_MS=100, VOICE_TIMEOUT_MS=6000;
+const BOARD_PREVIEW_HOLD_MS=2200, CARD_REVEAL_HOLD_MS=650, SPARKY_REVEAL_HOLD_MS=480, STAR_TRAVEL_MS=500, RESULT_READ_MS=620, CARD_CLOSE_MS=300, BETWEEN_ACTIONS_MS=100, VOICE_TIMEOUT_MS=6000;
 const cloudReveal = new CloudReveal($('cloud-curtain'), $('cloud-veil'));
 let options = playOptions(), guideMemory = new CompanionMemory();
 const dialogue = new Dialogue();
@@ -225,7 +225,7 @@ function startRound(id) {
   // Decode all possible round art away from the DOM. Hidden card positions and
   // identities remain private, but a selected card never opens onto white.
   const artReady=Promise.all([...new Set(cardsFor({pairs:round.pairs.slice(0,level.pairs)}).map(card=>card.item))].map(preloadArt));
-  mode = 'match'; busy = enteringPlay; voiceMoments={}; matchCount=0; missCount=0; save.activeRound = id; persist();
+  mode = 'match'; busy = enteringPlay; previewing=false; voiceMoments={}; matchCount=0; missCount=0; save.activeRound = id; persist();
   dockSparkyAtBoard();
   $('setup-view').hidden = true; $('result-view').hidden = true;
   document.querySelector('.match-area').hidden = false;
@@ -252,6 +252,10 @@ function startRound(id) {
       if(!await waitForVoice(welcomeVoice,ticket)||mode!=='match')return;
       await artReady;
       if(ticket!==run||mode!=='match')return;
+      previewing=true;$('caption').textContent='Take a good look!';renderBoard();
+      if(!await wait(BOARD_PREVIEW_HOLD_MS,ticket)||mode!=='match')return;
+      previewing=false;$('caption').textContent='Now find the matching shapes!';renderBoard();
+      if(!await wait(reduced.matches?0:CARD_CLOSE_MS,ticket)||mode!=='match')return;
       busy=false;renderBoard();
     })();
   }else say(openingLine);
@@ -260,29 +264,32 @@ function startRound(id) {
 function renderBoard() {
   const canPlay = board.actor === 'child' && board.phase === 'ready' && !busy && mode === 'match';
   const gettingReady = busy && board.actor === 'child' && board.phase === 'ready' && !board.history.length;
-  board.snapshot().forEach(({ index, matched, visible, card }) => {
+  const snapshot=previewing?board.previewSnapshot():board.snapshot();
+  snapshot.forEach(({ index, matched, visible, card }) => {
     const button = $('cards').children[index], front = button.querySelector('.card-front');
-    button.classList.toggle('is-open', visible); button.classList.toggle('is-matched', matched);
-    button.disabled = !canPlay || visible;
-    button.setAttribute('aria-label', visible ? `${itemFor(card.item).name}${matched ? ', matched' : ', face up'}. Card ${index + 1}` : `Hidden card ${index + 1}`);
+    const shown=visible||previewing;
+    button.classList.toggle('is-open', shown); button.classList.toggle('is-previewing', previewing); button.classList.toggle('is-matched', matched);
+    button.disabled = !canPlay || shown;
+    button.setAttribute('aria-label', shown ? `${itemFor(card.item).name}${matched ? ', matched' : previewing ? ', preview card' : ', face up'}. Card ${index + 1}` : `Hidden card ${index + 1}`);
     button.querySelector('.match-check').hidden = !matched;
-    // An unseen identity is never rendered into the DOM or its accessibility tree.
-    if (visible && !front.firstChild) {
+    // Normal play keeps unseen identities private. The child-facing opening
+    // preview deliberately renders every card without teaching Sparky's AI.
+    if (shown && !front.firstChild) {
       const img = new Image();
       front.classList.add('is-loading');img.alt='';img.draggable=false;img.hidden=true;
       const show=()=>{
-        if(!front.contains(img)||!board.snapshot()[index].visible)return;
+        if(!front.contains(img)||!(board.snapshot()[index].visible||previewing))return;
         img.hidden=false;front.classList.remove('is-loading','load-failed');
       };
       img.onload=async()=>{try{await img.decode?.();}catch{}show();};
       img.onerror=()=>front.classList.replace('is-loading','load-failed');
       front.append(img);img.src=assetURL(card.item);
       if(img.complete&&img.naturalWidth)show();
-    } else if (!visible) {
+    } else if (!shown) {
       // Retain previously observed art through the closing half of the flip only.
       const ticket = run;
       timeline.wait(210).then(ok => {
-        if(ok&&ticket===run&&!board.snapshot()[index].visible){front.replaceChildren();front.classList.remove('is-loading','load-failed');}
+        if(ok&&ticket===run&&!board.snapshot()[index].visible&&!previewing){front.replaceChildren();front.classList.remove('is-loading','load-failed');}
       });
     }
   });
@@ -290,7 +297,7 @@ function renderBoard() {
   $('turn-chip').classList.toggle('is-waiting', gettingReady);
   $('cards').setAttribute('aria-busy', String(gettingReady));
   const bonus = board.mode === 'challenge' && board.history.at(-1)?.match;
-  $('turn-chip').querySelector('strong').textContent = gettingReady ? 'Getting ready…' : board.phase === 'complete' ? 'We did it!' : board.actor === 'child' ? (bonus ? 'You go again!' : 'Your turn!') : (bonus ? 'Sparky goes again!' : 'Sparky’s turn!');
+  $('turn-chip').querySelector('strong').textContent = previewing ? 'Look closely…' : gettingReady ? 'Getting ready…' : board.phase === 'complete' ? 'We did it!' : board.actor === 'child' ? (bonus ? 'You go again!' : 'Your turn!') : (bonus ? 'Sparky goes again!' : 'Sparky’s turn!');
   $('pair-progress').innerHTML = Array.from({ length: board.pairCount }, (_, i) => `<i class="${i < board.matched.size ? 'found' : ''}"></i>`).join('');
   $('pair-progress').setAttribute('aria-label', `${board.matched.size} of ${board.pairCount} pairs found`);
   $('pair-progress').hidden = options.mode === 'challenge';

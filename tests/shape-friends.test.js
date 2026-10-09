@@ -75,9 +75,11 @@ test('Every legal two-card choice in every round resolves by shape, not identica
     if (a === b) continue;
     const cards = cardsFor(round), board = new MatchBoard(cards, { shuffled: false });
     assert(board.snapshot().every(card => card.card === null));
+    assert.equal(board.previewSnapshot().filter(card => card.card).length,8,'the child can study every card before play');
     assert.equal(board.reveal(-1, 'child'), null); assert.equal(board.reveal(a, 'sparky'), null);
     assert(board.reveal(a, 'child')); assert.equal(board.reveal(a, 'child'), null);
     assert.equal(board.snapshot().filter(card => card.card).length, 1);
+    assert.equal(board.previewSnapshot().filter(card => card.card).length,1,'the full preview cannot reopen after play starts');
     board.reveal(b, 'child');
     assert.equal(board.reveal((b + 1) % 8, 'child'), null);
     const result = board.resolve(); assert.equal(result.match, cards[a].pairId === cards[b].pairId);

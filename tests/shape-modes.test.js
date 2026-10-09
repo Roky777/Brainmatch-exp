@@ -124,17 +124,21 @@ test('result screen uses gentle language, one clear heading and visual action ic
  assert.match(css,/body\[data-theme="seasons"\] #app\[data-mode="result"\] \.result-view\{[\s\S]*?--result-surface/);
  assert.match(css,/body\[data-theme="neon"\] #app\[data-mode="result"\] \.result-view\{[\s\S]*?--result-surface/);
 });
-test('welcome narration finishes before the board accepts taps',async()=>{
+test('welcome narration and the child card preview finish before the board accepts taps',async()=>{
  const app=await readFile(new URL('../shape-friends/app.js',import.meta.url),'utf8');
  assert.match(app,/mode = 'match'; busy = enteringPlay/);
- assert.match(app,/const welcomeVoice=speakLine\(sparky,openingLine\);[\s\S]*waitForVoice\(welcomeVoice,ticket\)[\s\S]*busy=false;renderBoard\(\)/);
+ assert.match(app,/const welcomeVoice=speakLine\(sparky,openingLine\);[\s\S]*waitForVoice\(welcomeVoice,ticket\)[\s\S]*previewing=true;[\s\S]*wait\(BOARD_PREVIEW_HOLD_MS,ticket\)[\s\S]*previewing=false;[\s\S]*busy=false;renderBoard\(\)/);
+ assert.match(app,/const shown=visible\|\|previewing/,'the opening preview turns every card face-up');
+ assert.match(app,/previewing\?board\.previewSnapshot\(\):board\.snapshot\(\)/,'only the opening study moment receives all card identities');
+ assert.match(app,/button\.disabled = !canPlay \|\| shown/,'preview cards cannot be selected early');
+ assert.match(app,/BOARD_PREVIEW_HOLD_MS=2200/,'children receive a readable study moment');
  assert.match(app,/music\.setDucked\(true\)/);
 });
 test('card artwork is decoded before play and has a nonblank loading face',async()=>{
  const app=await readFile(new URL('../shape-friends/app.js',import.meta.url),'utf8');
  const css=await readFile(new URL('../shape-friends/prototype.css',import.meta.url),'utf8');
  assert.match(app,/const artReady=Promise\.all/);
- assert.match(app,/await artReady;[\s\S]*?busy=false;renderBoard\(\)/);
+ assert.match(app,/await artReady;[\s\S]*?previewing=true;[\s\S]*?busy=false;renderBoard\(\)/);
  assert.match(app,/front\.classList\.add\('is-loading'\)/);
  assert.match(css,/\.card-front\.is-loading::after/);
  assert.doesNotMatch(css,/\.memory-card:not\(\:disabled\):hover \.card-face\s*\{[^}]*transform:/s,'hover must not replace the face-flip transform');

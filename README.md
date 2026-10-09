@@ -1,60 +1,21 @@
-# Pip's Garden — Flip & Grow
+# Shape Friends — Dream Brainmatch
 
-A complete, standalone storybook memory game in **Brainmatch-exp only**. This is not a shared dependency of the ten production games. No production analytics, progress bridges, storage or repositories are changed.
+This repository contains one product: **Shape Friends**, a portrait-first memory game where children match different objects that share the same overall shape. Future content packs such as Flag Friends will extend this same game architecture rather than live as separate games.
 
-The original six-level **Flip & Grow** experience remains intact. The home screen also includes **Barnyard Together**, an additive two-round cooperative mode where the child and Pip alternate turns, discover Cow/Hen/Hay/Egg and Duck/Sheep/Pond/Flowers, and then play with those discoveries in a persistent barnyard. Its fair guide memory, save data, controls, and rules are isolated from the original campaign.
+## Run locally
 
-Barnyard Together keeps every spoken line captioned and uses the browser/OS English speech voice as its clearly identified prototype fallback. Voice and music/effects have separate controls, and missing speech never blocks play.
+```sh
+npm start
+```
 
-## Shape Friends
+Open <http://127.0.0.1:4178/>. The root route opens Shape Friends directly. There are no runtime dependencies or build steps.
 
-[Shape Friends](shape-friends/README.md) is a separate Grade 1 shape-memory game with Sparky, available at `/shape-friends/`. Choose Practice or Beat Sparky, select a 4-, 6-, or 8-card board, then find matching shape pairs. Run `npm test` for its logic tests; see its [art provenance](shape-friends/ASSETS.md), [design research](shape-friends/DESIGN_RESEARCH.md), and [verification notes](shape-friends/QA.md).
+## Verify
 
-## Play
+```sh
+npm test
+```
 
-Serve the repository with `npm start`, then open http://127.0.0.1:4178. Node 20+ is recommended. No dependencies or build step are required. The root `index.html` and relative module/asset URLs work on GitHub Pages, including a repository subpath.
+The automated suite covers Shape Friends rules, progression, Practice and Beat Sparky modes, saves, audio behavior, local assets, and Sparky animation timing.
 
-The child taps Play, completes a mandatory guided match, then travels through six gardens. Each new board introduces its pairs individually and lets the child study the full board before hiding it. There is no time pressure.
-
-- Original vector storybook world, expressive Pip character and illustrated cards; no emoji placeholders or copied reference art.
-- Visual hand-pointer tutorial with disabled off-target cards.
-- Short **English on-screen captions**, with separate replayable **Hindi speech**. The player supports approved Hindi recordings through `VOICE_CLIPS` in `narration.js`; none are bundled yet. Until recordings are provided, it uses an installed Hindi **device/browser voice** at natural pitch. Voice availability and quality vary; this is **not a custom recorded or cloned character voice**. A device without Hindi speech still has complete visual guidance. See `VOICE_DIRECTION.md` for the production brief and integration requirements.
-- Soft original synthesized chimes, mute, pause, keyboard controls and reduced-motion support.
-- One free preview per attempt. After two wrong matches, Pip points to the matching partner when a card is chosen.
-- Sequential unlocks, a collected-friends garden, per-level replay and best-result scoring.
-- Pausable/cancellable turn timers and saved partial boards prevent stale callbacks crossing levels.
-- No ads, purchases, account, network analytics or application backend. Font is local; speech synthesis may be implemented by the browser/OS.
-
-## Scoring
-
-One turn means selecting two cards. Perfect turns equal the number of pairs.
-
-| Garden | Pairs / perfect turns | 3 stars / max XP | 2 stars (up to 2 extra turns) | 1 star (3+ extra turns) |
-| --- | ---: | ---: | ---: | ---: |
-| Shape Meadow | 2 | 15 | 12 | 9 |
-| Counting Pond | 3 | 20 | 16 | 12 |
-| Little Growers | 4 | 30 | 24 | 18 |
-| Weather Woods | 4 | 35 | 28 | 21 |
-| Rupee Market | 5 | 45 | 36 | 27 |
-| Wonder Workshop | 6 | 55 | 44 | 33 |
-| **Total** | **24** | **200** | **160** | **120** |
-
-Each result shows **earned / level maximum XP**. The final garden sums the best result from each level. Worse replays do not reduce the garden total, and repeated rewards are never added twice. Hints do not subtract hidden penalties.
-
-The single source of reward truth is `game-data.js`. Storage key: `brainmatch-exp:pip-storybook:v1`. Loading recomputes rewards from valid turn counts, validates saved decks and enforces sequential unlocks. Reset is behind settings and a confirmation, and affects this game's key only.
-
-## Files and verification
-
-- `art.js`: original SVG world, character, card illustrations and controls.
-- `game-data.js`: chapters, reward calculation, save validation.
-- `script.js`: tutorial, game states, input, progression and UI.
-- `clock.js`: pause/resume/cancel-safe feedback timer.
-- `narration.js`: English/Hindi cue separation and approved-clip mapping.
-- `voice.js`: recorded-clip playback with Hindi device-speech fallback.
-- `tests/`: `npm test` verifies reward boundaries, full campaigns, replay accounting, shuffled decks, save validation and timer safety.
-
-Baloo 2 is included under the SIL Open Font License in `assets/OFL.txt`. All other visuals and chimes are original code-native assets. Rupee coins are stylized learning illustrations, not banknote scans.
-
-## Hosting
-
-Push the root files to the experimental repository. If GitHub Pages is configured to deploy from `main` / root, GitHub publishes the game automatically after that deployment succeeds. This project itself does not alter repository hosting settings.
+Product documentation and source live in [`shape-friends/`](shape-friends/README.md).

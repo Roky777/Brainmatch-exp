@@ -2,7 +2,7 @@
 
 ## September 28 — current Shape Friends scenes and kimono animation
 
-- Home, mode-specific level selection, play, pause and result are separate scenes. The root route opens Shape Friends; Pip is not linked in the active route, while its source and save key remain untouched.
+- Home, mode-specific level selection, play, pause and result are separate scenes. The repository root opens Shape Friends directly.
 - The supplied kimono sheets are packaged into four expression/reach/reaction/peek WebP atlases plus retained sleeve and glove studies. Sparky's turn now uses a pointing pose, a body accent and a travelling card-tap sparkle before reveal. The rejected stretched-sleeve effect is not played. A deterministic browser check captures the tap state.
 - The later animation pass follows the supplied sorting template's restrained pose/body-motion approach. Sparky is larger, card proportions are taller, and the star-card illustration uses aspect-preserving cover rather than bitmap stretching. The active stage now fills viewport height instead of inheriting an old 16:9 letterbox, so the larger actor and board remain separate.
 - Browser screenshots were reviewed at 320×568, 375×669, 390×844, 667×375, 844×390, 1024×768, 1440×1000 and 1920×1080. The home peek reaches the right edge on narrow phones, and its caption stays onscreen. Levels and cards remain within the viewport.
@@ -13,7 +13,7 @@ Older entries below document superseded iterations.
 
 ## September 28 — dream theme, mode menus and match-earned turns
 
-- 38 unit tests passed, including extra turns for both players, all score outcomes and bounded observed-only Sparky memory. Original Pip/Barnyard rules remain unchanged.
+- Unit tests cover extra turns for both players, all score outcomes and bounded observed-only Sparky memory.
 - Chromium completed all six Practice/Beat Sparky × 4/6/8-card combinations. Checked phone, small landscape and desktop bounds, keyboard menu selection, touch reveal, home cancellation, pause and reduced motion. No browser exceptions or missing assets.
 - All 21 local voice clips decoded; intro playback advanced. Acting quality has not been perceptually approved.
 - Reviewed home, separate levels and gameplay screenshots. Home places animated Sparky beside the mode menu. Gameplay removes the collection shelf and level selectors.
@@ -51,7 +51,7 @@ The original Pip lesson was opened and screenshot-reviewed before adapting its e
 - Screenshot-reviewed the new courtyard and tiles at desktop and small landscape sizes. The sprite hit area is placed beside, not over, the matching board.
 - Full foreground browser campaign passed all four rounds, 18 discoveries, mouse/touch drag, cancellation, keyboard alternatives, persistence and reduced motion with no exceptions or missing assets. An earlier parallel run timed out after another QA tab hid it; the single-foreground rerun passed.
 
-- `npm test`: 30 passed, including original games and the new shape rules.
+- `npm test` verifies the current Shape Friends rules and supporting systems.
 - Full Chromium campaign: all four rounds, 18 discoveries, strict turns, saved progress, pause/restart cancellation and reduced motion passed.
 - Native browser mouse, keyboard and emulated touch: tile reveal, toy dragging, invalid drops and touch cancellation passed.
 - Screenshot review: 1440×1000, 390×844, 320×568 and 844×390. All eight tiles fit; no horizontal overflow. Final costume received an additional browser smoke test.

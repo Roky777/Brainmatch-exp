@@ -8,7 +8,7 @@ import { MusicLoop } from './music.js';
 import { Sparky, sparkyArt, seatedObserveDirection, seatedWandTip } from './sparky.js?v=4';
 import { LivingGarden } from './garden.js';
 import { Picnic } from './picnic.js';
-import { icon } from '../art.js';
+import { icon } from './art.js';
 import { LEVELS, playOptions, resultFor } from './play-options.js';
 import { Dialogue } from './dialogue.js';
 import { CloudReveal } from './cloud-reveal.js';

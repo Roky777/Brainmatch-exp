@@ -1,6 +1,6 @@
 # Shape Friends — Dream Brainmatch
 
-Run `npm start` from the repository root and open http://127.0.0.1:4178/. No build or runtime dependencies. The root route opens Shape Friends. Pip's Garden and Barnyard are maintained separately in Brainmatch-exp.
+Run `npm start` from the repository root and open http://127.0.0.1:4178/. No build or runtime dependencies. The repository and root route are dedicated to Shape Friends.
 
 ## Current experience
 
@@ -42,7 +42,7 @@ Earlier picnic modules/assets remain as source history but are not exposed in th
 
 ## Verification and reuse
 
-`npm test` covers the original games, shape rules, scoring, mode transitions, fair memory, saves, audio failures, sprite frames and dialogue coverage.
+`npm test` covers shape rules, scoring, mode transitions, fair memory, saves, audio failures, sprite frames and dialogue coverage.
 
 With the local server and isolated Chrome debugging on port 9223:
 ```sh

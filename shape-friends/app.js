@@ -53,11 +53,15 @@ function renderXP(award=null) {
   $('xp-meter').setAttribute('aria-label',`${total} of ${XP_LIMIT} XP earned`);
   if(!award)return;
   $('result-xp').classList.toggle('is-complete',award.complete);
-  $('result-xp-earned').textContent=award.earned ? `+${award.earned} XP` : '200 XP reached!';
+  $('result-xp-earned').textContent=award.earned
+    ? `+${award.earned} XP`
+    : award.reason==='replay' ? 'XP already earned' : '200 XP complete!';
   $('result-xp-total').textContent=String(award.total);
   $('result-xp').setAttribute('aria-label',award.earned
     ? `${award.earned} XP earned. ${award.total} of ${XP_LIMIT} total XP.`
-    : `XP journey complete. ${XP_LIMIT} of ${XP_LIMIT} total XP.`);
+    : award.reason==='replay'
+      ? `XP already earned for this board and mode. ${award.total} of ${XP_LIMIT} total XP.`
+      : `XP journey complete. ${XP_LIMIT} of ${XP_LIMIT} total XP.`);
 }
 function themeProgress(id = theme.id) { return id === 'neon' ? save.neonStars : id === 'seasons' ? save.seasonStars : save.dreamStars; }
 function themeUnlocked(id) {
@@ -527,7 +531,7 @@ function finishRound() {
   if (theme.id === 'neon') save.neonStars = completed;
   else if (theme.id === 'seasons') save.seasonStars = completed;
   else save.dreamStars = completed;
-  const xpAward=awardXP(save,options.mode);
+  const xpAward=awardXP(save,{worldId:theme.id,roundId:round.id,mode:options.mode});
   persist(); audio.effect('finish');
   renderXP(xpAward);
   applyTheme();

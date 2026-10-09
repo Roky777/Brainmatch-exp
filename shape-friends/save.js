@@ -1,6 +1,7 @@
 import { PACK, SEASON_PACK, NEON_PACK, hasItem } from './content.js';
+import { normalizeXPClaims, XP_ACTIVITY_COUNT } from './xp.js';
 export const SAVE_KEY = 'brainmatch:shape-friends:v1';
-export const emptySave = () => ({ version: 4, discoveries: [], completed: [], seasonCompleted: [], dreamStars: [], seasonStars: [], neonStars: [], theme: 'dream', voice: true, effects: true, music: true, activeRound: '1', gardenWater: 0, xp: 0 });
+export const emptySave = () => ({ version: 5, discoveries: [], completed: [], seasonCompleted: [], dreamStars: [], seasonStars: [], neonStars: [], theme: 'dream', voice: true, effects: true, music: true, activeRound: '1', gardenWater: 0, xp: 0, xpClaims: [], xpJourneyBonus: false });
 export function sanitizeSave(raw) {
   const save = emptySave();
   if (!raw || typeof raw !== 'object') return save;
@@ -16,9 +17,16 @@ export function sanitizeSave(raw) {
   save.seasonStars = rawSeason.length > 0 ? rawSeason : validSeasonRounds.filter(id => save.seasonCompleted.includes(id));
   const validNeonRounds=NEON_PACK.rounds.map(round=>round.id);
   save.neonStars = Array.isArray(raw.neonStars) ? raw.neonStars.filter(id => typeof id === 'string' && validNeonRounds.includes(id)) : [];
+  const inferredClaims=[
+    ...save.dreamStars.map(id=>`dream:${id}:practice`),
+    ...save.seasonStars.map(id=>`seasons:${id}:practice`),
+    ...save.neonStars.map(id=>`neon:${id}:practice`),
+  ];
+  save.xpClaims=normalizeXPClaims(Array.isArray(raw.xpClaims)?raw.xpClaims:inferredClaims);
+  save.xpJourneyBonus=raw.xpJourneyBonus===true&&save.xpClaims.length===XP_ACTIVITY_COUNT;
   const restoredXP=Number.isInteger(raw.xp)
     ? raw.xp
-    : (save.dreamStars.length+save.seasonStars.length+save.neonStars.length)*10;
+    : save.xpClaims.reduce((total,key)=>total+(key.endsWith(':practice')?10:6),0)+(save.xpJourneyBonus?8:0);
   save.xp=Math.max(0,Math.min(200,restoredXP));
   const neonUnlocked=save.dreamStars.length+save.seasonStars.length>=5;
   const seasonsUnlocked=save.dreamStars.length>=3;

@@ -830,6 +830,22 @@ body[data-theme="seasons"] #app[data-mode="match"] .card-front.is-loading::after
 body[data-theme="seasons"] #app[data-mode="match"] .card-front.load-failed::after{background:conic-gradient(from 45deg,#ffd33f 0 25%,#ff7474 0 50%,#69cf67 0 75%,#a9eaff 0);border-radius:22%}
 body[data-theme="seasons"] #app[data-mode="match"] .pair-progress i.found{background:#ff8a3d}
 body[data-theme="seasons"] #app[data-mode="match"] .match-check{background:#50bd59;box-shadow:0 3px 0 #287f38,0 6px 12px #287f3855}
+body[data-theme="seasons"] #app[data-mode="match"] .play-layout::after{
+  content:"";display:block;position:absolute;inset:0 0 auto;height:min(34svh,290px);
+  z-index:1;pointer-events:none;
+  background:url('assets/season-sky-sprinkles.svg') center top/100% auto no-repeat;
+  filter:drop-shadow(0 3px 3px rgba(18,63,121,.14));
+}
+body[data-theme="seasons"] #app[data-mode="match"] .scene-controls::before{
+  content:"Season Parade";position:absolute;left:50%;top:7px;translate:-50% 0;
+  width:max-content;padding:0 4px 7px;border-bottom:2px solid rgba(18,63,121,.28);
+  color:#123f79;text-shadow:0 1px rgba(255,255,255,.8);
+  font:800 clamp(10px,2.8vw,13px)/1 var(--font-body);letter-spacing:.14em;text-transform:uppercase;
+}
+@media(max-height:700px){
+  body[data-theme="seasons"] #app[data-mode="match"] .play-layout::after{height:230px}
+  body[data-theme="seasons"] #app[data-mode="match"] .scene-controls::before{top:4px;font-size:9px}
+}
 body[data-theme="seasons"] .theme-open-picture{display:block;background:transparent url('assets/season-card-back-v1.webp') center/contain no-repeat}
 body[data-theme="seasons"] .theme-open-picture i{display:none}
 .theme-picture--seasons{background:url('assets/season-parade-bg-v3.webp') center/cover no-repeat}

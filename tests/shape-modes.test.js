@@ -78,7 +78,7 @@ test('world chooser is visual, persistent and keeps later worlds behind complete
  assert.match(app,/season-sparky-cloud-v1\.webp/);
  assert.match(app,/neon-sparky-cloud-v1\.webp/);
  assert.match(css,/body\[data-theme="seasons"\]/);
- assert.match(css,/season-parade-bg-v3\.webp/);
+ assert.match(css,/season-parade-bg-v4\.webp/);
  assert.match(css,/season-card-back-v1\.webp/);
  assert.match(css,/season-card-front-v1\.webp/);
  assert.match(css,/season-result-stage-v1\.webp/);

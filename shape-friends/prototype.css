@@ -2281,3 +2281,99 @@ body[data-theme="neon"] #app[data-mode="result"] .result-character-space{
   body[data-theme="neon"] .garden-background{animation:neon-space-drift 22s ease-in-out infinite alternate}
 }
 @keyframes neon-space-drift{to{background-position:50% 46%}}
+
+/* World chooser: compact, calm hierarchy across small game screens. */
+dialog.theme-dialog{
+  width:min(560px,calc(100vw - 24px));max-height:calc(100svh - 20px);
+  padding:0 20px 18px;border-width:2px;border-radius:28px;
+  scrollbar-width:thin;
+}
+.theme-dialog .dialog-close{
+  top:12px;right:12px;width:42px;height:42px;min-width:42px;min-height:42px;
+  border-width:2px;border-radius:14px;font-size:28px;box-shadow:0 3px 0 var(--navy-soft);
+}
+.theme-dialog-heading{
+  min-height:88px;margin:0 -20px 14px;padding:15px 62px 12px;
+  border-radius:26px 26px 0 0;
+}
+.theme-dialog-kicker{font-size:10px;letter-spacing:.15em}
+.theme-dialog h2{font-size:clamp(28px,5vw,35px);line-height:1.02}
+.theme-choices{gap:10px}
+.theme-choices>button{
+  padding:8px 8px 13px;border-width:2px;border-radius:20px;
+  box-shadow:0 3px 0 #c8d2ee;
+}
+.theme-choices>button.is-active{outline:0}
+.theme-picture{border-radius:15px}
+.theme-copy{padding:10px 6px 0}
+.theme-copy strong{font-size:20px;line-height:1.05}
+.theme-copy small{font-size:13px;line-height:1.18}
+.theme-status{margin-top:8px;padding:5px 9px;font-size:11px;line-height:1}
+.theme-check,.theme-lock{right:12px;bottom:12px;width:26px;height:26px;font-size:17px}
+.theme-dialog-message{
+  width:auto;margin:14px auto 0;padding:0 8px;border:0;border-radius:0;
+  background:transparent;box-shadow:none;font-size:12.5px;line-height:1.35;
+}
+
+body[data-theme="neon"] dialog.theme-dialog{
+  border-color:#35dff1;
+  background:linear-gradient(180deg,#081326 0%,#030711 100%);
+  box-shadow:0 0 0 1px rgba(89,241,255,.1) inset,0 0 14px rgba(21,225,255,.28),0 18px 42px #000c;
+}
+body[data-theme="neon"] .theme-dialog-heading{
+  border-bottom-color:rgba(73,223,240,.38);
+  background:
+    radial-gradient(circle at 50% -30%,rgba(43,228,251,.24),transparent 68%),
+    linear-gradient(135deg,#123765,#0b2244 55%,#08182f);
+}
+body[data-theme="neon"] .theme-dialog-heading h2{text-shadow:0 2px 0 #13658a}
+body[data-theme="neon"] .theme-dialog .dialog-close{
+  border-color:#9ba9c8;background:#fffaf3;color:#29457d;
+  box-shadow:0 3px 0 #7183ad;
+}
+body[data-theme="neon"] .theme-choices>button{
+  border-color:rgba(52,220,239,.64);
+  background:linear-gradient(145deg,#090f1d,#030711);
+  box-shadow:0 3px 0 #11394b;
+}
+body[data-theme="neon"] .theme-choices>button:hover{
+  border-color:#55e9f8;box-shadow:0 3px 0 #11394b,0 0 10px rgba(35,224,245,.22);
+}
+body[data-theme="neon"] .theme-choices>button.is-active{
+  border-color:#ffd865;
+  box-shadow:0 0 0 1px rgba(255,216,101,.28) inset,0 3px 0 #9a691a,0 0 11px rgba(255,216,101,.22);
+}
+body[data-theme="neon"] .theme-dialog-message{color:#7edbe6}
+
+@media(max-width:700px){
+  dialog.theme-dialog{
+    width:calc(100vw - 16px);max-height:calc(100svh - 16px);
+    padding:0 12px 14px;border-radius:24px;
+  }
+  .theme-dialog-heading{
+    min-height:82px;margin:0 -12px 12px;padding:14px 54px 11px;
+    border-radius:22px 22px 0 0;
+  }
+  .theme-dialog .dialog-close{top:10px;right:10px;width:40px;height:40px;min-width:40px;min-height:40px}
+  .theme-dialog h2{font-size:clamp(27px,8vw,33px)}
+  .theme-choices{gap:9px}
+  .theme-choices>button{
+    grid-template-columns:36% minmax(0,1fr);min-height:100px;
+    padding:7px;border-radius:18px;
+  }
+  .theme-picture{border-radius:13px}
+  .theme-copy{padding:3px 8px;align-items:flex-start;justify-content:center}
+  .theme-copy strong{font-size:clamp(18px,5.5vw,23px)}
+  .theme-copy small{font-size:clamp(12px,3.5vw,14px)}
+  .theme-status{margin-top:7px}
+  .theme-dialog-message{margin-top:12px;font-size:12px}
+}
+
+@media(max-height:620px){
+  .theme-dialog-heading{min-height:68px;margin-bottom:9px;padding-top:10px;padding-bottom:8px}
+  .theme-dialog-kicker{display:none}
+  .theme-dialog h2{font-size:26px}
+  .theme-choices{gap:7px}
+  .theme-choices>button{min-height:82px}
+  .theme-dialog-message{margin-top:9px;font-size:11px}
+}

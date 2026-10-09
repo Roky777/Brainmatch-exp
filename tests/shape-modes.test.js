@@ -66,6 +66,7 @@ test('pre-readers can choose a board by card count and start with one tap',async
 test('world chooser is visual, persistent and keeps later worlds behind completed rounds',async()=>{
  const html=await readFile(new URL('../shape-friends/index.html',import.meta.url),'utf8');
  const app=await readFile(new URL('../shape-friends/app.js',import.meta.url),'utf8');
+ const content=await readFile(new URL('../shape-friends/game-content.json',import.meta.url),'utf8');
  const css=await readFile(new URL('../shape-friends/prototype.css',import.meta.url),'utf8');
  assert.match(html,/id="theme-open"/);assert.match(html,/data-theme-choice="dream"/);assert.match(html,/data-theme-choice="seasons"/);assert.match(html,/data-theme-choice="neon"/);
  assert.match(html,/id="theme-unlock-dialog"/);assert.match(html,/id="unlock-visit"/);assert.match(html,/id="unlock-later"/);
@@ -75,8 +76,9 @@ test('world chooser is visual, persistent and keeps later worlds behind complete
  assert.match(app,/document\.body\.dataset\.theme = theme\.id/);
  assert.match(app,/unlockDialog\.showModal\(\)/,'new worlds receive a one-time unlock popup');
  assert.match(app,/\$\('theme-open-label'\)\.textContent = 'Worlds'/,'the permanent world switcher stays explicit');
- assert.match(app,/season-sparky-cloud-v1\.webp/);
- assert.match(app,/neon-sparky-cloud-v1\.webp/);
+ assert.match(app,/theme\.cloudAsset/,'world presentation metadata is resolved generically');
+ assert.match(content,/season-sparky-cloud-v1\.webp/);
+ assert.match(content,/neon-sparky-cloud-v1\.webp/);
  assert.match(css,/body\[data-theme="seasons"\]/);
  assert.match(css,/season-parade-bg-v4\.webp/);
  assert.match(css,/season-card-back-v1\.webp/);

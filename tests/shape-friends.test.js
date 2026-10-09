@@ -1,12 +1,29 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { access, stat } from 'node:fs/promises';
-import { PACK, SEASON_PACK, NEON_PACK, ITEMS, SEASON_ITEMS, cardsFor, assetURL, getTheme } from '../shape-friends/content.js';
+import { ALL_ITEMS, CATEGORIES, GAME_CONTENT, PACK, SEASON_PACK, NEON_PACK, ITEMS, SEASON_ITEMS, WORLDS, cardsFor, assetURL, getTheme, validateContentManifest } from '../shape-friends/content.js';
 import { MatchBoard, shuffle } from '../shape-friends/engine.js';
 import { CompanionMemory } from '../shape-friends/companion.js';
 import { emptySave, sanitizeSave, discover, readSave, writeSave } from '../shape-friends/save.js';
 import { Timeline } from '../shape-friends/timeline.js';
 import { GameAudio } from '../shape-friends/audio.js';
+
+test('the game variant is driven by generalized JSON content',()=>{
+  assert.equal(validateContentManifest(GAME_CONTENT),true);
+  assert.deepEqual(Object.keys(WORLDS),['dream','seasons','neon']);
+  assert.equal(WORLDS.dream.skin,'meadow');
+  assert.equal(CATEGORIES.round.name,'Round friends');
+  assert.equal(ALL_ITEMS.football.asset,'items-dream/football.webp');
+  const variant=structuredClone(GAME_CONTENT);
+  variant.variant={...variant.variant,id:'flag-friends',title:'Flag Friends',objective:'Find two cards from the same country.'};
+  variant.categories={same_country:{name:'Country friends',detail:'Both belong to the same country.',color:'#4a79c9'}};
+  variant.items={};
+  for(let i=1;i<=8;i++)variant.items[`flag_${i}`]={name:`Flag ${i}`,asset:`flags/flag-${i}.webp`};
+  variant.rounds=[{id:'1',title:'Flag friends',subtitle:'Countries together',pairs:Array.from({length:4},(_,i)=>['same_country',`flag_${i*2+1}`,`flag_${i*2+2}`])}];
+  assert.equal(validateContentManifest(variant),true,'a new item/category JSON variant needs no engine changes');
+  variant.rounds[0].pairs[0][2]='missing';
+  assert.throws(()=>validateContentManifest(variant),/Invalid item pair/);
+});
 
 test('Grade 1 GDD: four rounds, four non-identical shape pairs in each', () => {
   assert.equal(PACK.rounds.length, 4);

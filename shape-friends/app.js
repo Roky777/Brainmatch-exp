@@ -1,4 +1,4 @@
-import { ITEMS, SHAPES, assetURL, cardsFor, roundById, getTheme, itemFor } from './content.js';
+import { ITEMS, CATEGORIES, assetURL, cardsFor, roundById, getWorld, itemFor } from './content.js';
 import { MatchBoard } from './engine.js';
 import { CompanionMemory } from './companion.js';
 import { Timeline } from './timeline.js';
@@ -19,7 +19,7 @@ const $ = id => document.getElementById(id);
 document.querySelector('.match-area').append($('discovery-strip'));
 $('app').append($('hint'));
 const save = readSave();
-let theme = getTheme(save.theme), pack = theme.pack;
+let theme = getWorld(save.theme), pack = theme.pack;
 // The child-facing Music control is the single master switch for all non-voice audio.
 save.effects = save.music;
 const audio = new GameAudio(save), music = new MusicLoop(save), timeline = new Timeline();
@@ -74,21 +74,21 @@ function nextRoundId() {
   return pack.rounds[(index + 1) % pack.rounds.length]?.id || '1';
 }
 function applyTheme() {
-  theme = getTheme(save.theme); pack = theme.pack;
+  theme = getWorld(save.theme); pack = theme.pack;
   document.body.dataset.theme = theme.id; $('app').dataset.theme = theme.id;
   document.title = `${pack.title} · Dream Brainmatch`;
   document.querySelector('#app > h1').textContent = pack.title;
-  const clouds={dream:'./assets/sparky-seat-cloud-v1.webp',seasons:'./assets/season-sparky-cloud-v1.webp',neon:'./assets/neon-sparky-cloud-v1.webp'};
-  document.querySelector('.sparky-seat-cloud').src = new URL(clouds[theme.id], import.meta.url).href;
-  const titles={dream:'Shape<br>Friends',seasons:'Season<br>Parade',neon:'Neon<br>Shape Lab'};
-  const kickers={dream:'A little shape adventure',seasons:'Find friends from every season',neon:'Match the glowing shapes'};
-  $('setup-title').innerHTML = `${titles[theme.id]}<span aria-hidden="true">✦</span>`;
-  document.querySelector('.setup-kicker').textContent = kickers[theme.id];
+  document.querySelector('.sparky-seat-cloud').src = new URL(`./assets/${theme.cloudAsset}`, import.meta.url).href;
+  $('setup-title').innerHTML = `${theme.menuTitleLines.join('<br>')}<span aria-hidden="true">✦</span>`;
+  document.querySelector('.setup-kicker').textContent = theme.menuKicker;
   $('level-objective').textContent = pack.objective;
   $('theme-open').setAttribute('aria-label', `Change world. Current world: ${theme.title}`);
   $('theme-open-label').textContent = 'Worlds';
   document.querySelectorAll('[data-theme-choice]').forEach(button => {
     const id = button.dataset.themeChoice, unlocked = themeUnlocked(id), active = id === theme.id;
+    const world=getWorld(id);
+    button.querySelector('.theme-copy strong').textContent=world.name;
+    button.querySelector('.theme-copy small').textContent=world.description;
     button.classList.toggle('is-locked', !unlocked); button.classList.toggle('is-active', active);
     button.setAttribute('aria-pressed', String(active)); button.setAttribute('aria-disabled', String(!unlocked));
     const left = id === 'neon' ? Math.max(0,5-save.dreamStars.length-save.seasonStars.length) : Math.max(0,3-save.dreamStars.length);
@@ -379,7 +379,7 @@ async function resolveTurn(ticket,{settleMs=CARD_REVEAL_HOLD_MS}={}) {
       ? (voiced?dialogue.next('match'):'You found a pair!')
       : (voiced?dialogue.next('sparkyMatch'):'Sparky found a pair.');
     celebratePair(reaction,voiced,gesture);
-    $('pair-celebration').textContent = SHAPES[result.pairId].name;
+    $('pair-celebration').textContent = CATEGORIES[result.pairId].name;
     $('pair-celebration').hidden = false; renderTray();
     result.indices.forEach(index => {
       const card = $('cards').children[index];
@@ -550,14 +550,12 @@ function finishRound() {
   const score = $('result-score');
   $('result-view').classList.remove('has-theme-unlock');
   if(openedTheme){
-    const unlockedTheme=getTheme(openedTheme);
+    const unlockedTheme=getWorld(openedTheme);
     const unlockDialog=$('theme-unlock-dialog');
     unlockDialog.dataset.theme=openedTheme;
     $('theme-unlock-title').textContent=unlockedTheme.title;
     $('theme-unlock-preview').className=`theme-picture theme-picture--${openedTheme}`;
-    $('theme-unlock-message').textContent=openedTheme==='seasons'
-      ? 'Season friends are ready to play!'
-      : 'The glowing Shape Lab is ready!';
+    $('theme-unlock-message').textContent=unlockedTheme.unlockMessage;
     $('unlock-visit').dataset.theme=openedTheme;
   }
   if (options.mode === 'practice') {
@@ -580,7 +578,7 @@ function showPicnic() {
   if (board.phase !== 'complete' && (busy || board.actor !== 'child')) return;
   mode = 'explore'; clearEffects(); picnic.render(dreamDiscoveries);
   $('app').dataset.mode = mode; $('play-layout').hidden = true; $('discovery-strip').hidden = true; $('explore-view').hidden = false; $('visit-picnic').hidden = true;
-  const complete = board.phase === 'complete', final = new Set(save.dreamStars).size >= getTheme('dream').pack.rounds.length;
+  const complete = board.phase === 'complete', final = new Set(save.dreamStars).size >= getWorld('dream').pack.rounds.length;
   $('explore-title').textContent = final ? 'Our happy picnic!' : 'Picnic time!';
   $('explore-kicker').textContent = complete ? `ROUND ${round.id} · WE DID IT TOGETHER` : 'A LITTLE PLAY BREAK';
   $('explore-message').textContent = 'Tap a discovery, or bring it to a place below.';

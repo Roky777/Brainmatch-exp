@@ -37,6 +37,14 @@ test('hands and countable objects use finished raster artwork',async()=>{
   }
 });
 
+test('dot cards use large, evenly countable token layouts',async()=>{
+  for(const quantity of [1,2,3,4,8]){
+    const svg=await readFile(new URL(`../number-friends/assets/cards/dots-${quantity}.svg`,import.meta.url),'utf8');
+    assert.equal((svg.match(/<circle\b/g)||[]).length,quantity,`dots-${quantity}.svg should contain ${quantity} tokens`);
+    assert.doesNotMatch(svg,/r="24"/,`dots-${quantity}.svg should not use the old undersized dots`);
+  }
+});
+
 test('the longer Number Friends XP journey still totals exactly 200',()=>{
   const activities=Object.keys(manifest.worlds).length*manifest.rounds.length;
   const xp=manifest.progression.xp;

@@ -2,14 +2,79 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#8ad7e9">
-  <meta http-equiv="refresh" content="0;url=shape-friends/">
-  <link rel="canonical" href="shape-friends/">
-  <title>Shape Friends · Dream Brainmatch</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#fff7dc">
+  <meta name="description" content="Choose a Dream Brainmatch memory game for shapes, numbers, animals, body words or beginning sounds.">
+  <title>Dream Brainmatch · Choose a game</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Outfit:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="launcher.css?v=1">
 </head>
 <body>
-  <p><a href="shape-friends/">Open Shape Friends</a></p>
-  <script>location.replace('shape-friends/');</script>
+  <main class="library">
+    <header class="library-heading">
+      <span class="brand-mark" aria-hidden="true">✦</span>
+      <p>Dream Brainmatch</p>
+      <h1>Choose a game</h1>
+      <p class="library-intro">Pick a world, remember the cards, and find every friendly match.</p>
+    </header>
+
+    <section class="game-grid" aria-label="Brainmatch games">
+      <a class="game-card game-card--shape" href="shape-friends/">
+        <span class="game-art" aria-hidden="true">
+          <img src="shape-friends/assets/items/ball.webp" alt="">
+          <img src="shape-friends/assets/items/orange.webp" alt="">
+        </span>
+        <span class="game-copy">
+          <small>Shapes</small>
+          <strong>Shape Friends</strong>
+          <span>Match objects with the same overall shape.</span>
+        </span>
+        <span class="play-label">Play <i aria-hidden="true">→</i></span>
+      </a>
+
+      <a class="game-card game-card--number" href="number-friends/">
+        <span class="game-art" aria-hidden="true">
+          <img src="number-friends/assets/cards/numeral-4.svg" alt="">
+          <img src="number-friends/assets/cards/apples-4.png" alt="">
+        </span>
+        <span class="game-copy">
+          <small>Counting</small>
+          <strong>Number Friends</strong>
+          <span>Match numerals with equal quantities.</span>
+        </span>
+        <span class="play-label">Play <i aria-hidden="true">→</i></span>
+      </a>
+
+      <a class="game-card game-card--animal" href="animal-friends/">
+        <span class="game-art" aria-hidden="true">
+          <img src="animal-friends/assets/cards/lion.png" alt="">
+          <img src="animal-friends/assets/cards/frog.png" alt="">
+        </span>
+        <span class="game-copy">
+          <small>Picture words</small>
+          <strong>Animal Friends</strong>
+          <span>Match each animal with its English name.</span>
+        </span>
+        <span class="play-label">Play <i aria-hidden="true">→</i></span>
+      </a>
+
+      <a class="game-card game-card--body" href="body-sound-match/">
+        <span class="game-art" aria-hidden="true">
+          <img src="body-sound-match/assets/cards/ear.png" alt="">
+          <img src="body-sound-match/assets/cards/letter-a.svg" alt="">
+        </span>
+        <span class="game-copy">
+          <small>Body &amp; sounds</small>
+          <strong>Body &amp; Sound Match</strong>
+          <span>Match body words, actions and beginning sounds.</span>
+        </span>
+        <span class="play-label">Play <i aria-hidden="true">→</i></span>
+      </a>
+    </section>
+
+    <footer><span aria-hidden="true">★</span> Four learning games · Practice or play with Sparky</footer>
+  </main>
 </body>
 </html>

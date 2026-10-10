@@ -58,7 +58,7 @@ function renderXP(award=null) {
   $('result-xp').classList.toggle('is-complete',award.complete);
   $('result-xp-earned').textContent=award.earned
     ? `+${award.earned} XP`
-    : award.reason==='replay' ? 'XP already earned' : '200 XP complete!';
+    : award.reason==='replay' ? 'XP collected' : 'Journey complete';
   $('result-xp-total').textContent=String(award.total);
   $('result-xp').setAttribute('aria-label',award.earned
     ? `${award.earned} XP earned. ${award.total} of ${XP_LIMIT} total XP.`

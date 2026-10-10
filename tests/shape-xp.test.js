@@ -51,3 +51,11 @@ test('the child-facing UI shows the total journey and both reward amounts',async
   assert.match(html,/class="result-summary"[\s\S]*?id="result-score"[\s\S]*?id="result-xp"/);
   assert.match(app,/const xpAward=awardXP\(save,\{worldId:theme\.id,roundId:round\.id,mode:options\.mode\}\);[\s\S]*?persist\(\)/);
 });
+
+test('the compact result XP message fits the shared summary panel',async()=>{
+  const app=await readFile(new URL('../shape-friends/app.js',import.meta.url),'utf8');
+  const css=await readFile(new URL('../shape-friends/prototype.css',import.meta.url),'utf8');
+  assert.match(app,/award\.reason==='replay' \? 'XP collected'/);
+  assert.match(css,/\.result-xp>span:last-child\{[^}]*min-width:0/);
+  assert.match(css,/\.result-xp strong\{[^}]*white-space:normal/);
+});

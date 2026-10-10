@@ -2398,7 +2398,7 @@ body[data-theme="neon"] .theme-dialog-message{color:#7edbe6}
 
 /* One result summary surface: round progress and XP belong together. */
 #app[data-mode="result"] .result-summary{
-  display:grid;grid-template-columns:1fr 1fr;width:min(100%,320px);margin:0 auto 17px;padding:0;
+  display:grid;grid-template-columns:minmax(0,47%) minmax(0,53%);width:min(100%,320px);margin:0 auto 17px;padding:0;
   border:3px solid #203975;border-radius:19px 16px 21px 17px;background:#f7f8ff;overflow:hidden;
   box-shadow:0 5px 0 #93a8d8;
 }
@@ -2407,12 +2407,12 @@ body[data-theme="neon"] .theme-dialog-message{color:#7edbe6}
 }
 #app[data-mode="result"] .result-summary #result-score strong{font-size:24px}
 #app[data-mode="result"] .result-xp{
-  display:flex;align-items:center;justify-content:center;gap:7px;min-width:0;margin:0;padding:11px 9px;
+  display:flex;align-items:center;justify-content:center;gap:6px;min-width:0;margin:0;padding:11px 7px;
   border:0;border-radius:0;background:#fff3c8;color:#28417b;box-shadow:none;
 }
 #app[data-mode="result"] .result-xp-mark{flex:0 0 auto;display:grid;place-items:center;width:25px;height:25px;border:2px solid #203975;border-radius:8px;background:#ffd45b;color:#a86416;box-shadow:0 2px #d39326;font-size:13px;line-height:1}
-#app[data-mode="result"] .result-xp>span:last-child{display:flex;flex-direction:column;align-items:flex-start;gap:3px}
-#app[data-mode="result"] .result-xp strong{color:#9d5b16;font:800 18px/1 var(--font-display);white-space:nowrap}
+#app[data-mode="result"] .result-xp>span:last-child{display:flex;min-width:0;flex-direction:column;align-items:flex-start;gap:3px}
+#app[data-mode="result"] .result-xp strong{max-width:100%;color:#9d5b16;font:800 15px/1.05 var(--font-display);white-space:normal;overflow-wrap:anywhere;text-align:left}
 #app[data-mode="result"] .result-xp small{color:#6d789a;font:700 10px/1 var(--font-body);white-space:nowrap}
 #app[data-mode="result"] .result-xp.is-complete{background:#edf8f0}
 #app[data-mode="result"] .result-xp.is-complete .result-xp-mark{color:#3d9a62}

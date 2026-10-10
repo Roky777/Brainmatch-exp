@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "variant": {
+    "id": "animal-friends",
+    "title": "Animal Friends",
+    "subtitle": "A friendly animal adventure",
+    "grade": 1,
+    "objective": "Match each animal picture with its English name.",
+    "assetBase": "./assets/cards/",
+    "menuGreeting": "Hi, friend! Ready to meet the animal friends?",
+    "matchPrompt": "Now match each animal with its name!",
+    "resultMessage": "You remembered every animal friend."
+  },
+  "play": { "fixedPairs": true },
+  "features": { "picnic": false },
+  "progression": { "xp": { "rewards": { "practice": 20, "challenge": 12 }, "completionBonus": 8 } },
+  "worlds": {
+    "dream": { "id": "dream", "name": "Animal Meadow", "shortName": "Animals", "description": "Meet the animals", "skin": "meadow", "menuTitleLines": ["Animal", "Friends"], "menuKicker": "A friendly animal adventure", "cloudAsset": "sparky-seat-cloud-v1.webp", "unlockMessage": "More animal friends are ready!" },
+    "seasons": { "id": "seasons", "name": "Jungle Parade", "shortName": "Jungle", "description": "The full animal match", "skin": "parade", "menuTitleLines": ["Jungle", "Parade"], "menuKicker": "Meet every animal friend", "cloudAsset": "season-sparky-cloud-v1.webp", "unlockMessage": "The Jungle Parade is ready!" },
+    "neon": { "id": "neon", "name": "Animal Lab", "shortName": "Lab", "description": "Animal word mastery", "skin": "space-lab", "menuTitleLines": ["Animal", "Lab"], "menuKicker": "Picture and word mastery", "cloudAsset": "neon-sparky-cloud-v1.webp", "unlockMessage": "The Animal Lab is ready!" }
+  },
+  "categories": {
+    "lion": { "name": "Lion", "detail": "The picture matches LION.", "color": "#ef9a43" },
+    "monkey": { "name": "Monkey", "detail": "The picture matches MONKEY.", "color": "#a86c45" },
+    "fish": { "name": "Fish", "detail": "The picture matches FISH.", "color": "#4eb9e8" },
+    "frog": { "name": "Frog", "detail": "The picture matches FROG.", "color": "#69c96b" },
+    "elephant": { "name": "Elephant", "detail": "The picture matches ELEPHANT.", "color": "#9faabd" },
+    "rabbit": { "name": "Rabbit", "detail": "The picture matches RABBIT.", "color": "#efb7cf" },
+    "bird": { "name": "Bird", "detail": "The picture matches BIRD.", "color": "#ffd34f" },
+    "snake": { "name": "Snake", "detail": "The picture matches SNAKE.", "color": "#69c96b" }
+  },
+  "items": {
+    "picture_lion": { "name": "Lion picture", "asset": "lion.png" }, "word_lion": { "name": "LION", "asset": "word-lion.svg" },
+    "picture_monkey": { "name": "Monkey picture", "asset": "monkey.png" }, "word_monkey": { "name": "MONKEY", "asset": "word-monkey.svg" },
+    "picture_fish": { "name": "Fish picture", "asset": "fish.png" }, "word_fish": { "name": "FISH", "asset": "word-fish.svg" },
+    "picture_frog": { "name": "Frog picture", "asset": "frog.png" }, "word_frog": { "name": "FROG", "asset": "word-frog.svg" },
+    "picture_elephant": { "name": "Elephant picture", "asset": "elephant.png" }, "word_elephant": { "name": "ELEPHANT", "asset": "word-elephant.svg" },
+    "picture_rabbit": { "name": "Rabbit picture", "asset": "rabbit.png" }, "word_rabbit": { "name": "RABBIT", "asset": "word-rabbit.svg" },
+    "picture_bird": { "name": "Bird picture", "asset": "bird.png" }, "word_bird": { "name": "BIRD", "asset": "word-bird.svg" },
+    "picture_snake": { "name": "Snake picture", "asset": "snake.png" }, "word_snake": { "name": "SNAKE", "asset": "word-snake.svg" }
+  },
+  "rounds": [
+    { "id": "1", "title": "Meet the animals", "subtitle": "Four friendly animals", "pairs": [["lion","picture_lion","word_lion"],["monkey","picture_monkey","word_monkey"],["fish","picture_fish","word_fish"],["frog","picture_frog","word_frog"]] },
+    { "id": "2", "title": "The full animal match", "subtitle": "Eight animal friends", "pairs": [["lion","picture_lion","word_lion"],["monkey","picture_monkey","word_monkey"],["fish","picture_fish","word_fish"],["elephant","picture_elephant","word_elephant"],["frog","picture_frog","word_frog"],["rabbit","picture_rabbit","word_rabbit"],["bird","picture_bird","word_bird"],["snake","picture_snake","word_snake"]] }
+  ]
+}

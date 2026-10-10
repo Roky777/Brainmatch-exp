@@ -1,1 +1,1 @@
-{"name":"dream-brainmatch-friends","version":"1.0.0","private":true,"type":"module","scripts":{"start":"node server.mjs","test":"node --test tests/shape-*.test.js tests/number-friends.test.js tests/body-sound-match.test.js tests/sparky-animation.test.js"}}
+{"name":"dream-brainmatch-friends","version":"1.0.0","private":true,"type":"module","scripts":{"start":"node server.mjs","test":"node --test tests/shape-*.test.js tests/number-friends.test.js tests/body-sound-match.test.js tests/animal-friends.test.js tests/sparky-animation.test.js"}}

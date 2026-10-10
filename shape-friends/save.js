@@ -28,8 +28,10 @@ export function sanitizeSave(raw) {
     ? raw.xp
     : save.xpClaims.reduce((total,key)=>total+(key.endsWith(':practice')?XP_REWARDS.practice:XP_REWARDS.challenge),0)+(save.xpJourneyBonus?XP_JOURNEY_BONUS:0);
   save.xp=Math.max(0,Math.min(XP_LIMIT,restoredXP));
-  const neonUnlocked=save.dreamStars.length+save.seasonStars.length>=5;
-  const seasonsUnlocked=save.dreamStars.length>=3;
+  const seasonsGoal=Math.min(3,validRounds.length);
+  const neonGoal=Math.min(5,validRounds.length+validSeasonRounds.length);
+  const neonUnlocked=save.dreamStars.length+save.seasonStars.length>=neonGoal;
+  const seasonsUnlocked=save.dreamStars.length>=seasonsGoal;
   save.theme = raw.theme === 'neon' && neonUnlocked
     ? 'neon'
     : (raw.theme === 'seasons'||raw.theme === 'neon') && seasonsUnlocked ? 'seasons' : 'dream';

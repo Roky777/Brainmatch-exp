@@ -71,8 +71,10 @@ test('world chooser is visual, persistent and keeps later worlds behind complete
  assert.match(html,/id="theme-open"/);assert.match(html,/data-theme-choice="dream"/);assert.match(html,/data-theme-choice="seasons"/);assert.match(html,/data-theme-choice="neon"/);
  assert.match(html,/id="theme-unlock-dialog"/);assert.match(html,/id="unlock-visit"/);assert.match(html,/id="unlock-later"/);
  assert.match(html,/theme-picture--dream/);assert.match(html,/theme-picture--seasons/);assert.match(html,/theme-picture--neon/);
- assert.match(app,/save\.dreamStars\.length\s*>=\s*3/);
- assert.match(app,/save\.dreamStars\.length\+save\.seasonStars\.length\s*>=\s*5/);
+ assert.match(app,/seasons:Math\.min\(3,dreamRounds\)/,'three Dream clears unlock Seasons, capped for shorter variants');
+ assert.match(app,/neon:Math\.min\(5,dreamRounds\+seasonRounds\)/,'five combined clears unlock Neon, capped for shorter variants');
+ assert.match(app,/save\.dreamStars\.length>=goals\.seasons/);
+ assert.match(app,/save\.dreamStars\.length\+save\.seasonStars\.length>=goals\.neon/);
  assert.match(app,/document\.body\.dataset\.theme = theme\.id/);
  assert.match(app,/unlockDialog\.showModal\(\)/,'new worlds receive a one-time unlock popup');
  assert.match(app,/\$\('theme-open-label'\)\.textContent = 'Worlds'/,'the permanent world switcher stays explicit');

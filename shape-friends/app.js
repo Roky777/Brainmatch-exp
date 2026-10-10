@@ -67,10 +67,16 @@ function renderXP(award=null) {
       : `XP journey complete. ${XP_LIMIT} of ${XP_LIMIT} total XP.`);
 }
 function themeProgress(id = theme.id) { return id === 'neon' ? save.neonStars : id === 'seasons' ? save.seasonStars : save.dreamStars; }
+function worldUnlockGoals(){
+  const dreamRounds=getWorld('dream').pack.rounds.length;
+  const seasonRounds=getWorld('seasons').pack.rounds.length;
+  return {seasons:Math.min(3,dreamRounds),neon:Math.min(5,dreamRounds+seasonRounds)};
+}
 function themeUnlocked(id) {
+  const goals=worldUnlockGoals();
   if(id==='dream')return true;
-  if(id==='seasons')return save.dreamStars.length>=3;
-  return id==='neon'&&save.dreamStars.length+save.seasonStars.length>=5;
+  if(id==='seasons')return save.dreamStars.length>=goals.seasons;
+  return id==='neon'&&save.dreamStars.length+save.seasonStars.length>=goals.neon;
 }
 function nextRoundId() {
   const index = pack.rounds.findIndex(item => item.id === round?.id);
@@ -98,12 +104,14 @@ function applyTheme() {
     button.querySelector('.theme-copy small').textContent=world.description;
     button.classList.toggle('is-locked', !unlocked); button.classList.toggle('is-active', active);
     button.setAttribute('aria-pressed', String(active)); button.setAttribute('aria-disabled', String(!unlocked));
-    const left = id === 'neon' ? Math.max(0,5-save.dreamStars.length-save.seasonStars.length) : Math.max(0,3-save.dreamStars.length);
+    const goals=worldUnlockGoals();
+    const left = id === 'neon' ? Math.max(0,goals.neon-save.dreamStars.length-save.seasonStars.length) : Math.max(0,goals.seasons-save.dreamStars.length);
     button.querySelector('.theme-status').textContent = active ? 'Playing here' : unlocked ? 'Visit world' : `${left} more ${left===1?'match':'matches'}`;
   });
+  const goals=worldUnlockGoals(),neonLeft=Math.max(0,goals.neon-save.dreamStars.length-save.seasonStars.length);
   $('theme-dialog-message').textContent = themeUnlocked('neon')
     ? 'Pick a world. You can come back whenever you like.'
-    : themeUnlocked('seasons') ? `${Math.max(0,5-save.dreamStars.length-save.seasonStars.length)} more ${5-save.dreamStars.length-save.seasonStars.length===1?'match':'matches'} will light up the Neon Lab.` : 'Play three matches to open Season Parade.';
+    : themeUnlocked('seasons') ? `${neonLeft} more ${neonLeft===1?'match':'matches'} will light up the Neon Lab.` : `Play ${goals.seasons} ${goals.seasons===1?'match':'matches'} to open Season Parade.`;
 }
 function preloadArt(item) {
   const src=assetURL(item);
@@ -727,7 +735,8 @@ document.querySelectorAll('[data-theme-choice]').forEach(button => button.addEve
   const id = button.dataset.themeChoice;
   if (!themeUnlocked(id)) {
     button.classList.remove('needs-stars'); void button.offsetWidth; button.classList.add('needs-stars');
-    const left=id==='neon'?Math.max(0,5-save.dreamStars.length-save.seasonStars.length):Math.max(0,3-save.dreamStars.length);
+    const goals=worldUnlockGoals();
+    const left=id==='neon'?Math.max(0,goals.neon-save.dreamStars.length-save.seasonStars.length):Math.max(0,goals.seasons-save.dreamStars.length);
     $('theme-dialog-message').textContent=id==='neon'
       ? `Play ${left} more ${left===1?'match':'matches'} to light up the Neon Lab.`
       : `Play ${left} more ${left===1?'match':'matches'} to open Season Parade.`;

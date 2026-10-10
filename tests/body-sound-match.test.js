@@ -19,7 +19,15 @@ test('the nine chapters are presented as three child-friendly difficulty groups'
     ['growing','Medium',['4','5','6']],
     ['clever','Hard',['7','8','9']],
   ]);
+  assert.deepEqual(manifest.play.difficultyGroups.map(group=>group.description),[
+    '4 cards · 2 pairs','6 cards · 3 pairs','8 cards · 4 pairs',
+  ]);
   assert.equal(manifest.play.difficultyGroups.flatMap(group=>group.rounds).length,manifest.rounds.length);
+});
+
+test('grouped difficulties use the Shape Friends 4, 6 and 8 card sizes',async()=>{
+  const app=await readFile(new URL('../shape-friends/app.js',import.meta.url),'utf8');
+  assert.match(app,/fixedPairs&&!groupedDifficulties[\s\S]*?: LEVELS\[options\.level\]/);
 });
 
 test('body vocabulary and function chapters follow the learning brief',()=>{

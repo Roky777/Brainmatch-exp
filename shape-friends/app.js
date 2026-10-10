@@ -260,7 +260,8 @@ function startRound(id) {
   run++; timeline.cancel(); audio.stop(); clearEffects(); picnic.cancelDrag();
   round = roundById(id, pack);
   const fixedPairs=GAME_CONTENT.play?.fixedPairs===true;
-  const level = fixedPairs
+  const groupedDifficulties=difficultyGroups().length>0;
+  const level = fixedPairs&&!groupedDifficulties
     ? {pairs:round.pairs.length,capacity:Math.max(2,Math.ceil(round.pairs.length*.6)),accuracy:.44}
     : LEVELS[options.level];
   const activePairs=round.pairs.slice(0, level.pairs);
@@ -275,7 +276,7 @@ function startRound(id) {
   document.querySelector('.match-area').hidden = false;
   $('app').dataset.playMode = options.mode;
   $('app').dataset.theme = theme.id;
-  $('app').dataset.level = fixedPairs?'clever':options.level;
+  $('app').dataset.level = fixedPairs&&!groupedDifficulties?'clever':options.level;
   $('app').dataset.pairs = String(level.pairs);
   $('cards').style.setProperty('--columns', level.pairs === 3 ? '3' : level.pairs === 2 ? '2' : '4');
   $('cards').setAttribute('aria-label', `${board.size} memory cards. ${pack.objective}`);

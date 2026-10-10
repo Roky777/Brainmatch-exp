@@ -14,9 +14,9 @@
   "play": {
     "fixedPairs": true,
     "difficultyGroups": [
-      { "id": "gentle", "name": "Easy", "description": "Body pictures and words", "rounds": ["1", "2", "3"] },
-      { "id": "growing", "name": "Medium", "description": "Actions and first sounds", "rounds": ["4", "5", "6"] },
-      { "id": "clever", "name": "Hard", "description": "More letter sounds", "rounds": ["7", "8", "9"] }
+      { "id": "gentle", "name": "Easy", "description": "4 cards · 2 pairs", "rounds": ["1", "2", "3"] },
+      { "id": "growing", "name": "Medium", "description": "6 cards · 3 pairs", "rounds": ["4", "5", "6"] },
+      { "id": "clever", "name": "Hard", "description": "8 cards · 4 pairs", "rounds": ["7", "8", "9"] }
     ]
   },
   "features": { "picnic": false },

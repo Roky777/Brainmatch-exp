@@ -25,7 +25,7 @@
     document.documentElement.dataset.contentManifest=manifestURL;
     const gameScript=document.createElement('script');
     gameScript.type='module';
-    gameScript.src=new URL('../shape-friends/app.js?v=17',window.location.href).href;
+    gameScript.src=new URL('../shape-friends/app.js?v=18',window.location.href).href;
     gameScript.addEventListener('error',()=>{
       const message=document.createElement('p');
       message.className='variant-error';

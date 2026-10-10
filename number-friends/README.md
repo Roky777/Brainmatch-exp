@@ -16,9 +16,16 @@ Number Friends deliberately uses the same child-facing flow as Shape Friends:
 3. See every card briefly, then find the matching quantities.
 4. Move through the seven counting chapters as boards are completed.
 
-All chapter content lives in `game-content.json`. Card artwork is local in
-`assets/cards`; the deterministic SVG assets can be regenerated with
-`node scripts/generate-card-art.mjs`.
+All chapter content lives in `game-content.json`. Numerals and dots remain
+deterministic SVG learning cards. Fingers and countable object groups use
+finished rendered PNG artwork. The object sources come from Microsoft's
+[Fluent Emoji](https://github.com/microsoft/fluentui-emoji) project under the
+MIT License.
+
+A copy of the license is stored at `assets/cards/FLUENT_EMOJI_LICENSE.txt`.
+
+- Regenerate numeral and dot cards: `node scripts/generate-card-art.mjs`
+- Regenerate rendered quantity groups: `node scripts/compose-quantity-art.mjs`
 
 ## Chapters
 

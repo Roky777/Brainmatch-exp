@@ -25,13 +25,24 @@ test('phonics chapters cover A through Z and finish with new A-F revision pictur
   assert.deepEqual(manifest.rounds[8].pairs.slice(2).map(([category])=>category),['letter_a','letter_b','letter_c','letter_d','letter_e','letter_f']);
 });
 
-test('all Body & Sound Match artwork is local and picture cards contain no object labels',async()=>{
+test('all Body & Sound Match artwork is local and picture cards use rendered PNG assets',async()=>{
   await Promise.all(Object.values(manifest.items).map(item=>access(new URL(`../body-sound-match/assets/cards/${item.asset}`,import.meta.url))));
   const pictureAssets=[...new Set(Object.entries(manifest.items).filter(([id])=>id.startsWith('object_')||id.startsWith('picture_')).map(([,item])=>item.asset))];
   for(const asset of pictureAssets){
-    const svg=await readFile(new URL(`../body-sound-match/assets/cards/${asset}`,import.meta.url),'utf8');
-    assert.doesNotMatch(svg,/<text\b/i,`${asset} should be picture-only`);
+    assert.match(asset,/\.png$/i,`${asset} should use production raster artwork`);
+    const png=await readFile(new URL(`../body-sound-match/assets/cards/${asset}`,import.meta.url));
+    assert.deepEqual([...png.subarray(0,8)],[137,80,78,71,13,10,26,10],`${asset} should be a valid PNG`);
   }
+});
+
+test('later phonics boards use clear rendered objects for their initial sounds',()=>{
+  assert.deepEqual(manifest.rounds[6].pairs.map(([,letter,object])=>[letter,object]),[
+    ['letter_i','object_ice'],['letter_j','object_jeans'],['letter_k','object_kite'],['letter_l','object_lion'],
+    ['letter_m','object_mango'],['letter_n','object_nose'],['letter_o','object_orange'],['letter_p','object_parrot'],
+  ]);
+  assert.deepEqual(manifest.rounds[7].pairs.slice(3).map(([,letter,object])=>[letter,object]),[
+    ['letter_t','object_tomato'],['letter_u','object_umbrella'],['letter_v','object_violin'],['letter_w','object_watch'],['letter_x','object_xray'],
+  ]);
 });
 
 test('the Body & Sound Match XP journey totals exactly 200',()=>{

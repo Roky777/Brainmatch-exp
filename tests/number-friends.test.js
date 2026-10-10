@@ -28,6 +28,15 @@ test('all numeral, dot, hand and object artwork is local and present',async()=>{
   await Promise.all(Object.values(manifest.items).map(item=>access(new URL(`../number-friends/assets/cards/${item.asset}`,import.meta.url))));
 });
 
+test('hands and countable objects use finished raster artwork',async()=>{
+  const rendered=Object.entries(manifest.items).filter(([id])=>id.startsWith('fingers_')||/^(sun|apples|birds|flowers|balls|stars)_/.test(id));
+  for(const [id,item] of rendered){
+    assert.match(item.asset,/\.png$/i,`${id} should use rendered PNG artwork`);
+    const png=await readFile(new URL(`../number-friends/assets/cards/${item.asset}`,import.meta.url));
+    assert.deepEqual([...png.subarray(0,8)],[137,80,78,71,13,10,26,10],`${item.asset} should be a valid PNG`);
+  }
+});
+
 test('the longer Number Friends XP journey still totals exactly 200',()=>{
   const activities=Object.keys(manifest.worlds).length*manifest.rounds.length;
   const xp=manifest.progression.xp;

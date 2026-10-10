@@ -4,7 +4,7 @@ import {access,readFile} from 'node:fs/promises';
 
 const root=new URL('../',import.meta.url);
 const html=await readFile(new URL('index.html',root),'utf8');
-const games=['shape-friends','number-friends','animal-friends','body-sound-match'];
+const games=['shape-friends','number-friends','animal-friends','body-sound-match','money-match'];
 
 test('the main library exposes every playable game',async()=>{
   assert.doesNotMatch(html,/http-equiv=["']refresh/i);
@@ -26,6 +26,6 @@ test('every game entry can return to the shared library',async()=>{
 
 test('launcher artwork is local and present',async()=>{
   const sources=[...html.matchAll(/<img src="([^"]+)"/g)].map(match=>match[1]);
-  assert.equal(sources.length,8);
+  assert.equal(sources.length,10);
   await Promise.all(sources.map(source=>access(new URL(source,root))));
 });

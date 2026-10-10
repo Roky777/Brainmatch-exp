@@ -71,6 +71,7 @@ h1{margin:0;font-family:"Outfit",system-ui,sans-serif;font-size:clamp(46px,8vw,7
 .game-card--number{--accent:#49bcd8;--pale:#dff8ff}
 .game-card--animal{--accent:#68c96d;--pale:#e9f8d9}
 .game-card--body{--accent:#ef8299;--pale:#ffe4ec}
+.game-card--money{--accent:#d6a343;--pale:#fff0c3}
 .game-art{
   grid-row:1/3;
   align-self:stretch;

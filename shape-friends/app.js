@@ -1,5 +1,5 @@
 import { ITEMS, CATEGORIES, GAME_CONTENT, VARIANT, assetURL, cardsFor, roundById, getWorld, itemFor } from './content.js';
-import { MatchBoard } from './engine.js';
+import { MatchBoard, shuffle } from './engine.js';
 import { CompanionMemory } from './companion.js';
 import { Timeline } from './timeline.js';
 import { readSave, writeSave, discover } from './save.js';
@@ -264,7 +264,10 @@ function startRound(id) {
   const level = fixedPairs&&!groupedDifficulties
     ? {pairs:round.pairs.length,capacity:Math.max(2,Math.ceil(round.pairs.length*.6)),accuracy:.44}
     : LEVELS[options.level];
-  const activePairs=round.pairs.slice(0, level.pairs);
+  const pairPool=GAME_CONTENT.play?.shufflePairs
+    ? shuffle(round.pairs.map(pair=>({pair}))).map(entry=>entry.pair)
+    : round.pairs;
+  const activePairs=pairPool.slice(0, level.pairs);
   board = new MatchBoard(cardsFor({ pairs: activePairs }), { mode: options.mode });
   memory = new CompanionMemory({ capacity: level.capacity, accuracy: level.accuracy }); guideMemory = new CompanionMemory();
   // Decode all possible round art away from the DOM. Hidden card positions and

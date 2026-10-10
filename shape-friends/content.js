@@ -34,6 +34,18 @@ export function validateContentManifest(input) {
     }
   }
   if(!roundIds.size)throw new Error('Game content needs at least one round.');
+  if(input.play?.difficultyGroups){
+    if(!Array.isArray(input.play.difficultyGroups)||input.play.difficultyGroups.length!==3)throw new Error('Difficulty groups must define Easy, Medium and Hard.');
+    const groupedRounds=[];
+    for(const group of input.play.difficultyGroups){
+      if(!['gentle','growing','clever'].includes(group.id)||!group.name||!group.description||!Array.isArray(group.rounds)||!group.rounds.length)throw new Error(`Difficulty group ${group.id||'(missing)'} is incomplete.`);
+      for(const roundId of group.rounds){
+        if(!roundIds.has(roundId))throw new Error(`Difficulty group ${group.id} uses unknown round ${roundId}.`);
+        groupedRounds.push(roundId);
+      }
+    }
+    if(new Set(groupedRounds).size!==roundIds.size||groupedRounds.length!==roundIds.size)throw new Error('Difficulty groups must include every round exactly once.');
+  }
   return true;
 }
 

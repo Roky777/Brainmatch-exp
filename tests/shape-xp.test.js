@@ -58,4 +58,5 @@ test('the compact result XP message fits the shared summary panel',async()=>{
   assert.match(app,/award\.reason==='replay' \? 'XP collected'/);
   assert.match(css,/\.result-xp>span:last-child\{[^}]*min-width:0/);
   assert.match(css,/\.result-xp strong\{[^}]*white-space:normal/);
+  assert.match(css,/\.result-summary\{[^}]*gap:0/,'the score and XP panels should meet without a blank seam');
 });

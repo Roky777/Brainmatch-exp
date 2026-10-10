@@ -12,6 +12,16 @@ test('Body & Sound Match ships nine complete, valid chapters',()=>{
   assert.deepEqual(manifest.rounds.map(round=>round.pairs.length),[4,4,4,4,4,4,8,8,8]);
 });
 
+test('the nine chapters are presented as three child-friendly difficulty groups',()=>{
+  assert.equal(manifest.play.fixedPairs,true);
+  assert.deepEqual(manifest.play.difficultyGroups.map(group=>[group.id,group.name,group.rounds]),[
+    ['gentle','Easy',['1','2','3']],
+    ['growing','Medium',['4','5','6']],
+    ['clever','Hard',['7','8','9']],
+  ]);
+  assert.equal(manifest.play.difficultyGroups.flatMap(group=>group.rounds).length,manifest.rounds.length);
+});
+
 test('body vocabulary and function chapters follow the learning brief',()=>{
   assert.deepEqual(manifest.rounds[0].pairs.map(pair=>pair[0]),['body_eye','body_ear','body_nose','body_hand']);
   assert.deepEqual(manifest.rounds[2].pairs.map(pair=>pair[0]),['function_see','function_hear','function_smell','function_eat']);

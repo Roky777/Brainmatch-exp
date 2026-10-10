@@ -1116,6 +1116,10 @@ dialog#level-dialog[open]{animation:level-pop-in .26s cubic-bezier(0.34,1.56,0.6
 .difficulty-copy small{
   font-family:var(--font-body);font-weight:600;color:#5d6c97;font-size:13px;
 }
+.difficulty-copy em{
+  width:max-content;margin-top:2px;padding:3px 7px;border-radius:7px;background:#edf2ff;
+  color:#51689e;font:700 9px/1 var(--font-body);font-style:normal;letter-spacing:.045em;text-transform:uppercase;
+}
 .difficulty-arrow{
   justify-self:end;display:inline-block;width:auto;height:auto;
   border-radius:0;background:transparent;color:#3b57a5;font-family:var(--font-display);
@@ -1714,6 +1718,7 @@ body[data-theme="neon"] .theme-copy strong,
 body[data-theme="neon"] dialog#settings-dialog>.settings-home strong{color:#effcff}
 body[data-theme="neon"] .difficulty-copy small,
 body[data-theme="neon"] .theme-copy small{color:#9dddea}
+body[data-theme="neon"] .difficulty-copy em{background:#163967;color:#a9f4ff}
 body[data-theme="neon"] .theme-status{background:#163967;color:#a9f4ff}
 body[data-theme="neon"] .theme-choices .is-active .theme-status{background:#672a7e;color:#ffd9f2}
 
@@ -2398,13 +2403,14 @@ body[data-theme="neon"] .theme-dialog-message{color:#7edbe6}
 
 /* One result summary surface: round progress and XP belong together. */
 #app[data-mode="result"] .result-summary{
-  display:grid;grid-template-columns:minmax(0,47%) minmax(0,53%);width:min(100%,320px);margin:0 auto 17px;padding:0;
+  display:grid;grid-template-columns:minmax(0,47%) minmax(0,53%);gap:0;width:min(100%,320px);margin:0 auto 17px;padding:0;
   border:3px solid #203975;border-radius:19px 16px 21px 17px;background:#f7f8ff;overflow:hidden;
   box-shadow:0 5px 0 #93a8d8;
 }
 #app[data-mode="result"] .result-summary #result-score{
-  width:auto;min-width:0;max-width:none;margin:0;padding:12px 11px;border:0;border-right:1.5px solid #cbd6ef;border-radius:0;background:transparent;box-shadow:none;
+  width:auto;min-width:0;max-width:none;margin:0;padding:12px 11px;border:0;border-right:1.5px solid #cbd6ef;border-radius:0;background:linear-gradient(145deg,#f9faff,#eef3ff);box-shadow:none;
 }
+#app[data-mode="result"] .result-summary #result-score i{height:24px;margin-inline:8px}
 #app[data-mode="result"] .result-summary #result-score strong{font-size:24px}
 #app[data-mode="result"] .result-xp{
   display:flex;align-items:center;justify-content:center;gap:6px;min-width:0;margin:0;padding:11px 7px;

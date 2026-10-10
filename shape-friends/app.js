@@ -43,6 +43,7 @@ const dialogue = new Dialogue();
 const artCache=new Map();
 const sparkyAnchor=document.querySelector('.sparky-anchor');
 const resultCharacterSpace=document.querySelector('.result-character-space');
+const difficultyGroups=()=>GAME_CONTENT.play?.difficultyGroups||[];
 const picnic = new Picnic($('picnic'), {
   speak: text => say(text, 'picnic-caption'), effect: kind => audio.effect(kind),
   progress: save.gardenWater, onProgress: value => { save.gardenWater = value; persist(); },
@@ -79,6 +80,11 @@ function themeUnlocked(id) {
   return id==='neon'&&save.dreamStars.length+save.seasonStars.length>=goals.neon;
 }
 function nextRoundId() {
+  const group=difficultyGroups().find(item=>item.id===options.level&&item.rounds.includes(round?.id));
+  if(group){
+    const index=group.rounds.indexOf(round.id);
+    return group.rounds[(index+1)%group.rounds.length];
+  }
   const index = pack.rounds.findIndex(item => item.id === round?.id);
   return pack.rounds[(index + 1) % pack.rounds.length]?.id || '1';
 }
@@ -94,7 +100,7 @@ function applyTheme() {
   $('level-objective').textContent = pack.objective;
   $('menu-caption').textContent = VARIANT.menuGreeting||'Welcome, friend! Let’s find matching pairs together.';
   document.querySelector('.xp-rules').textContent=`First clear in each mode · Practice ${XP_REWARDS.practice} · Beat Sparky ${XP_REWARDS.challenge}`;
-  $('play-again').querySelector('span').textContent=GAME_CONTENT.play?.fixedPairs?'Next level':'Play again';
+  $('play-again').querySelector('span').textContent=difficultyGroups().length?'Next board':GAME_CONTENT.play?.fixedPairs?'Next level':'Play again';
   $('theme-open').setAttribute('aria-label', `Change world. Current world: ${theme.title}`);
   $('theme-open-label').textContent = 'Worlds';
   document.querySelectorAll('[data-theme-choice]').forEach(button => {
@@ -236,6 +242,7 @@ function unveilBoard() {
   cloudReveal.start(focus, hideCloudCurtain);
 }
 function unlocked(id) {
+  if(difficultyGroups().length)return Boolean(roundById(id,pack));
   const index = pack.rounds.findIndex(item => item.id === id);
   return index === 0 || themeProgress().includes(pack.rounds[index - 1].id);
 }
@@ -700,7 +707,23 @@ function showSetup() {
 function showLevels(playMode) {
   options = playOptions(playMode, options.level); setupUI();
   $('level-mode-label').textContent = options.mode === 'practice' ? 'Practice' : 'Beat Sparky';
-  if(GAME_CONTENT.play?.fixedPairs){
+  const groups=difficultyGroups();
+  if(groups.length){
+    $('level-dialog-title').textContent='Choose difficulty';
+    const choices=document.querySelector('.difficulty-choices');
+    const face={gentle:'easy',growing:'medium',clever:'hard'};
+    const completed=new Set(themeProgress());
+    choices.innerHTML=groups.map(group=>{
+      const done=group.rounds.filter(id=>completed.has(id)).length;
+      return `<button type="button" data-difficulty-group="${group.id}" aria-label="${group.name}, ${group.description}, ${done} of ${group.rounds.length} boards complete"><img class="difficulty-face" src="assets/difficulty-${face[group.id]}.svg" alt=""><span class="difficulty-copy"><strong>${group.name}</strong><small>${group.description}</small><em>${done} / ${group.rounds.length} complete</em></span><span class="difficulty-arrow" aria-hidden="true">›</span></button>`;
+    }).join('');
+    choices.querySelectorAll('[data-difficulty-group]').forEach(button=>button.addEventListener('click',()=>{
+      const group=groups.find(item=>item.id===button.dataset.difficultyGroup);
+      const roundId=group.rounds.find(id=>!completed.has(id))||group.rounds[0];
+      options=playOptions(playMode,group.id);
+      $('level-dialog').close();activateAudio();startRound(roundId);
+    }));
+  }else if(GAME_CONTENT.play?.fixedPairs){
     $('level-dialog-title').textContent='Pick a level';
     const choices=document.querySelector('.difficulty-choices');
     choices.innerHTML=pack.rounds.map(item=>{
